@@ -1,0 +1,36 @@
+steps:
+  prettier_markdown_check:
+    image: tmknom/prettier
+    commands:
+      - prettier -c "**/*.md" "**/*.yml"
+    when:
+      - event: pull_request
+
+  check_formatting:
+    image: cimg/android:2024.04.1
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew lintKotlin
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  build_project:
+    image: cimg/android:2024.04.1
+    commands:
+      - sudo chown -R circleci:circleci .
+      - ./gradlew assembleDebug
+    environment:
+      GRADLE_USER_HOME: ".gradle"
+    when:
+      - event: pull_request
+
+  notify:
+    image: alpine:3
+    commands:
+      - apk add curl
+      - "curl -d'Rank-My-Favs build ${CI_PIPELINE_STATUS}: ${CI_PIPELINE_URL}' ntfy.sh/rank_my_favs_ci"
+    when:
+      - event: pull_request
+        status: [failure, success]
