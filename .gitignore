@@ -16,3 +16,4 @@ app/schemas
 .settings
 .classpath
 build.sh
+.kotlin

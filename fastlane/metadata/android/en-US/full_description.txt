@@ -1,0 +1,19 @@
+Do you keep lists of your favorite things, such as movies, books, recipes, or music albums? You might keep list(s) that looks like this:
+
+<ul>
+	<li>Network (1976)</li>
+	<li>Lone Star (1996)</li>
+	<li>Devils (1971)</li>
+	<li>The Seventh Seal (1957)</li>
+	<li>... <i>Many more films_h</i></li>
+</ul>
+
+But how do you rank these?
+
+You might be tempted to order them by preference, but this could quickly get overwhelming for long lists.
+
+A much easier method is to use <a href="https://www.opinionx.co/blog/pairwise-comparison">pairwise comparisons</a>, which shows you single head-to-head pairs, and has you choose which one you like best.
+
+After doing a small number of these matchups, Rank-My-Favs can confidently create a ranked list for you.
+
+Under the hood, Rank-My-Favs can sort by either the win-rate, or the more advanced Glicko rating system.
