@@ -29,9 +29,22 @@ data class FavList(
     @ColumnInfo(
         name = "description",
     )
-    val description: String?,
+    val description: String? = null,
 )
 
+@Entity
+data class FavListInsert(
+    @ColumnInfo(
+        name = "name",
+    )
+    val name: String,
+    @ColumnInfo(
+        name = "description",
+    )
+    val description: String? = null,
+)
+
+@Entity
 data class FavListUpdate(
     val id: Int,
     @ColumnInfo(
@@ -41,19 +54,22 @@ data class FavListUpdate(
     @ColumnInfo(
         name = "description",
     )
-    val description: String?,
+    val description: String? = null,
 )
 
 @Dao
 interface FavListDao {
     @Query("SELECT * FROM FavList")
-    fun getAll(): Flow<FavList>
+    fun getAll(): Flow<List<FavList>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(favList: FavList)
+    @Query("SELECT * FROM FavList where id = :id")
+    fun getById(id: Int): FavList
 
-    @Update
-    suspend fun update(favList: FavList)
+    @Insert(entity = FavList::class, onConflict = OnConflictStrategy.IGNORE)
+    fun insert(favList: FavListInsert): Long
+
+    @Update(entity = FavList::class)
+    suspend fun update(favList: FavListUpdate)
 
     @Delete
     suspend fun delete(favList: FavList)
@@ -68,11 +84,12 @@ class FavListRepository(
     // Observed Flow will notify the observer when the data has changed.
     val getAll = favListDao.getAll()
 
-    @WorkerThread
-    suspend fun insert(favList: FavList) = favListDao.insert(favList)
+    fun getById(id: Int) = favListDao.getById(id)
+
+    fun insert(favList: FavListInsert) = favListDao.insert(favList)
 
     @WorkerThread
-    suspend fun update(favList: FavList) = favListDao.update(favList)
+    suspend fun update(favList: FavListUpdate) = favListDao.update(favList)
 
     @WorkerThread
     suspend fun delete(favList: FavList) = favListDao.delete(favList)
@@ -81,14 +98,14 @@ class FavListRepository(
 class FavListViewModel(
     private val repository: FavListRepository,
 ) : ViewModel() {
-    val favList = repository.getAll
+    val getAll = repository.getAll
 
-    fun insert(favList: FavList) =
-        viewModelScope.launch {
-            repository.insert(favList)
-        }
+    fun getById(id: Int) = repository.getById(id)
 
-    fun update(favList: FavList) =
+    // TODO need viewModelScope here?
+    fun insert(favList: FavListInsert) = repository.insert(favList)
+
+    fun update(favList: FavListUpdate) =
         viewModelScope.launch {
             repository.update(favList)
         }

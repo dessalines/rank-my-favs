@@ -24,4 +24,13 @@
     <string name="theme">Theme</string>
     <string name="theme_color">Theme color</string>
     <string name="done">Done</string>
+    <string name="create_list">Create List</string>
+    <string name="edit_list">Edit List</string>
+    <string name="save">Save</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="delete">Delete</string>
+    <string name="create_item">Create Item</string>
+    <string name="go_back">Go Back</string>
+    <string name="edit_item">Edit Item</string>
 </resources>

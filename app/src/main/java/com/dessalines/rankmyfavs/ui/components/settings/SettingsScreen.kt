@@ -1,6 +1,5 @@
 package com.dessalines.rankmyfavs.ui.components.settings
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
@@ -33,7 +32,6 @@ import com.dessalines.rankmyfavs.db.DEFAULT_THEME
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME_COLOR
 import com.dessalines.rankmyfavs.db.SettingsUpdate
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
-import com.dessalines.rankmyfavs.utils.TAG
 import com.dessalines.rankmyfavs.utils.ThemeColor
 import com.dessalines.rankmyfavs.utils.ThemeMode
 import me.zhanghai.compose.preference.ListPreference
@@ -46,8 +44,6 @@ fun SettingsScreen(
     navController: NavController,
     appSettingsViewModel: AppSettingsViewModel,
 ) {
-    Log.d(TAG, "Got to settings activity")
-
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
     var themeState = ThemeMode.entries[settings?.theme ?: DEFAULT_THEME]
     var themeColorState = ThemeColor.entries[settings?.themeColor ?: DEFAULT_THEME_COLOR]

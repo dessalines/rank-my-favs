@@ -46,7 +46,7 @@ abstract class AppDB : RoomDatabase() {
                                     super.onCreate(db)
                                     Executors.newSingleThreadExecutor().execute {
                                         db.insert(
-                                            "AppSettings.kt",
+                                            "AppSettings",
                                             // Ensures it won't overwrite the existing data
                                             CONFLICT_IGNORE,
                                             ContentValues(2).apply {

@@ -46,6 +46,23 @@ data class FavListItem(
     val description: String?,
 )
 
+@Entity
+data class FavListItemInsert(
+    @ColumnInfo(
+        name = "fav_list_id",
+    )
+    val favListId: Int,
+    @ColumnInfo(
+        name = "name",
+    )
+    val name: String,
+    @ColumnInfo(
+        name = "description",
+    )
+    val description: String?,
+)
+
+@Entity
 data class FavListItemUpdate(
     val id: Int,
     @ColumnInfo(
@@ -61,13 +78,16 @@ data class FavListItemUpdate(
 @Dao
 interface FavListItemDao {
     @Query("SELECT * FROM FavListItem where fav_list_id = :favListId")
-    fun getFromList(favListId: Int): Flow<FavListItem>
+    fun getFromList(favListId: Int): Flow<List<FavListItem>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(favList: FavListItem)
+    @Query("SELECT * FROM FavListItem where id = :favListItemId")
+    fun getById(favListItemId: Int): FavListItem
 
-    @Update
-    suspend fun update(favList: FavListItem)
+    @Insert(entity = FavListItem::class, onConflict = OnConflictStrategy.IGNORE)
+    fun insert(favList: FavListItemInsert): Long
+
+    @Update(entity = FavListItem::class)
+    suspend fun update(favList: FavListItemUpdate)
 
     @Delete
     suspend fun delete(favList: FavListItem)
@@ -76,20 +96,21 @@ interface FavListItemDao {
 // Declares the DAO as a private property in the constructor. Pass in the DAO
 // instead of the whole database, because you only need access to the DAO
 class FavListItemRepository(
-    private val favListDao: FavListItemDao,
+    private val favListItemDao: FavListItemDao,
 ) {
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    fun getFromList(favListId: Int) = favListDao.getFromList(favListId)
+    fun getFromList(favListId: Int) = favListItemDao.getFromList(favListId)
+
+    fun getById(favListItemId: Int) = favListItemDao.getById(favListItemId)
+
+    fun insert(favListItem: FavListItemInsert) = favListItemDao.insert(favListItem)
 
     @WorkerThread
-    suspend fun insert(favList: FavListItem) = favListDao.insert(favList)
+    suspend fun update(favListItem: FavListItemUpdate) = favListItemDao.update(favListItem)
 
     @WorkerThread
-    suspend fun update(favList: FavListItem) = favListDao.update(favList)
-
-    @WorkerThread
-    suspend fun delete(favList: FavListItem) = favListDao.delete(favList)
+    suspend fun delete(favListItem: FavListItem) = favListItemDao.delete(favListItem)
 }
 
 class FavListItemViewModel(
@@ -97,19 +118,18 @@ class FavListItemViewModel(
 ) : ViewModel() {
     fun getFromList(favListId: Int) = repository.getFromList(favListId)
 
-    fun insert(favList: FavListItem) =
+    fun getById(favListItemId: Int) = repository.getById(favListItemId)
+
+    fun insert(favListItem: FavListItemInsert) = repository.insert(favListItem)
+
+    fun update(favListItem: FavListItemUpdate) =
         viewModelScope.launch {
-            repository.insert(favList)
+            repository.update(favListItem)
         }
 
-    fun update(favList: FavListItem) =
+    fun delete(favListItem: FavListItem) =
         viewModelScope.launch {
-            repository.update(favList)
-        }
-
-    fun delete(favList: FavListItem) =
-        viewModelScope.launch {
-            repository.delete(favList)
+            repository.delete(favListItem)
         }
 }
 

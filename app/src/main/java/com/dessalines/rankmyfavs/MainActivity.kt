@@ -8,9 +8,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.asLiveData
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.dessalines.rankmyfavs.db.AppDB
 import com.dessalines.rankmyfavs.db.AppSettingsRepository
 import com.dessalines.rankmyfavs.db.AppSettingsViewModel
@@ -26,7 +28,13 @@ import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModelFactory
 import com.dessalines.rankmyfavs.ui.components.about.AboutScreen
 import com.dessalines.rankmyfavs.ui.components.common.ShowChangelog
-import com.dessalines.rankmyfavs.ui.components.settings.FavListScreen
+import com.dessalines.rankmyfavs.ui.components.favlist.CreateFavListScreen
+import com.dessalines.rankmyfavs.ui.components.favlist.EditFavListScreen
+import com.dessalines.rankmyfavs.ui.components.favlist.FavListDetailScreen
+import com.dessalines.rankmyfavs.ui.components.favlist.FavListsScreen
+import com.dessalines.rankmyfavs.ui.components.favlistitem.CreateFavListItemScreen
+import com.dessalines.rankmyfavs.ui.components.favlistitem.EditFavListItemScreen
+import com.dessalines.rankmyfavs.ui.components.favlistitem.FavListItemDetailScreen
 import com.dessalines.rankmyfavs.ui.components.settings.SettingsScreen
 import com.dessalines.rankmyfavs.ui.theme.RankMyFavsTheme
 
@@ -63,7 +71,7 @@ class MainActivity : AppCompatActivity() {
                 .asLiveData()
                 .observeAsState()
 
-            val startDestination = "favList"
+            val startDestination = "favLists"
 
             RankMyFavsTheme(
                 settings = settings,
@@ -76,11 +84,80 @@ class MainActivity : AppCompatActivity() {
                     navController = navController,
                     startDestination = startDestination,
                 ) {
-                    composable(route = "favList") {
-                        FavListScreen(
+                    composable(route = "favLists") {
+                        FavListsScreen(
                             navController = navController,
+                            favListViewModel = favListViewModel,
                         )
                     }
+                    composable(
+                        route = "favListDetails/{id}",
+                        arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                    ) {
+                        val id = it.arguments?.getInt("id") ?: 0
+
+                        FavListDetailScreen(
+                            navController = navController,
+                            favListViewModel = favListViewModel,
+                            favListItemViewModel = favListItemViewModel,
+                            id = id,
+                        )
+                    }
+                    composable(route = "createFavList") {
+                        CreateFavListScreen(
+                            navController = navController,
+                            favListViewModel = favListViewModel,
+                        )
+                    }
+                    composable(
+                        route = "editFavList/{id}",
+                        arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                    ) {
+                        val id = it.arguments?.getInt("id") ?: 0
+                        EditFavListScreen(
+                            navController = navController,
+                            favListViewModel = favListViewModel,
+                            id = id,
+                        )
+                    }
+
+                    composable(
+                        route = "createItem/{favListId}",
+                        arguments = listOf(navArgument("favListId") { type = NavType.IntType }),
+                    ) {
+                        val favListId = it.arguments?.getInt("favListId") ?: 0
+                        CreateFavListItemScreen(
+                            navController = navController,
+                            favListItemViewModel = favListItemViewModel,
+                            favListId = favListId,
+                        )
+                    }
+
+                    composable(
+                        route = "editItem/{id}",
+                        arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                    ) {
+                        val id = it.arguments?.getInt("id") ?: 0
+                        EditFavListItemScreen(
+                            navController = navController,
+                            favListItemViewModel = favListItemViewModel,
+                            id = id,
+                        )
+                    }
+
+                    composable(
+                        route = "itemDetails/{id}",
+                        arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                    ) {
+                        val id = it.arguments?.getInt("id") ?: 0
+
+                        FavListItemDetailScreen(
+                            navController = navController,
+                            favListItemViewModel = favListItemViewModel,
+                            id = id,
+                        )
+                    }
+
                     composable(route = "settings") {
                         SettingsScreen(
                             navController = navController,
