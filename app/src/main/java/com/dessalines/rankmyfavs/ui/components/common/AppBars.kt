@@ -19,7 +19,7 @@ fun SimpleTopAppBar(
     text: String,
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    showBack: Boolean = true,
+    onClickBack: (() -> Unit)? = null,
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -29,8 +29,8 @@ fun SimpleTopAppBar(
             )
         },
         navigationIcon = {
-            if (showBack) {
-                IconButton(onClick = { navController.navigateUp() }) {
+            if (onClickBack != null) {
+                IconButton(onClick = onClickBack) {
                     Icon(
                         Icons.AutoMirrored.Outlined.ArrowBack,
                         contentDescription = stringResource(R.string.go_back),

@@ -12,10 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
@@ -32,18 +29,18 @@ fun CreateFavListItemScreen(
     favListItemViewModel: FavListItemViewModel,
     favListId: Int,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
 
     var favListItem: FavListItem? = null
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.create_item),
                 navController = navController,
-                showBack = true,
+                onClickBack = {
+                    navController.navigate("favListDetails/$favListId")
+                },
             )
         },
         content = { padding ->
@@ -69,8 +66,8 @@ fun CreateFavListItemScreen(
                                 name = it.name,
                                 description = it.description,
                             )
-                        val insertedId = favListItemViewModel.insert(insert)
-                        navController.navigate("itemDetails/$insertedId")
+                        favListItemViewModel.insert(insert)
+                        navController.navigateUp()
                     }
                 },
                 shape = CircleShape,

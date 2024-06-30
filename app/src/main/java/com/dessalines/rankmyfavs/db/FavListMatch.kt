@@ -14,7 +14,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @Entity(
@@ -31,10 +30,17 @@ import kotlinx.coroutines.launch
             childColumns = arrayOf("item_id_2"),
             onDelete = ForeignKey.CASCADE,
         ),
+        ForeignKey(
+            entity = FavListItem::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("winner_id"),
+            onDelete = ForeignKey.CASCADE,
+        ),
     ],
     indices = [
         Index(value = ["item_id_1"], unique = false),
         Index(value = ["item_id_2"], unique = false),
+        Index(value = ["winner_id"], unique = false),
     ],
 )
 data class FavListMatch(
@@ -51,21 +57,37 @@ data class FavListMatch(
      * This can be either 1 or 2
      */
     @ColumnInfo(
-        name = "winner",
+        name = "winner_id",
     )
-    val winner: Int,
+    val winnerId: Int,
+)
+
+@Entity
+data class FavListMatchInsert(
+    @ColumnInfo(
+        name = "item_id_1",
+    )
+    val itemId1: Int,
+    @ColumnInfo(
+        name = "item_id_2",
+    )
+    val itemId2: Int,
+    @ColumnInfo(
+        name = "winner_id",
+    )
+    val winnerId: Int,
 )
 
 @Dao
 interface FavListMatchDao {
     @Query("SELECT * FROM FavListMatch where item_id_1 = :itemId or item_id_2 = :itemId")
-    fun getMatchups(itemId: Int): Flow<FavListMatch>
+    fun getMatchups(itemId: Int): List<FavListMatch>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(favList: FavListMatch)
+    @Insert(entity = FavListMatch::class, onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(match: FavListMatchInsert)
 
     @Delete
-    suspend fun delete(favList: FavListMatch)
+    suspend fun delete(match: FavListMatch)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -78,10 +100,10 @@ class FavListMatchRepository(
     fun getMatchups(itemId: Int) = favListDao.getMatchups(itemId)
 
     @WorkerThread
-    suspend fun insert(favList: FavListMatch) = favListDao.insert(favList)
+    suspend fun insert(match: FavListMatchInsert) = favListDao.insert(match)
 
     @WorkerThread
-    suspend fun delete(favList: FavListMatch) = favListDao.delete(favList)
+    suspend fun delete(match: FavListMatch) = favListDao.delete(match)
 }
 
 class FavListMatchViewModel(
@@ -89,14 +111,14 @@ class FavListMatchViewModel(
 ) : ViewModel() {
     fun getMatchups(itemId: Int) = repository.getMatchups(itemId)
 
-    fun insert(favList: FavListMatch) =
+    fun insert(match: FavListMatchInsert) =
         viewModelScope.launch {
-            repository.insert(favList)
+            repository.insert(match)
         }
 
-    fun delete(favList: FavListMatch) =
+    fun delete(match: FavListMatch) =
         viewModelScope.launch {
-            repository.delete(favList)
+            repository.delete(match)
         }
 }
 

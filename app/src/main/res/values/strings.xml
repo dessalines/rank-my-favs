@@ -31,6 +31,9 @@
     <string name="description">Description</string>
     <string name="delete">Delete</string>
     <string name="create_item">Create Item</string>
-    <string name="go_back">Go Back</string>
     <string name="edit_item">Edit Item</string>
+    <string name="go_back">Go Back</string>
+    <string name="list_deleted">List Deleted</string>
+    <string name="item_deleted">Item Deleted</string>
+    <string name="rate">Rate</string>
 </resources>

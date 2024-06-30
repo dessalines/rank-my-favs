@@ -43,7 +43,7 @@ data class FavListItem(
     @ColumnInfo(
         name = "description",
     )
-    val description: String?,
+    val description: String? = null,
 )
 
 @Entity
@@ -83,6 +83,10 @@ interface FavListItemDao {
     @Query("SELECT * FROM FavListItem where id = :favListItemId")
     fun getById(favListItemId: Int): FavListItem
 
+    // TODO this is a random match, to be gotten rid of later
+    @Query("SELECT * FROM FavListItem where fav_list_id = :favListId ORDER BY RANDOM() LIMIT 2")
+    fun randomMatch(favListId: Int): List<FavListItem>
+
     @Insert(entity = FavListItem::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(favList: FavListItemInsert): Long
 
@@ -104,6 +108,8 @@ class FavListItemRepository(
 
     fun getById(favListItemId: Int) = favListItemDao.getById(favListItemId)
 
+    fun randomMatch(favListId: Int) = favListItemDao.randomMatch(favListId)
+
     fun insert(favListItem: FavListItemInsert) = favListItemDao.insert(favListItem)
 
     @WorkerThread
@@ -119,6 +125,8 @@ class FavListItemViewModel(
     fun getFromList(favListId: Int) = repository.getFromList(favListId)
 
     fun getById(favListItemId: Int) = repository.getById(favListItemId)
+
+    fun randomMatch(favListId: Int) = repository.randomMatch(favListId)
 
     fun insert(favListItem: FavListItemInsert) = repository.insert(favListItem)
 

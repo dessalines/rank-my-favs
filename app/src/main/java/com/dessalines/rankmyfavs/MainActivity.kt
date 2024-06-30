@@ -35,6 +35,7 @@ import com.dessalines.rankmyfavs.ui.components.favlist.FavListsScreen
 import com.dessalines.rankmyfavs.ui.components.favlistitem.CreateFavListItemScreen
 import com.dessalines.rankmyfavs.ui.components.favlistitem.EditFavListItemScreen
 import com.dessalines.rankmyfavs.ui.components.favlistitem.FavListItemDetailScreen
+import com.dessalines.rankmyfavs.ui.components.match.MatchScreen
 import com.dessalines.rankmyfavs.ui.components.settings.SettingsScreen
 import com.dessalines.rankmyfavs.ui.theme.RankMyFavsTheme
 
@@ -154,7 +155,22 @@ class MainActivity : AppCompatActivity() {
                         FavListItemDetailScreen(
                             navController = navController,
                             favListItemViewModel = favListItemViewModel,
+                            favListMatchViewModel = favListMatchViewModel,
                             id = id,
+                        )
+                    }
+
+                    composable(
+                        route = "match/{id}",
+                        arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                    ) {
+                        val favListId = it.arguments?.getInt("id") ?: 0
+
+                        MatchScreen(
+                            navController = navController,
+                            favListItemViewModel = favListItemViewModel,
+                            favListMatchViewModel = favListMatchViewModel,
+                            favListId = favListId,
                         )
                     }
 
