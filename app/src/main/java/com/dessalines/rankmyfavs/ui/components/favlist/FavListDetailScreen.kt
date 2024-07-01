@@ -8,10 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Reviews
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -103,7 +103,7 @@ fun FavListDetailScreen(
                         },
                     ) {
                         Icon(
-                            Icons.Filled.Add,
+                            Icons.Outlined.Add,
                             contentDescription = stringResource(R.string.create_item),
                         )
                     }
@@ -113,7 +113,7 @@ fun FavListDetailScreen(
                         },
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Edit,
+                            imageVector = Icons.Outlined.Edit,
                             contentDescription = stringResource(R.string.edit_list),
                         )
                     }
@@ -126,7 +126,7 @@ fun FavListDetailScreen(
                         },
                     ) {
                         Icon(
-                            Icons.Filled.Delete,
+                            Icons.Outlined.Delete,
                             contentDescription = stringResource(R.string.delete),
                         )
                     }
@@ -140,8 +140,7 @@ fun FavListDetailScreen(
                             shape = CircleShape,
                         ) {
                             Icon(
-                                // TODO find a good icon for this
-                                Icons.Filled.Reviews,
+                                Icons.Outlined.Reviews,
                                 contentDescription = stringResource(R.string.rate),
                             )
                         }

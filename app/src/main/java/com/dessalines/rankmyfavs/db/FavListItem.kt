@@ -35,7 +35,6 @@ const val GLICKO_DEVIATION_MIN = 150F
     ],
     indices = [Index(value = ["fav_list_id", "name"], unique = true)],
 )
-// TODO should the stats live here, or in another table?
 data class FavListItem(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
