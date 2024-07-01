@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.ImportExport
 import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -119,6 +120,16 @@ fun FavListDetailScreen(
                         Icon(
                             imageVector = Icons.Outlined.Edit,
                             contentDescription = stringResource(R.string.edit_list),
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            navController.navigate("importList/${favList.id}")
+                        },
+                    ) {
+                        Icon(
+                            Icons.Outlined.ImportExport,
+                            contentDescription = stringResource(R.string.import_list),
                         )
                     }
                     val clearStatsMessage = stringResource(R.string.clear_stats)

@@ -47,8 +47,6 @@ fun CreateFavListScreen(
                     Modifier
                         .padding(padding)
                         .verticalScroll(scrollState)
-                        // TODO can you remove these?
-//                    .background(color = MaterialTheme.colorScheme.surface)
                         .imePadding(),
             ) {
                 FavListForm(
