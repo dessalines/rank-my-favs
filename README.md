@@ -35,14 +35,6 @@
 
 ## About Rank-My-Favs
 
-![img_1]()
-
-<p align="center">
-  <a href="https://github.com/dessalines/rank-my-favs" rel="noopener">
-    <img width=200px src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" alt="phone_screen" />
-  </a>
-</p>
-
 Do you keep lists of your favorite things, such as movies, books, recipes, or music albums? You might keep list(s) that looks like this:
 
 - Network (1976)
@@ -60,6 +52,12 @@ A much easier method is to use [pairwise comparisons](https://www.opinionx.co/bl
 After doing a small number of these matchups, Rank-My-Favs can confidently create a ranked list for you.
 
 Under the hood, Rank-My-Favs uses the advanced [Glicko rating system](https://en.m.wikipedia.org/wiki/Glicko_rating_system), to determine how many matches are necessary, and for ranking.
+
+<p align="center">
+  <a href="https://github.com/dessalines/rank-my-favs" rel="noopener">
+    <img width=200px src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" alt="phone_screen" />
+  </a>
+</p>
 
 ### Features
 
