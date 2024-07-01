@@ -1,11 +1,14 @@
 package com.dessalines.rankmyfavs.ui.components.match
 
+import androidx.compose.foundation.BasicTooltipBox
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
@@ -15,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,11 +34,12 @@ import com.dessalines.rankmyfavs.db.FavListMatchViewModel
 import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import org.goochjs.glicko2.Rating
 import org.goochjs.glicko2.RatingCalculator
 import org.goochjs.glicko2.RatingPeriodResults
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MatchScreen(
     navController: NavController,
@@ -42,6 +47,8 @@ fun MatchScreen(
     favListMatchViewModel: FavListMatchViewModel,
     favListId: Int,
 ) {
+    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+
     val first = favListItemViewModel.leastTrained(favListId)
     val second =
         if (first !== null) {
@@ -104,16 +111,24 @@ fun MatchScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate("favListDetails/$favListId")
+            BasicTooltipBox(
+                positionProvider = tooltipPosition,
+                state = rememberBasicTooltipState(isPersistent = false),
+                tooltip = {
+                    ToolTip(stringResource(R.string.done))
                 },
-                shape = CircleShape,
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Done,
-                    contentDescription = stringResource(R.string.done),
-                )
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate("favListDetails/$favListId")
+                    },
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Done,
+                        contentDescription = stringResource(R.string.done),
+                    )
+                }
             }
         },
     )
