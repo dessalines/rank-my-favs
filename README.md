@@ -37,7 +37,7 @@
 
 <p align="center">
   <a href="https://github.com/dessalines/rank-my-favs" rel="noopener">
-    <img width=100px src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" alt="phone_screen" />
+    <img width=150px src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" alt="phone_screen" />
   </a>
 </p>
 
