@@ -44,4 +44,5 @@
     <string name="no_items">No Items. Create one to get started.</string>
     <string name="no_lists">No lists. Create one to get started.</string>
     <string name="what_do_these_numbers_mean">What do these numbers mean?</string>
+    <string name="clear_stats">Clear Stats</string>
 </resources>
