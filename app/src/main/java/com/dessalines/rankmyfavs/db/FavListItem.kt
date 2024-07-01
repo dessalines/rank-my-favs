@@ -22,7 +22,7 @@ const val DEFAULT_WIN_RATE = 0F
 const val DEFAULT_GLICKO_RATING = 1500F
 const val DEFAULT_GLICKO_DEVIATION = 350F
 const val DEFAULT_GLICKO_VOLATILITY = 0.06F
-const val GLICKO_DEVIATION_MIN = 150F
+const val GLICKO_DEVIATION_MIN = 250F
 
 @Entity(
     foreignKeys = [
@@ -84,7 +84,7 @@ data class FavListItemInsert(
     @ColumnInfo(
         name = "description",
     )
-    val description: String?,
+    val description: String? = null,
 )
 
 @Entity

@@ -45,4 +45,6 @@
     <string name="no_lists">No lists. Create one to get started.</string>
     <string name="what_do_these_numbers_mean">What do these numbers mean?</string>
     <string name="clear_stats">Clear Stats</string>
+    <string name="import_list">Import List</string>
+    <string name="import_list_description">Copy-Paste an existing list for an import.\n\nEach line should be a different item.</string>
 </resources>

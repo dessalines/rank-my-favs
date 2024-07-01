@@ -1,7 +1,6 @@
 package com.dessalines.rankmyfavs.ui.components.about
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -63,8 +61,7 @@ fun AboutScreen(navController: NavController) {
             Column(
                 modifier =
                     Modifier
-                        .padding(padding)
-                        .background(color = MaterialTheme.colorScheme.surface),
+                        .padding(padding),
             ) {
                 ProvidePreferenceTheme {
                     Preference(
@@ -175,7 +172,6 @@ fun AboutScreen(navController: NavController) {
     )
 }
 
-// TODO this necessary?
 @Composable
 fun SettingsDivider() {
     HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp))

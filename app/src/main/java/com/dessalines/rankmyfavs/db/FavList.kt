@@ -102,7 +102,6 @@ class FavListViewModel(
 
     fun getById(id: Int) = repository.getById(id)
 
-    // TODO need viewModelScope here?
     fun insert(favList: FavListInsert) = repository.insert(favList)
 
     fun update(favList: FavListUpdate) =

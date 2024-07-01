@@ -79,9 +79,8 @@ fun MatchScreen(
                                 recalculateStats(
                                     favListItemViewModel = favListItemViewModel,
                                     favListMatchViewModel = favListMatchViewModel,
-                                    first = first,
-                                    second = second,
                                     winner = first,
+                                    loser = second,
                                 )
                                 navController.navigate("match/$favListId")
                             },
@@ -92,9 +91,8 @@ fun MatchScreen(
                                 recalculateStats(
                                     favListItemViewModel = favListItemViewModel,
                                     favListMatchViewModel = favListMatchViewModel,
-                                    first = first,
-                                    second = second,
                                     winner = second,
+                                    loser = first,
                                 )
                                 navController.navigate("match/$favListId")
                             },
@@ -105,7 +103,6 @@ fun MatchScreen(
                 }
             }
         },
-        // TODO need this? I already have a back button
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -128,59 +125,54 @@ fun MatchScreen(
 fun recalculateStats(
     favListItemViewModel: FavListItemViewModel,
     favListMatchViewModel: FavListMatchViewModel,
-    first: FavListItem,
-    second: FavListItem,
     winner: FavListItem,
+    loser: FavListItem,
 ) {
     // Insert the winner
     favListMatchViewModel.insert(
-        FavListMatchInsert(first.id, second.id, winner.id),
+        FavListMatchInsert(winner.id, loser.id, winner.id),
     )
-    val winRateFirst = calculateWinRate(favListMatchViewModel, first)
-    val winRateSecond = calculateWinRate(favListMatchViewModel, second)
+    val winRateWinner = calculateWinRate(favListMatchViewModel, winner)
+    val winRateLoser = calculateWinRate(favListMatchViewModel, loser)
 
     // Initialize Glicko
     val ratingSystem = RatingCalculator(0.06, 0.5)
     val results = RatingPeriodResults()
 
-    val player1 = Rating("1", ratingSystem)
-    val player2 = Rating("2", ratingSystem)
+    val gWinner = Rating("1", ratingSystem)
+    val gLoser = Rating("2", ratingSystem)
 
-    player1.rating = first.glickoRating.toDouble()
-    player1.ratingDeviation = first.glickoDeviation.toDouble()
-    player1.volatility = first.glickoVolatility.toDouble()
+    gWinner.rating = winner.glickoRating.toDouble()
+    gWinner.ratingDeviation = winner.glickoDeviation.toDouble()
+    gWinner.volatility = winner.glickoVolatility.toDouble()
 
-    player2.rating = second.glickoRating.toDouble()
-    player2.ratingDeviation = second.glickoDeviation.toDouble()
-    player2.volatility = second.glickoVolatility.toDouble()
+    gLoser.rating = loser.glickoRating.toDouble()
+    gLoser.ratingDeviation = loser.glickoDeviation.toDouble()
+    gLoser.volatility = loser.glickoVolatility.toDouble()
 
-    // Player1 beats player 2
-    if (winner.id == first.id) {
-        results.addResult(player1, player2)
-    } else {
-        results.addResult(player2, player1)
-    }
+    results.addResult(gWinner, gLoser)
+
     ratingSystem.updateRatings(results)
 
-    // Update the first
+    // Update the winner
     favListItemViewModel.updateStats(
         FavListItemUpdateStats(
-            id = first.id,
-            winRate = winRateFirst,
-            glickoRating = player1.rating.toFloat(),
-            glickoDeviation = player1.ratingDeviation.toFloat(),
-            glickoVolatility = player1.volatility.toFloat(),
+            id = winner.id,
+            winRate = winRateWinner,
+            glickoRating = gWinner.rating.toFloat(),
+            glickoDeviation = gWinner.ratingDeviation.toFloat(),
+            glickoVolatility = gWinner.volatility.toFloat(),
         ),
     )
 
-    // Update the second
+    // Update the loser
     favListItemViewModel.updateStats(
         FavListItemUpdateStats(
-            id = second.id,
-            winRate = winRateSecond,
-            glickoRating = player2.rating.toFloat(),
-            glickoDeviation = player2.ratingDeviation.toFloat(),
-            glickoVolatility = player2.volatility.toFloat(),
+            id = loser.id,
+            winRate = winRateLoser,
+            glickoRating = gLoser.rating.toFloat(),
+            glickoDeviation = gLoser.ratingDeviation.toFloat(),
+            glickoVolatility = gLoser.volatility.toFloat(),
         ),
     )
 }
