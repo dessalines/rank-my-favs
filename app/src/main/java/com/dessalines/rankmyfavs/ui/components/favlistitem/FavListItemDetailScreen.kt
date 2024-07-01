@@ -2,10 +2,13 @@ package com.dessalines.rankmyfavs.ui.components.favlistitem
 
 import android.widget.Toast
 import androidx.annotation.Keep
+import androidx.compose.foundation.BasicTooltipBox
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Help
@@ -18,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,12 +37,13 @@ import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.GLICKO_WIKI_URL
 import com.dessalines.rankmyfavs.utils.numToString
 import com.dessalines.rankmyfavs.utils.openLink
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FavListItemDetailScreen(
     navController: NavController,
@@ -46,6 +51,7 @@ fun FavListItemDetailScreen(
     id: Int,
 ) {
     val ctx = LocalContext.current
+    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
     val favListItem = favListItemViewModel.getById(id)
 
@@ -58,11 +64,19 @@ fun FavListItemDetailScreen(
                     navController.navigate("favListDetails/${favListItem.favListId}")
                 },
                 actions = {
-                    IconButton(onClick = { openLink(GLICKO_WIKI_URL, ctx) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.Help,
-                            contentDescription = stringResource(R.string.what_do_these_numbers_mean),
-                        )
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.what_do_these_numbers_mean))
+                        },
+                    ) {
+                        IconButton(onClick = { openLink(GLICKO_WIKI_URL, ctx) }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.Help,
+                                contentDescription = stringResource(R.string.what_do_these_numbers_mean),
+                            )
+                        }
                     }
                 },
             )
@@ -87,30 +101,46 @@ fun FavListItemDetailScreen(
             BottomAppBar(
                 actions = {
                     val deletedMessage = stringResource(R.string.item_deleted)
-                    IconButton(
-                        onClick = {
-                            favListItemViewModel.delete(favListItem)
-                            navController.navigateUp()
-                            Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.delete))
                         },
                     ) {
-                        Icon(
-                            Icons.Outlined.Delete,
-                            contentDescription = stringResource(R.string.delete),
-                        )
+                        IconButton(
+                            onClick = {
+                                favListItemViewModel.delete(favListItem)
+                                navController.navigateUp()
+                                Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                            },
+                        ) {
+                            Icon(
+                                Icons.Outlined.Delete,
+                                contentDescription = stringResource(R.string.delete),
+                            )
+                        }
                     }
                 },
                 floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {
-                            navController.navigate("editItem/$id")
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.edit_list))
                         },
-                        shape = CircleShape,
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Edit,
-                            contentDescription = stringResource(R.string.edit_list),
-                        )
+                        FloatingActionButton(
+                            onClick = {
+                                navController.navigate("editItem/$id")
+                            },
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Edit,
+                                contentDescription = stringResource(R.string.edit_list),
+                            )
+                        }
                     }
                 },
             )
