@@ -35,7 +35,7 @@
 
 ## About Rank-My-Favs
 
-![img_1](./fastlane/metadata/android/en-US/images/phoneScreenshots/01.png)
+![img_1](./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg)
 
 Do you keep lists of your favorite things, such as movies, books, recipes, or music albums? You might keep list(s) that looks like this:
 
