@@ -1,8 +1,11 @@
 package com.dessalines.rankmyfavs.ui.components.favlistitem
 
+import androidx.compose.foundation.BasicTooltipBox
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -12,8 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,16 +28,17 @@ import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItemUpdateNameAndDesc
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun EditFavListItemScreen(
     navController: NavController,
     favListItemViewModel: FavListItemViewModel,
     id: Int,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
+    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
     val favListItem = favListItemViewModel.getById(id)
 
@@ -45,7 +48,6 @@ fun EditFavListItemScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.edit_item),
@@ -70,23 +72,31 @@ fun EditFavListItemScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    val update =
-                        FavListItemUpdateNameAndDesc(
-                            id = editedItem.id,
-                            name = editedItem.name,
-                            description = editedItem.description,
-                        )
-                    favListItemViewModel.updateNameAndDesc(update)
-                    navController.navigate("favListDetails/${favListItem.favListId}")
+            BasicTooltipBox(
+                positionProvider = tooltipPosition,
+                state = rememberBasicTooltipState(isPersistent = false),
+                tooltip = {
+                    ToolTip(stringResource(R.string.save))
                 },
-                shape = CircleShape,
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Save,
-                    contentDescription = stringResource(R.string.save),
-                )
+                FloatingActionButton(
+                    onClick = {
+                        val update =
+                            FavListItemUpdateNameAndDesc(
+                                id = editedItem.id,
+                                name = editedItem.name,
+                                description = editedItem.description,
+                            )
+                        favListItemViewModel.updateNameAndDesc(update)
+                        navController.navigate("favListDetails/${favListItem.favListId}")
+                    },
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Save,
+                        contentDescription = stringResource(R.string.save),
+                    )
+                }
             }
         },
     )

@@ -1,10 +1,13 @@
 package com.dessalines.rankmyfavs.ui.components.favlist
 
+import androidx.compose.foundation.BasicTooltipBox
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -16,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,9 +34,10 @@ import com.dessalines.rankmyfavs.db.FavListItemInsert
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.ui.components.favlistitem.FavListItemForm
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ImportListScreen(
     navController: NavController,
@@ -40,6 +45,8 @@ fun ImportListScreen(
     favListId: Int,
 ) {
     val scrollState = rememberScrollState()
+    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+
     var listStr = ""
 
     Scaffold(
@@ -66,25 +73,33 @@ fun ImportListScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    val listItems = extractLines(listStr)
-                    for (item in listItems) {
-                        val insert =
-                            FavListItemInsert(
-                                favListId = favListId,
-                                name = item,
-                            )
-                        favListItemViewModel.insert(insert)
-                    }
-                    navController.navigateUp()
+            BasicTooltipBox(
+                positionProvider = tooltipPosition,
+                state = rememberBasicTooltipState(isPersistent = false),
+                tooltip = {
+                    ToolTip(stringResource(R.string.save))
                 },
-                shape = CircleShape,
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Save,
-                    contentDescription = stringResource(R.string.save),
-                )
+                FloatingActionButton(
+                    onClick = {
+                        val listItems = extractLines(listStr)
+                        for (item in listItems) {
+                            val insert =
+                                FavListItemInsert(
+                                    favListId = favListId,
+                                    name = item,
+                                )
+                            favListItemViewModel.insert(insert)
+                        }
+                        navController.navigateUp()
+                    },
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Save,
+                        contentDescription = stringResource(R.string.save),
+                    )
+                }
             }
         },
     )

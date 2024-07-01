@@ -1,10 +1,13 @@
 package com.dessalines.rankmyfavs.ui.components.favlist
 
+import androidx.compose.foundation.BasicTooltipBox
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -17,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -30,13 +34,16 @@ import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FavListsScreen(
     navController: NavController,
     favListViewModel: FavListViewModel,
 ) {
+    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+
     val favLists by favListViewModel.getAll.asLiveData().observeAsState()
 
     Scaffold(
@@ -72,28 +79,44 @@ fun FavListsScreen(
         bottomBar = {
             BottomAppBar(
                 actions = {
-                    IconButton(
-                        onClick = {
-                            navController.navigate("settings")
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.settings))
                         },
                     ) {
-                        Icon(
-                            Icons.Outlined.Settings,
-                            contentDescription = stringResource(R.string.settings),
-                        )
+                        IconButton(
+                            onClick = {
+                                navController.navigate("settings")
+                            },
+                        ) {
+                            Icon(
+                                Icons.Outlined.Settings,
+                                contentDescription = stringResource(R.string.settings),
+                            )
+                        }
                     }
                 },
                 floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {
-                            navController.navigate("createFavList")
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.create_list))
                         },
-                        shape = CircleShape,
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Add,
-                            contentDescription = stringResource(R.string.create_list),
-                        )
+                        FloatingActionButton(
+                            onClick = {
+                                navController.navigate("createFavList")
+                            },
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Add,
+                                contentDescription = stringResource(R.string.create_list),
+                            )
+                        }
                     }
                 },
             )
