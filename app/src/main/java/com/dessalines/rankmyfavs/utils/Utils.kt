@@ -14,6 +14,7 @@ const val MATRIX_CHAT_URL = "https://matrix.to/#/#rank-my-favs:matrix.org"
 const val DONATE_URL = "https://liberapay.com/dessalines"
 const val LEMMY_URL = "https://lemmy.ml/c/rankmyfavs"
 const val MASTODON_URL = "https://mastodon.social/@dessalines"
+const val GLICKO_WIKI_URL = "https://en.m.wikipedia.org/wiki/Glicko_rating_system"
 
 fun openLink(
     url: String,
@@ -22,10 +23,6 @@ fun openLink(
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     ctx.startActivity(intent)
 }
-
-fun Int.toBool() = this == 1
-
-fun Boolean.toInt() = this.compareTo(false)
 
 fun Context.getPackageInfo(): PackageInfo =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

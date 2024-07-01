@@ -10,8 +10,6 @@ repo = "rank-my-favs"
 # template for the changelog body
 # https://keats.github.io/tera/docs/#introduction
 body = """
-# Rank-My-Favs {{ version }} ({{ timestamp | date(format="%Y-%m-%d") }})
-
 ## What's Changed
 
 {%- if version %} in {{ version }}{%- endif -%}

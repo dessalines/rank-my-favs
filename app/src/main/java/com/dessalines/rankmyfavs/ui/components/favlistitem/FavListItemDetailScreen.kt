@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.automirrored.outlined.Help
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -32,7 +33,9 @@ import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.utils.GLICKO_WIKI_URL
 import com.dessalines.rankmyfavs.utils.numToString
+import com.dessalines.rankmyfavs.utils.openLink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +56,14 @@ fun FavListItemDetailScreen(
                 onClickBack = {
                     navController.navigate("favListDetails/${favListItem.favListId}")
                 },
+                actions = {
+                    IconButton(onClick = { openLink(GLICKO_WIKI_URL, ctx) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.Help,
+                            contentDescription = stringResource(R.string.what_do_these_numbers_mean),
+                        )
+                    }
+                },
             )
         },
         content = { padding ->
@@ -66,7 +77,6 @@ fun FavListItemDetailScreen(
                     FavListItemDetails(favListItem)
                 }
 
-                // TODO Show matches?
                 item {
                     Stats(favListItem)
                 }
@@ -84,7 +94,7 @@ fun FavListItemDetailScreen(
                         },
                     ) {
                         Icon(
-                            Icons.Filled.Delete,
+                            Icons.Outlined.Delete,
                             contentDescription = stringResource(R.string.delete),
                         )
                     }
@@ -97,7 +107,7 @@ fun FavListItemDetailScreen(
                         shape = CircleShape,
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Edit,
+                            imageVector = Icons.Outlined.Edit,
                             contentDescription = stringResource(R.string.edit_list),
                         )
                     }

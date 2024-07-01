@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -114,7 +114,7 @@ fun MatchScreen(
                 shape = CircleShape,
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Done,
+                    imageVector = Icons.Outlined.Done,
                     contentDescription = stringResource(R.string.done),
                 )
             }

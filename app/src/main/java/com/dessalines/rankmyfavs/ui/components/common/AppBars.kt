@@ -20,6 +20,7 @@ fun SimpleTopAppBar(
     navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onClickBack: (() -> Unit)? = null,
+    actions: @Composable (() -> Unit)? = null,
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -28,6 +29,7 @@ fun SimpleTopAppBar(
                 text = text,
             )
         },
+        actions = { actions?.let { it() } },
         navigationIcon = {
             if (onClickBack != null) {
                 IconButton(onClick = onClickBack) {

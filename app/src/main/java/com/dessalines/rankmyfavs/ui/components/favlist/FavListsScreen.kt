@@ -7,8 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -28,6 +28,7 @@ import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.db.FavListViewModel
+import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,6 +59,14 @@ fun FavListsScreen(
                         onClick = { navController.navigate("favListDetails/${favList.id}") },
                     )
                 }
+                item {
+                    if (favLists.isNullOrEmpty()) {
+                        Text(
+                            text = stringResource(R.string.no_lists),
+                            modifier = Modifier.padding(horizontal = LARGE_PADDING),
+                        )
+                    }
+                }
             }
         },
         bottomBar = {
@@ -69,7 +78,7 @@ fun FavListsScreen(
                         },
                     ) {
                         Icon(
-                            Icons.Filled.Settings,
+                            Icons.Outlined.Settings,
                             contentDescription = stringResource(R.string.settings),
                         )
                     }
@@ -82,7 +91,7 @@ fun FavListsScreen(
                         shape = CircleShape,
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Add,
+                            imageVector = Icons.Outlined.Add,
                             contentDescription = stringResource(R.string.create_list),
                         )
                     }

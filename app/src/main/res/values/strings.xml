@@ -41,5 +41,7 @@
     <string name="deviation">Deviation</string>
     <string name="Volatility">Volatility</string>
     <string name="win_rate">Win Rate</string>
-    <string name="no_items">No items.</string>
+    <string name="no_items">No Items. Create one to get started.</string>
+    <string name="no_lists">No lists. Create one to get started.</string>
+    <string name="what_do_these_numbers_mean">What do these numbers mean?</string>
 </resources>
