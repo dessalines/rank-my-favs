@@ -141,7 +141,7 @@ interface FavListItemDao {
         SELECT * FROM FavListItem
         WHERE fav_list_id = :favListId 
         AND glicko_deviation > $GLICKO_DEVIATION_MIN
-        ORDER BY glicko_deviation DESC
+        ORDER BY glicko_deviation DESC, RANDOM()
         LIMIT 1
     """,
     )
