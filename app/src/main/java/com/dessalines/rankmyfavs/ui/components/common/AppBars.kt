@@ -32,7 +32,9 @@ fun SimpleTopAppBar(
         actions = { actions?.let { it() } },
         navigationIcon = {
             if (onClickBack != null) {
-                IconButton(onClick = onClickBack) {
+                IconButton(
+                    onClick = onClickBack,
+                ) {
                     Icon(
                         Icons.AutoMirrored.Outlined.ArrowBack,
                         contentDescription = stringResource(R.string.go_back),

@@ -42,6 +42,7 @@ import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.utils.numToString
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,8 +155,9 @@ fun FavListDetailScreen(
 @Composable
 fun FavListDetails(favList: FavList) {
     if (!favList.description.isNullOrBlank()) {
-        Text(
-            text = favList.description,
+        MarkdownText(
+            markdown = favList.description,
+            linkColor = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 0.dp, bottom = SMALL_PADDING, start = LARGE_PADDING, end = LARGE_PADDING),
         )
         HorizontalDivider()

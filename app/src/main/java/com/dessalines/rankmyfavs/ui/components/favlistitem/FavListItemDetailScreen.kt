@@ -16,8 +16,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,6 +36,7 @@ import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.utils.GLICKO_WIKI_URL
 import com.dessalines.rankmyfavs.utils.numToString
 import com.dessalines.rankmyfavs.utils.openLink
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,9 +162,9 @@ fun StatsPreview() {
 @Composable
 fun FavListItemDetails(favListItem: FavListItem) {
     if (!favListItem.description.isNullOrBlank()) {
-        // TODO do markdown here
-        Text(
-            text = favListItem.description,
+        MarkdownText(
+            markdown = favListItem.description,
+            linkColor = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(top = 0.dp, bottom = SMALL_PADDING, start = LARGE_PADDING, end = LARGE_PADDING),
         )
     }
