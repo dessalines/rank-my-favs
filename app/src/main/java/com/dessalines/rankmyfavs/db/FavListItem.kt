@@ -133,9 +133,6 @@ interface FavListItemDao {
     @Query("SELECT * FROM FavListItem where id = :favListItemId")
     fun getById(favListItemId: Int): FavListItem
 
-    // TODO
-//    @Query("SELECT * FROM FavListItem where fav_list_id = :favListId ORDER BY RANDOM() LIMIT 2")
-    // The deviation decreases after each
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.
 
@@ -173,6 +170,18 @@ interface FavListItemDao {
     @Update(entity = FavListItem::class)
     suspend fun updateStats(favListItem: FavListItemUpdateStats)
 
+    @Query(
+        """
+        UPDATE FavListItem
+        SET win_rate = $DEFAULT_WIN_RATE,
+        glicko_rating = $DEFAULT_GLICKO_RATING,
+        glicko_deviation = $DEFAULT_GLICKO_DEVIATION,
+        glicko_volatility = $DEFAULT_GLICKO_VOLATILITY
+        WHERE fav_list_id = :favListId
+    """,
+    )
+    fun clearStatsForList(favListId: Int)
+
     @Delete
     suspend fun delete(favListItem: FavListItem)
 }
@@ -203,6 +212,8 @@ class FavListItemRepository(
     @WorkerThread
     suspend fun updateStats(favListItem: FavListItemUpdateStats) = favListItemDao.updateStats(favListItem)
 
+    fun clearStatsForList(favListId: Int) = favListItemDao.clearStatsForList(favListId)
+
     @WorkerThread
     suspend fun delete(favListItem: FavListItem) = favListItemDao.delete(favListItem)
 }
@@ -232,6 +243,8 @@ class FavListItemViewModel(
         viewModelScope.launch {
             repository.updateStats(favListItem)
         }
+
+    fun clearStatsForList(favListId: Int) = repository.clearStatsForList(favListId)
 
     fun delete(favListItem: FavListItem) =
         viewModelScope.launch {

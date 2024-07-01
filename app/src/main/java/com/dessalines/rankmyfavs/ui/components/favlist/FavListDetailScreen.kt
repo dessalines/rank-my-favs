@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Reviews
@@ -36,6 +37,7 @@ import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
+import com.dessalines.rankmyfavs.db.FavListMatchViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
@@ -50,6 +52,7 @@ fun FavListDetailScreen(
     navController: NavController,
     favListViewModel: FavListViewModel,
     favListItemViewModel: FavListItemViewModel,
+    favListMatchViewModel: FavListMatchViewModel,
     id: Int,
 ) {
     val ctx = LocalContext.current
@@ -116,6 +119,19 @@ fun FavListDetailScreen(
                         Icon(
                             imageVector = Icons.Outlined.Edit,
                             contentDescription = stringResource(R.string.edit_list),
+                        )
+                    }
+                    val clearStatsMessage = stringResource(R.string.clear_stats)
+                    IconButton(
+                        onClick = {
+                            favListItemViewModel.clearStatsForList(favListId = id)
+                            favListMatchViewModel.deleteMatchesForList(favListId = id)
+                            Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
+                        },
+                    ) {
+                        Icon(
+                            Icons.Outlined.ClearAll,
+                            contentDescription = stringResource(R.string.clear_stats),
                         )
                     }
                     val deletedMessage = stringResource(R.string.list_deleted)

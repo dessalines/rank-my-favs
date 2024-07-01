@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                             navController = navController,
                             favListViewModel = favListViewModel,
                             favListItemViewModel = favListItemViewModel,
+                            favListMatchViewModel = favListMatchViewModel,
                             id = id,
                         )
                     }
