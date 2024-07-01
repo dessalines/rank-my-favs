@@ -13,8 +13,8 @@ android {
         applicationId "com.dessalines.rankmyfavs"
         minSdk 21
         targetSdkVersion 34
-        versionCode 91
-        versionName "3.2.4"
+        versionCode 1
+        versionName "0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -71,6 +71,12 @@ composeCompiler {
 }
 
 dependencies {
+    // Tables
+    implementation("com.github.Breens-Mbaka:BeeTablesCompose:1.2.0")
+
+    // Glicko2
+    implementation 'com.github.goochjs:glicko2:master'
+
     // Compose BOM
     implementation platform('androidx.compose:compose-bom:2024.06.00')
     implementation 'androidx.compose.ui:ui'

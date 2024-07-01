@@ -15,9 +15,11 @@ import androidx.compose.material.icons.filled.Reviews
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
@@ -34,7 +37,11 @@ import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModel
+import com.dessalines.rankmyfavs.db.sampleFavListItem
+import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
+import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.utils.numToString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,6 +84,14 @@ fun FavListDetailScreen(
                         },
                     )
                 }
+                item {
+                    if (favListItems.isNullOrEmpty()) {
+                        Text(
+                            text = stringResource(R.string.no_items),
+                            modifier = Modifier.padding(horizontal = LARGE_PADDING),
+                        )
+                    }
+                }
             }
         },
         bottomBar = {
@@ -92,6 +107,16 @@ fun FavListDetailScreen(
                             contentDescription = stringResource(R.string.create_item),
                         )
                     }
+                    IconButton(
+                        onClick = {
+                            navController.navigate("editFavList/$id")
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = stringResource(R.string.edit_list),
+                        )
+                    }
                     val deletedMessage = stringResource(R.string.list_deleted)
                     IconButton(
                         onClick = {
@@ -105,29 +130,21 @@ fun FavListDetailScreen(
                             contentDescription = stringResource(R.string.delete),
                         )
                     }
-                    IconButton(
-                        onClick = {
-                            navController.navigate("match/$id")
-                        },
-                    ) {
-                        Icon(
-                            // TODO find a good icon for this
-                            Icons.Filled.Reviews,
-                            contentDescription = stringResource(R.string.rate),
-                        )
-                    }
                 },
                 floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {
-                            navController.navigate("editFavList/$id")
-                        },
-                        shape = CircleShape,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Edit,
-                            contentDescription = stringResource(R.string.edit_list),
-                        )
+                    if ((favListItems?.count() ?: 0) >= 2) {
+                        FloatingActionButton(
+                            onClick = {
+                                navController.navigate("match/$id")
+                            },
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                // TODO find a good icon for this
+                                Icons.Filled.Reviews,
+                                contentDescription = stringResource(R.string.rate),
+                            )
+                        }
                     }
                 },
             )
@@ -138,7 +155,11 @@ fun FavListDetailScreen(
 @Composable
 fun FavListDetails(favList: FavList) {
     if (!favList.description.isNullOrBlank()) {
-        Text(favList.description)
+        Text(
+            text = favList.description,
+            modifier = Modifier.padding(top = 0.dp, bottom = SMALL_PADDING, start = LARGE_PADDING, end = LARGE_PADDING),
+        )
+        HorizontalDivider()
     }
 }
 
@@ -157,6 +178,12 @@ fun FavListItemRow(
         headlineContent = {
             Text(favListItem.name)
         },
+        trailingContent = {
+            Text(
+                text = numToString(favListItem.glickoRating, 0),
+                style = MaterialTheme.typography.labelMedium,
+            )
+        },
         modifier =
             Modifier.clickable {
                 onClick()
@@ -168,7 +195,7 @@ fun FavListItemRow(
 @Preview
 fun FavListItemRowPreview() {
     FavListItemRow(
-        FavListItem(id = 1, favListId = 1, name = "Fav List 1", description = "ok"),
+        favListItem = sampleFavListItem,
         onClick = {},
     )
 }

@@ -1,6 +1,8 @@
 package com.dessalines.rankmyfavs.ui.components.favlistitem
 
 import android.widget.Toast
+import androidx.annotation.Keep
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,29 +22,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.breens.beetablescompose.BeeTablesCompose
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
-import com.dessalines.rankmyfavs.db.FavListMatchViewModel
+import com.dessalines.rankmyfavs.db.sampleFavListItem
+import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
+import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.utils.numToString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavListItemDetailScreen(
     navController: NavController,
     favListItemViewModel: FavListItemViewModel,
-    favListMatchViewModel: FavListMatchViewModel,
     id: Int,
 ) {
     val ctx = LocalContext.current
 
     val favListItem = favListItemViewModel.getById(id)
-    val matches = favListMatchViewModel.getMatchups(id)
-
-    val matchCount = matches.count()
-    val winCount = matches.count { it.winnerId == id }
-    val winRate = 100F * winCount / matchCount
 
     Scaffold(
         topBar = {
@@ -67,7 +68,7 @@ fun FavListItemDetailScreen(
 
                 // TODO Show matches?
                 item {
-                    Text("Win Rate: $winRate%")
+                    Stats(favListItem)
                 }
             }
         },
@@ -106,16 +107,60 @@ fun FavListItemDetailScreen(
     )
 }
 
+@Keep
+data class StatItem(
+    val key: String,
+    val v: String,
+)
+
+@Composable
+fun Stats(favListItem: FavListItem) {
+    val titles = listOf("Key", "V")
+    val data =
+        listOf(
+            StatItem(
+                key = stringResource(R.string.rating),
+                v = numToString(favListItem.glickoRating, 0),
+            ),
+            StatItem(
+                key = stringResource(R.string.deviation),
+                v = numToString(favListItem.glickoDeviation, 0),
+            ),
+            StatItem(
+                key = stringResource(R.string.Volatility),
+                v = numToString(favListItem.glickoVolatility, 2),
+            ),
+            StatItem(
+                key = stringResource(R.string.win_rate),
+                v = numToString(favListItem.winRate, 0) + "%",
+            ),
+        )
+    Row(
+        modifier = Modifier.padding(horizontal = LARGE_PADDING),
+    ) {
+        BeeTablesCompose(data = data, headerTableTitles = titles, enableTableHeaderTitles = false)
+    }
+}
+
+@Composable
+@Preview
+fun StatsPreview() {
+    Stats(sampleFavListItem)
+}
+
 @Composable
 fun FavListItemDetails(favListItem: FavListItem) {
     if (!favListItem.description.isNullOrBlank()) {
         // TODO do markdown here
-        Text(favListItem.description)
+        Text(
+            text = favListItem.description,
+            modifier = Modifier.padding(top = 0.dp, bottom = SMALL_PADDING, start = LARGE_PADDING, end = LARGE_PADDING),
+        )
     }
 }
 
 @Composable
 @Preview
 fun FavListItemDetailsPreview() {
-    FavListItemDetails(FavListItem(id = 1, favListId = 1, name = "Fav List 1", description = "ok"))
+    FavListItemDetails(sampleFavListItem)
 }

@@ -41,3 +41,8 @@ fun Context.getVersionCode(): Int =
         @Suppress("DEPRECATION")
         getPackageInfo().versionCode
     }
+
+fun numToString(
+    num: Float,
+    decimalPlaces: Int,
+): String = String.format("%.${decimalPlaces}f", num)

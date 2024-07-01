@@ -80,11 +80,12 @@ data class FavListMatchInsert(
 
 @Dao
 interface FavListMatchDao {
+    // TODO do this in SQL, not in code
     @Query("SELECT * FROM FavListMatch where item_id_1 = :itemId or item_id_2 = :itemId")
     fun getMatchups(itemId: Int): List<FavListMatch>
 
     @Insert(entity = FavListMatch::class, onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(match: FavListMatchInsert)
+    fun insert(match: FavListMatchInsert)
 
     @Delete
     suspend fun delete(match: FavListMatch)
@@ -99,8 +100,7 @@ class FavListMatchRepository(
     // Observed Flow will notify the observer when the data has changed.
     fun getMatchups(itemId: Int) = favListDao.getMatchups(itemId)
 
-    @WorkerThread
-    suspend fun insert(match: FavListMatchInsert) = favListDao.insert(match)
+    fun insert(match: FavListMatchInsert) = favListDao.insert(match)
 
     @WorkerThread
     suspend fun delete(match: FavListMatch) = favListDao.delete(match)
@@ -111,10 +111,7 @@ class FavListMatchViewModel(
 ) : ViewModel() {
     fun getMatchups(itemId: Int) = repository.getMatchups(itemId)
 
-    fun insert(match: FavListMatchInsert) =
-        viewModelScope.launch {
-            repository.insert(match)
-        }
+    fun insert(match: FavListMatchInsert) = repository.insert(match)
 
     fun delete(match: FavListMatch) =
         viewModelScope.launch {

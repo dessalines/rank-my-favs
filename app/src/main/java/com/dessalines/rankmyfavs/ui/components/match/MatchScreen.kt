@@ -23,11 +23,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
+import com.dessalines.rankmyfavs.db.FavListItemUpdateStats
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListMatchInsert
 import com.dessalines.rankmyfavs.db.FavListMatchViewModel
+import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import org.goochjs.glicko2.Rating
+import org.goochjs.glicko2.RatingCalculator
+import org.goochjs.glicko2.RatingPeriodResults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,10 +42,13 @@ fun MatchScreen(
     favListMatchViewModel: FavListMatchViewModel,
     favListId: Int,
 ) {
-    val matchup = favListItemViewModel.randomMatch(favListId).sortedBy { it.id }
-
-    val first = matchup.getOrNull(0)
-    val second = matchup.getOrNull(1)
+    val first = favListItemViewModel.leastTrained(favListId)
+    val second =
+        if (first !== null) {
+            favListItemViewModel.randomAndNot(favListId, first.id)
+        } else {
+            null
+        }
 
     Scaffold(
         topBar = {
@@ -68,8 +76,12 @@ fun MatchScreen(
                         MatchItem(
                             favListItem = first,
                             onClick = {
-                                favListMatchViewModel.insert(
-                                    FavListMatchInsert(first.id, second.id, first.id),
+                                recalculateStats(
+                                    favListItemViewModel = favListItemViewModel,
+                                    favListMatchViewModel = favListMatchViewModel,
+                                    first = first,
+                                    second = second,
+                                    winner = first,
                                 )
                                 navController.navigate("match/$favListId")
                             },
@@ -77,13 +89,19 @@ fun MatchScreen(
                         MatchItem(
                             favListItem = second,
                             onClick = {
-                                favListMatchViewModel.insert(
-                                    FavListMatchInsert(first.id, second.id, second.id),
+                                recalculateStats(
+                                    favListItemViewModel = favListItemViewModel,
+                                    favListMatchViewModel = favListMatchViewModel,
+                                    first = first,
+                                    second = second,
+                                    winner = second,
                                 )
                                 navController.navigate("match/$favListId")
                             },
                         )
                     }
+                } else {
+                    Text(stringResource(R.string.no_more_training))
                 }
             }
         },
@@ -102,6 +120,81 @@ fun MatchScreen(
             }
         },
     )
+}
+
+/**
+ * The win rate and other scores are stored on the item row.
+ */
+fun recalculateStats(
+    favListItemViewModel: FavListItemViewModel,
+    favListMatchViewModel: FavListMatchViewModel,
+    first: FavListItem,
+    second: FavListItem,
+    winner: FavListItem,
+) {
+    // Insert the winner
+    favListMatchViewModel.insert(
+        FavListMatchInsert(first.id, second.id, winner.id),
+    )
+    val winRateFirst = calculateWinRate(favListMatchViewModel, first)
+    val winRateSecond = calculateWinRate(favListMatchViewModel, second)
+
+    // Initialize Glicko
+    val ratingSystem = RatingCalculator(0.06, 0.5)
+    val results = RatingPeriodResults()
+
+    val player1 = Rating("1", ratingSystem)
+    val player2 = Rating("2", ratingSystem)
+
+    player1.rating = first.glickoRating.toDouble()
+    player1.ratingDeviation = first.glickoDeviation.toDouble()
+    player1.volatility = first.glickoVolatility.toDouble()
+
+    player2.rating = second.glickoRating.toDouble()
+    player2.ratingDeviation = second.glickoDeviation.toDouble()
+    player2.volatility = second.glickoVolatility.toDouble()
+
+    // Player1 beats player 2
+    if (winner.id == first.id) {
+        results.addResult(player1, player2)
+    } else {
+        results.addResult(player2, player1)
+    }
+    ratingSystem.updateRatings(results)
+
+    // Update the first
+    favListItemViewModel.updateStats(
+        FavListItemUpdateStats(
+            id = first.id,
+            winRate = winRateFirst,
+            glickoRating = player1.rating.toFloat(),
+            glickoDeviation = player1.ratingDeviation.toFloat(),
+            glickoVolatility = player1.volatility.toFloat(),
+        ),
+    )
+
+    // Update the second
+    favListItemViewModel.updateStats(
+        FavListItemUpdateStats(
+            id = second.id,
+            winRate = winRateSecond,
+            glickoRating = player2.rating.toFloat(),
+            glickoDeviation = player2.ratingDeviation.toFloat(),
+            glickoVolatility = player2.volatility.toFloat(),
+        ),
+    )
+}
+
+fun calculateWinRate(
+    favListMatchViewModel: FavListMatchViewModel,
+    item: FavListItem,
+): Float {
+    val matches = favListMatchViewModel.getMatchups(item.id)
+
+    val matchCount = matches.count()
+    val winCount = matches.count { it.winnerId == item.id }
+    val winRate = 100F * winCount / matchCount
+    return winRate
 }
 
 @Composable
@@ -123,7 +216,7 @@ fun MatchItem(
 @Preview
 fun MatchItemPreview() {
     MatchItem(
-        favListItem = FavListItem(id = 1, favListId = 1, name = "Option 1"),
+        favListItem = sampleFavListItem,
         onClick = {},
     )
 }

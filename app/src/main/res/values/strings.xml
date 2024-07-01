@@ -36,4 +36,10 @@
     <string name="list_deleted">List Deleted</string>
     <string name="item_deleted">Item Deleted</string>
     <string name="rate">Rate</string>
+    <string name="no_more_training">No more training necessary.</string>
+    <string name="rating">Rating</string>
+    <string name="deviation">Deviation</string>
+    <string name="Volatility">Volatility</string>
+    <string name="win_rate">Win Rate</string>
+    <string name="no_items">No items.</string>
 </resources>

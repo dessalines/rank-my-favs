@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
-import com.dessalines.rankmyfavs.db.FavListItemUpdate
+import com.dessalines.rankmyfavs.db.FavListItemUpdateNameAndDesc
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 
@@ -73,12 +73,12 @@ fun EditFavListItemScreen(
             FloatingActionButton(
                 onClick = {
                     val update =
-                        FavListItemUpdate(
+                        FavListItemUpdateNameAndDesc(
                             id = editedItem.id,
                             name = editedItem.name,
                             description = editedItem.description,
                         )
-                    favListItemViewModel.update(update)
+                    favListItemViewModel.updateNameAndDesc(update)
                     navController.navigate("favListDetails/${favListItem.favListId}")
                 },
                 shape = CircleShape,

@@ -48,6 +48,10 @@ fun FavListItemForm(
                         favListId = favListItem?.favListId ?: 0,
                         name = name,
                         description = description,
+                        winRate = favListItem?.winRate ?: 0F,
+                        glickoRating = favListItem?.glickoRating ?: 0F,
+                        glickoDeviation = favListItem?.glickoDeviation ?: 0F,
+                        glickoVolatility = favListItem?.glickoVolatility ?: 0F,
                     ),
                 )
             },
@@ -63,8 +67,12 @@ fun FavListItemForm(
                     FavListItem(
                         id = favListItem?.id ?: 0,
                         favListId = favListItem?.favListId ?: 0,
-                        name,
-                        description,
+                        name = name,
+                        description = description,
+                        winRate = favListItem?.winRate ?: 0F,
+                        glickoRating = favListItem?.glickoRating ?: 0F,
+                        glickoDeviation = favListItem?.glickoDeviation ?: 0F,
+                        glickoVolatility = favListItem?.glickoVolatility ?: 0F,
                     ),
                 )
             },

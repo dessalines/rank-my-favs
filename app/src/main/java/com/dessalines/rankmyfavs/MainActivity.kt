@@ -155,7 +155,6 @@ class MainActivity : AppCompatActivity() {
                         FavListItemDetailScreen(
                             navController = navController,
                             favListItemViewModel = favListItemViewModel,
-                            favListMatchViewModel = favListMatchViewModel,
                             id = id,
                         )
                     }
