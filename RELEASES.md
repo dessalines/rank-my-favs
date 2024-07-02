@@ -1,5 +1,37 @@
+## What's Changed in 0.0.2
+
+- Fixing failed migration. by @dessalines in [#26](https://github.com/dessalines/rank-my-favs/pull/26)
+- Fixing failed migration. by @dessalines
+- Fixing git cliff. by @dessalines
+- Adding about page to settings. by @dessalines in [#25](https://github.com/dessalines/rank-my-favs/pull/25)
+- Adding about page to settings. by @dessalines
+- Add setting and matches column by @dessalines in [#23](https://github.com/dessalines/rank-my-favs/pull/23)
+- Merge remote-tracking branch 'origin/main' into add_setting_and_matches_column by @dessalines
+- Use a flow row for the match screen. by @dessalines in [#22](https://github.com/dessalines/rank-my-favs/pull/22)
+- Use a flow row for the match screen. by @dessalines
+- Remember scroll position for lazy lists. by @dessalines in [#21](https://github.com/dessalines/rank-my-favs/pull/21)
+- Remember scroll position for lazy lists. by @dessalines
+- Adding match_count and minimum_confidence to the database. by @dessalines
+- Fix random sorting. by @dessalines in [#16](https://github.com/dessalines/rank-my-favs/pull/16)
+- Fix random sorting. by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.1...0.0.2
+
 ## What's Changed in 0.0.1
 
+- Merge remote-tracking branch 'origin/main' by @dessalines
+- Add images by @dessalines in [#15](https://github.com/dessalines/rank-my-favs/pull/15)
+- 5 by @dessalines
+- 4 by @dessalines
+- Fixing align. by @dessalines
+- 3 by @dessalines
+- Try below. by @dessalines
+- 2. by @dessalines
+- Another image. by @dessalines
+- Add another by @dessalines
+- Merge remote-tracking branch 'origin/main' into add_images by @dessalines
+- Adding images by @dessalines
+- Initial release. by @dessalines
 - Adding tooltips for all icon buttons. by @dessalines in [#14](https://github.com/dessalines/rank-my-favs/pull/14)
 - Adding tooltips for all icon buttons. by @dessalines
 - Adding ability to import lists. by @dessalines in [#13](https://github.com/dessalines/rank-my-favs/pull/13)
