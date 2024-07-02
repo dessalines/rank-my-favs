@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -31,6 +32,8 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -63,8 +66,9 @@ fun FavListDetailScreen(
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val listState = rememberLazyListState()
 
-    val favList = favListViewModel.getById(id)
+    val favList by remember(id) { mutableStateOf(favListViewModel.getById(id)) }
     val favListItems by favListItemViewModel.getFromList(id).asLiveData().observeAsState()
 
     Scaffold(
@@ -79,6 +83,7 @@ fun FavListDetailScreen(
         },
         content = { padding ->
             LazyColumn(
+                state = listState,
                 modifier =
                     Modifier
                         .padding(padding)
@@ -87,7 +92,10 @@ fun FavListDetailScreen(
                 item {
                     FavListDetails(favList)
                 }
-                items(favListItems.orEmpty()) { favListItem ->
+                items(
+                    key = { it.id },
+                    items = favListItems.orEmpty(),
+                ) { favListItem ->
                     FavListItemRow(
                         favListItem = favListItem,
                         onClick = {
