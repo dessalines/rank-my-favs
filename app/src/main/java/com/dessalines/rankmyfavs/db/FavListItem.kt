@@ -22,7 +22,7 @@ const val DEFAULT_WIN_RATE = 0F
 const val DEFAULT_GLICKO_RATING = 1500F
 const val DEFAULT_GLICKO_DEVIATION = 350F
 const val DEFAULT_GLICKO_VOLATILITY = 0.06F
-const val GLICKO_DEVIATION_MIN = 250F
+const val DEFAULT_MATCH_COUNT = 0
 
 @Entity(
     foreignKeys = [
@@ -69,6 +69,11 @@ data class FavListItem(
         defaultValue = DEFAULT_GLICKO_VOLATILITY.toString(),
     )
     val glickoVolatility: Float,
+    @ColumnInfo(
+        name = "match_count",
+        defaultValue = DEFAULT_MATCH_COUNT.toString(),
+    )
+    val matchCount: Int,
 )
 
 @Entity
@@ -123,6 +128,11 @@ data class FavListItemUpdateStats(
         defaultValue = DEFAULT_GLICKO_VOLATILITY.toString(),
     )
     val glickoVolatility: Float,
+    @ColumnInfo(
+        name = "match_count",
+        defaultValue = DEFAULT_MATCH_COUNT.toString(),
+    )
+    val matchCount: Int,
 )
 
 @Dao
@@ -140,7 +150,7 @@ interface FavListItemDao {
         """
         SELECT * FROM FavListItem
         WHERE fav_list_id = :favListId 
-        AND glicko_deviation > $GLICKO_DEVIATION_MIN
+        AND glicko_deviation > (1500 * (1 - (SELECT min_confidence/100.0 from AppSettings)))
         ORDER BY glicko_deviation DESC, RANDOM()
         LIMIT 1
     """,
@@ -274,4 +284,5 @@ val sampleFavListItem =
         glickoRating = 1534F,
         glickoDeviation = 150F,
         glickoVolatility = 0.06F,
+        matchCount = 5,
     )

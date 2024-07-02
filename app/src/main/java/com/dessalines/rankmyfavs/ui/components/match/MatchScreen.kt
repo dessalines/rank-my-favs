@@ -147,8 +147,8 @@ fun recalculateStats(
     favListMatchViewModel.insert(
         FavListMatchInsert(winner.id, loser.id, winner.id),
     )
-    val winRateWinner = calculateWinRate(favListMatchViewModel, winner)
-    val winRateLoser = calculateWinRate(favListMatchViewModel, loser)
+    val (winRateWinner, matchCountWinner) = calculateWinRate(favListMatchViewModel, winner)
+    val (winRateLoser, matchCountLoser) = calculateWinRate(favListMatchViewModel, loser)
 
     // Initialize Glicko
     val ratingSystem = RatingCalculator(0.06, 0.5)
@@ -177,6 +177,7 @@ fun recalculateStats(
             glickoRating = gWinner.rating.toFloat(),
             glickoDeviation = gWinner.ratingDeviation.toFloat(),
             glickoVolatility = gWinner.volatility.toFloat(),
+            matchCount = matchCountWinner,
         ),
     )
 
@@ -188,6 +189,7 @@ fun recalculateStats(
             glickoRating = gLoser.rating.toFloat(),
             glickoDeviation = gLoser.ratingDeviation.toFloat(),
             glickoVolatility = gLoser.volatility.toFloat(),
+            matchCount = matchCountLoser,
         ),
     )
 }
@@ -195,13 +197,13 @@ fun recalculateStats(
 fun calculateWinRate(
     favListMatchViewModel: FavListMatchViewModel,
     item: FavListItem,
-): Float {
+): Pair<Float, Int> {
     val matches = favListMatchViewModel.getMatchups(item.id)
 
     val matchCount = matches.count()
     val winCount = matches.count { it.winnerId == item.id }
     val winRate = 100F * winCount / matchCount
-    return winRate
+    return Pair(winRate, matchCount)
 }
 
 @Composable

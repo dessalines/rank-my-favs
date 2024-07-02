@@ -11,7 +11,7 @@ import com.dessalines.rankmyfavs.utils.TAG
 import java.util.concurrent.Executors
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [AppSettings::class, FavList::class, FavListItem::class, FavListMatch::class],
     exportSchema = true,
 )
@@ -39,6 +39,9 @@ abstract class AppDB : RoomDatabase() {
                             AppDB::class.java,
                             TAG,
                         ).allowMainThreadQueries()
+                        .addMigrations(
+                            MIGRATION_1_2,
+                        )
                         // Necessary because it can't insert data on creation
                         .addCallback(
                             object : Callback() {

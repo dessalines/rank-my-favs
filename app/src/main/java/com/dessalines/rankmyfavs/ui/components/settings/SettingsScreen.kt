@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.DataThresholding
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,7 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -26,6 +29,7 @@ import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.AppSettingsViewModel
+import com.dessalines.rankmyfavs.db.DEFAULT_MIN_CONFIDENCE
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME_COLOR
 import com.dessalines.rankmyfavs.db.SettingsUpdate
@@ -35,6 +39,7 @@ import com.dessalines.rankmyfavs.utils.ThemeMode
 import me.zhanghai.compose.preference.ListPreference
 import me.zhanghai.compose.preference.ListPreferenceType
 import me.zhanghai.compose.preference.ProvidePreferenceTheme
+import me.zhanghai.compose.preference.SliderPreference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,13 +48,18 @@ fun SettingsScreen(
     appSettingsViewModel: AppSettingsViewModel,
 ) {
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
+
+    var minConfidenceState = (settings?.minConfidence ?: DEFAULT_MIN_CONFIDENCE).toFloat()
+    var minConfidenceSliderState by remember { mutableStateOf(minConfidenceState) }
+
     var themeState = ThemeMode.entries[settings?.theme ?: DEFAULT_THEME]
     var themeColorState = ThemeColor.entries[settings?.themeColor ?: DEFAULT_THEME_COLOR]
 
-    fun updateLookAndFeel() {
-        appSettingsViewModel.updateLookAndFeel(
+    fun updateSettings() {
+        appSettingsViewModel.updateSettings(
             SettingsUpdate(
                 id = 1,
+                minConfidence = minConfidenceState.toInt(),
                 theme = themeState.ordinal,
                 themeColor = themeColorState.ordinal,
             ),
@@ -76,12 +86,35 @@ fun SettingsScreen(
                         .imePadding(),
             ) {
                 ProvidePreferenceTheme {
+                    SliderPreference(
+                        value = minConfidenceState,
+                        sliderValue = minConfidenceSliderState,
+                        onValueChange = {
+                            minConfidenceState = it
+                            updateSettings()
+                        },
+                        onSliderValueChange = { minConfidenceSliderState = it },
+                        valueRange = 75f..99f,
+                        title = {
+                            val confidenceStr = stringResource(R.string.min_confidence, minConfidenceSliderState.toInt().toString())
+                            Text(confidenceStr)
+                        },
+                        summary = {
+                            Text(stringResource(R.string.min_confidence_summary))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.DataThresholding,
+                                contentDescription = null,
+                            )
+                        },
+                    )
                     ListPreference(
                         type = ListPreferenceType.DROPDOWN_MENU,
                         value = themeState,
                         onValueChange = {
                             themeState = it
-                            updateLookAndFeel()
+                            updateSettings()
                         },
                         values = ThemeMode.entries,
                         valueToText = {
@@ -106,7 +139,7 @@ fun SettingsScreen(
                         value = themeColorState,
                         onValueChange = {
                             themeColorState = it
-                            updateLookAndFeel()
+                            updateSettings()
                         },
                         values = ThemeColor.entries,
                         valueToText = {
