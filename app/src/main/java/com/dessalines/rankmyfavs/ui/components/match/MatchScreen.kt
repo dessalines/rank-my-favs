@@ -4,7 +4,8 @@ import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,7 +40,11 @@ import org.goochjs.glicko2.Rating
 import org.goochjs.glicko2.RatingCalculator
 import org.goochjs.glicko2.RatingPeriodResults
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalLayoutApi::class,
+)
 @Composable
 fun MatchScreen(
     navController: NavController,
@@ -76,8 +81,8 @@ fun MatchScreen(
                         .padding(padding),
             ) {
                 if (first !== null && second !== null) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth().padding(SMALL_PADDING),
                         horizontalArrangement = Arrangement.SpaceAround,
                     ) {
                         MatchItem(

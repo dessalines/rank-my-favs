@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -23,6 +24,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -52,8 +56,9 @@ fun FavListItemDetailScreen(
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val listState = rememberLazyListState()
 
-    val favListItem = favListItemViewModel.getById(id)
+    val favListItem by remember(id) { mutableStateOf(favListItemViewModel.getById(id)) }
 
     Scaffold(
         topBar = {
@@ -83,6 +88,7 @@ fun FavListItemDetailScreen(
         },
         content = { padding ->
             LazyColumn(
+                state = listState,
                 modifier =
                     Modifier
                         .padding(padding)

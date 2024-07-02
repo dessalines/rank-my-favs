@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -43,8 +44,8 @@ fun FavListsScreen(
     favListViewModel: FavListViewModel,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
-
     val favLists by favListViewModel.getAll.asLiveData().observeAsState()
+    val listState = rememberLazyListState()
 
     Scaffold(
         topBar = {
@@ -55,6 +56,7 @@ fun FavListsScreen(
         },
         content = { padding ->
             LazyColumn(
+                state = listState,
                 modifier =
                     Modifier
                         .padding(padding)
