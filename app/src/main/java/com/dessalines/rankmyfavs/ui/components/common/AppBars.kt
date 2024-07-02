@@ -14,14 +14,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
-    navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onClickBack: (() -> Unit)? = null,
     actions: @Composable (() -> Unit)? = null,

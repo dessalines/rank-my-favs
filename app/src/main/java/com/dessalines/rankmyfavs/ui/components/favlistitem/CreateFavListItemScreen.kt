@@ -43,7 +43,6 @@ fun CreateFavListItemScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.create_item),
-                navController = navController,
                 onClickBack = {
                     navController.navigate("favListDetails/$favListId")
                 },

@@ -66,7 +66,6 @@ fun MatchScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.rate),
-                navController = navController,
                 onClickBack = {
                     navController.navigate("favListDetails/$favListId")
                 },
