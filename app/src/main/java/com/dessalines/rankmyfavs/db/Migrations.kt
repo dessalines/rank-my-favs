@@ -11,7 +11,7 @@ val MIGRATION_1_2 =
                 """
                 ALTER TABLE AppSettings
                 ADD COLUMN min_confidence
-                INTEGER NOT NULL DEFAULT 90
+                INTEGER NOT NULL DEFAULT $DEFAULT_MIN_CONFIDENCE
                 """.trimIndent(),
             )
 
