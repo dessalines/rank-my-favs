@@ -52,6 +52,7 @@ fun FavListItemForm(
                         glickoRating = favListItem?.glickoRating ?: 0F,
                         glickoDeviation = favListItem?.glickoDeviation ?: 0F,
                         glickoVolatility = favListItem?.glickoVolatility ?: 0F,
+                        matchCount = favListItem?.matchCount ?: 0,
                     ),
                 )
             },
@@ -73,6 +74,7 @@ fun FavListItemForm(
                         glickoRating = favListItem?.glickoRating ?: 0F,
                         glickoDeviation = favListItem?.glickoDeviation ?: 0F,
                         glickoVolatility = favListItem?.glickoVolatility ?: 0F,
+                        matchCount = favListItem?.matchCount ?: 0,
                     ),
                 )
             },

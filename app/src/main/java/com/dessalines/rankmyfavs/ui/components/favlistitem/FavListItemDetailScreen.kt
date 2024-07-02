@@ -170,16 +170,24 @@ fun Stats(favListItem: FavListItem) {
                 v = numToString(favListItem.glickoRating, 0),
             ),
             StatItem(
+                key = stringResource(R.string.confidence),
+                v = calculateConfidence(favListItem.glickoDeviation),
+            ),
+            StatItem(
                 key = stringResource(R.string.deviation),
                 v = numToString(favListItem.glickoDeviation, 0),
             ),
-            StatItem(
-                key = stringResource(R.string.Volatility),
-                v = numToString(favListItem.glickoVolatility, 2),
-            ),
+//            StatItem(
+//                key = stringResource(R.string.Volatility),
+//                v = numToString(favListItem.glickoVolatility, 2),
+//            ),
             StatItem(
                 key = stringResource(R.string.win_rate),
                 v = numToString(favListItem.winRate, 0) + "%",
+            ),
+            StatItem(
+                key = stringResource(R.string.match_count),
+                v = favListItem.matchCount.toString(),
             ),
         )
     Row(
@@ -188,6 +196,8 @@ fun Stats(favListItem: FavListItem) {
         BeeTablesCompose(data = data, headerTableTitles = titles, enableTableHeaderTitles = false)
     }
 }
+
+fun calculateConfidence(deviation: Float): String = numToString(((1500F - deviation) / 1500F * 100F), 1) + "%"
 
 @Composable
 @Preview

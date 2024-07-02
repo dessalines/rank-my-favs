@@ -22,6 +22,7 @@ import kotlinx.coroutines.withContext
 
 const val DEFAULT_THEME = 0
 const val DEFAULT_THEME_COLOR = 0
+const val DEFAULT_MIN_CONFIDENCE = 85
 
 @Entity
 data class AppSettings(
@@ -41,6 +42,11 @@ data class AppSettings(
         defaultValue = "0",
     )
     val lastVersionCodeViewed: Int,
+    @ColumnInfo(
+        name = "min_confidence",
+        defaultValue = DEFAULT_MIN_CONFIDENCE.toString(),
+    )
+    val minConfidence: Int,
 )
 
 data class SettingsUpdate(
@@ -53,6 +59,11 @@ data class SettingsUpdate(
         name = "theme_color",
     )
     val themeColor: Int,
+    @ColumnInfo(
+        name = "min_confidence",
+        defaultValue = DEFAULT_MIN_CONFIDENCE.toString(),
+    )
+    val minConfidence: Int,
 )
 
 @Dao
@@ -64,7 +75,7 @@ interface AppSettingsDao {
     suspend fun updateAppSettings(appSettings: AppSettings)
 
     @Update(entity = AppSettings::class)
-    fun updateLookAndFeel(lookAndFeel: SettingsUpdate)
+    fun updateSettings(settings: SettingsUpdate)
 
     @Query("UPDATE AppSettings SET last_version_code_viewed = :versionCode")
     suspend fun updateLastVersionCode(versionCode: Int)
@@ -88,8 +99,8 @@ class AppSettingsRepository(
     }
 
     @WorkerThread
-    fun updateLookAndFeel(lookAndFeel: SettingsUpdate) {
-        appSettingsDao.updateLookAndFeel(lookAndFeel)
+    fun updateSettings(settings: SettingsUpdate) {
+        appSettingsDao.updateSettings(settings)
     }
 
     @WorkerThread
@@ -125,9 +136,9 @@ class AppSettingsViewModel(
             repository.update(appSettings)
         }
 
-    fun updateLookAndFeel(lookAndFeel: SettingsUpdate) =
+    fun updateSettings(settings: SettingsUpdate) =
         viewModelScope.launch {
-            repository.updateLookAndFeel(lookAndFeel)
+            repository.updateSettings(settings)
         }
 
     fun updateLastVersionCodeViewed(versionCode: Int) =
