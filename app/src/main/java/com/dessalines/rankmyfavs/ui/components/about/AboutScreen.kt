@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.AttachMoney
@@ -15,11 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -49,19 +48,23 @@ fun AboutScreen(navController: NavController) {
     val ctx = LocalContext.current
 
     val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName
-
-    val snackbarHostState = remember { SnackbarHostState() }
+    val scrollState = rememberScrollState()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.about), navController = navController)
+            SimpleTopAppBar(
+                text = stringResource(R.string.about),
+                onClickBack = {
+                    navController.navigate("settings")
+                },
+            )
         },
         content = { padding ->
             Column(
                 modifier =
                     Modifier
-                        .padding(padding),
+                        .padding(padding)
+                        .verticalScroll(scrollState),
             ) {
                 ProvidePreferenceTheme {
                     Preference(

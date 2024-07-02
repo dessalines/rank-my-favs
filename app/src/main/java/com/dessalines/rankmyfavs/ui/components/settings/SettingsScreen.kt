@@ -8,17 +8,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.DataThresholding
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -38,6 +37,7 @@ import com.dessalines.rankmyfavs.utils.ThemeColor
 import com.dessalines.rankmyfavs.utils.ThemeMode
 import me.zhanghai.compose.preference.ListPreference
 import me.zhanghai.compose.preference.ListPreferenceType
+import me.zhanghai.compose.preference.Preference
 import me.zhanghai.compose.preference.ProvidePreferenceTheme
 import me.zhanghai.compose.preference.SliderPreference
 
@@ -50,7 +50,7 @@ fun SettingsScreen(
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
 
     var minConfidenceState = (settings?.minConfidence ?: DEFAULT_MIN_CONFIDENCE).toFloat()
-    var minConfidenceSliderState by remember { mutableStateOf(minConfidenceState) }
+    var minConfidenceSliderState by remember { mutableFloatStateOf(minConfidenceState) }
 
     var themeState = ThemeMode.entries[settings?.theme ?: DEFAULT_THEME]
     var themeColorState = ThemeColor.entries[settings?.themeColor ?: DEFAULT_THEME_COLOR]
@@ -68,14 +68,16 @@ fun SettingsScreen(
 
     val ctx = LocalContext.current
 
-    val snackbarHostState = remember { SnackbarHostState() }
-
     val scrollState = rememberScrollState()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SimpleTopAppBar(text = stringResource(R.string.settings), navController = navController)
+            SimpleTopAppBar(
+                text = stringResource(R.string.settings),
+                onClickBack = {
+                    navController.navigate("favLists")
+                },
+            )
         },
         content = { padding ->
             Column(
@@ -86,6 +88,16 @@ fun SettingsScreen(
                         .imePadding(),
             ) {
                 ProvidePreferenceTheme {
+                    Preference(
+                        title = { Text(stringResource(R.string.about)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = { navController.navigate("about") },
+                    )
                     SliderPreference(
                         value = minConfidenceState,
                         sliderValue = minConfidenceSliderState,

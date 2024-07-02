@@ -75,7 +75,6 @@ fun FavListDetailScreen(
         topBar = {
             SimpleTopAppBar(
                 text = favList.name,
-                navController = navController,
                 onClickBack = {
                     navController.navigate("favLists")
                 },

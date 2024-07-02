@@ -53,7 +53,6 @@ fun ImportListScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.import_list),
-                navController = navController,
                 onClickBack = {
                     navController.navigate("favListDetails/$favListId")
                 },
