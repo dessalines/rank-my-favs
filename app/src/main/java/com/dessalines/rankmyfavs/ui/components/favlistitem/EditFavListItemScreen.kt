@@ -51,9 +51,7 @@ fun EditFavListItemScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.edit_item),
-                onClickBack = {
-                    navController.navigate("favListDetails/${favListItem.favListId}")
-                },
+                navController = navController,
             )
         },
         content = { padding ->
@@ -87,7 +85,7 @@ fun EditFavListItemScreen(
                                 description = editedItem.description,
                             )
                         favListItemViewModel.updateNameAndDesc(update)
-                        navController.navigate("favListDetails/${favListItem.favListId}")
+                        navController.navigateUp()
                     },
                     shape = CircleShape,
                 ) {

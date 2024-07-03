@@ -51,6 +51,8 @@ fun FavListsScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.app_name),
+                navController = navController,
+                showBack = false,
             )
         },
         content = { padding ->

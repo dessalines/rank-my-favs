@@ -74,9 +74,7 @@ fun SettingsScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.settings),
-                onClickBack = {
-                    navController.navigate("favLists")
-                },
+                navController = navController,
             )
         },
         content = { padding ->

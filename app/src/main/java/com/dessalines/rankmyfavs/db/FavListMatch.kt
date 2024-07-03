@@ -85,7 +85,7 @@ interface FavListMatchDao {
     fun getMatchups(itemId: Int): List<FavListMatch>
 
     @Insert(entity = FavListMatch::class, onConflict = OnConflictStrategy.IGNORE)
-    fun insert(match: FavListMatchInsert)
+    fun insert(match: FavListMatchInsert): Long
 
     @Delete
     suspend fun delete(match: FavListMatch)

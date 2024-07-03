@@ -54,9 +54,7 @@ fun AboutScreen(navController: NavController) {
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.about),
-                onClickBack = {
-                    navController.navigate("settings")
-                },
+                navController = navController,
             )
         },
         content = { padding ->
