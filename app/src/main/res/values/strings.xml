@@ -50,4 +50,5 @@
     <string name="match_count">Match Count</string>
     <string name="min_confidence">Minimum Confidence: %1$s%%</string>
     <string name="min_confidence_summary">Higher requires more matches</string>
+    <string name="list_already_exists">List already exists.</string>
 </resources>

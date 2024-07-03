@@ -66,9 +66,7 @@ fun MatchScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.rate),
-                onClickBack = {
-                    navController.navigate("favListDetails/$favListId")
-                },
+                navController = navController,
             )
         },
         content = { padding ->
@@ -93,7 +91,9 @@ fun MatchScreen(
                                     winner = first,
                                     loser = second,
                                 )
-                                navController.navigate("match/$favListId")
+                                navController.navigate("match/$favListId") {
+                                    popUpTo("favListDetails/$favListId")
+                                }
                             },
                         )
                         MatchItem(
@@ -105,7 +105,9 @@ fun MatchScreen(
                                     winner = second,
                                     loser = first,
                                 )
-                                navController.navigate("match/$favListId")
+                                navController.navigate("match/$favListId") {
+                                    popUpTo("favListDetails/$favListId")
+                                }
                             },
                         )
                     }

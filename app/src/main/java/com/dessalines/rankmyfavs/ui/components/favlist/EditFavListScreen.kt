@@ -51,9 +51,7 @@ fun EditFavListScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.edit_list),
-                onClickBack = {
-                    navController.navigate("favListDetails/$id")
-                },
+                navController = navController,
             )
         },
         content = { padding ->

@@ -75,12 +75,18 @@ fun FavListDetailScreen(
         topBar = {
             SimpleTopAppBar(
                 text = favList.name,
-                onClickBack = {
-                    navController.navigate("favLists")
-                },
+                navController = navController,
             )
         },
         content = { padding ->
+
+            if (favListItems.isNullOrEmpty()) {
+                Text(
+                    text = stringResource(R.string.no_items),
+                    modifier = Modifier.padding(horizontal = LARGE_PADDING, vertical = padding.calculateTopPadding()),
+                )
+            }
+
             LazyColumn(
                 state = listState,
                 modifier =
@@ -88,9 +94,12 @@ fun FavListDetailScreen(
                         .padding(padding)
                         .imePadding(),
             ) {
-                item {
-                    FavListDetails(favList)
-                }
+                // Unfortunately showing these details messes up the scroll remember position.
+                // Comment it for now
+//                item {
+//                    FavListDetails(favList)
+//                }
+
                 items(
                     key = { it.id },
                     items = favListItems.orEmpty(),
@@ -101,14 +110,6 @@ fun FavListDetailScreen(
                             navController.navigate("itemDetails/${favListItem.id}")
                         },
                     )
-                }
-                item {
-                    if (favListItems.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(R.string.no_items),
-                            modifier = Modifier.padding(horizontal = LARGE_PADDING),
-                        )
-                    }
                 }
             }
         },
@@ -243,12 +244,18 @@ fun FavListDetailScreen(
 @Composable
 fun FavListDetails(favList: FavList) {
     if (!favList.description.isNullOrBlank()) {
+        HorizontalDivider()
         MarkdownText(
             markdown = favList.description,
             linkColor = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(top = 0.dp, bottom = SMALL_PADDING, start = LARGE_PADDING, end = LARGE_PADDING),
+            modifier =
+                Modifier.padding(
+                    top = 0.dp,
+                    bottom = SMALL_PADDING,
+                    start = LARGE_PADDING,
+                    end = LARGE_PADDING,
+                ),
         )
-        HorizontalDivider()
     }
 }
 

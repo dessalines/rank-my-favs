@@ -1,5 +1,6 @@
 package com.dessalines.rankmyfavs.ui.components.favlist
 
+import android.widget.Toast
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
@@ -35,15 +37,15 @@ fun CreateFavListScreen(
 ) {
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val ctx = LocalContext.current
+
     var favList: FavList? = null
 
     Scaffold(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.create_list),
-                onClickBack = {
-                    navController.navigate("favLists")
-                },
+                navController = navController,
             )
         },
         content = { padding ->
@@ -72,7 +74,15 @@ fun CreateFavListScreen(
                         favList?.let {
                             val insert = FavListInsert(name = it.name, description = it.description)
                             val insertedId = favListViewModel.insert(insert)
-                            navController.navigate("favListDetails/$insertedId")
+
+                            // The id is -1 if its a failed insert
+                            if (insertedId != -1L) {
+                                navController.navigate("favListDetails/$insertedId") {
+                                    popUpTo("favLists")
+                                }
+                            } else {
+                                Toast.makeText(ctx, ctx.getString(R.string.list_already_exists), Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     shape = CircleShape,
