@@ -1,5 +1,13 @@
+## What's Changed in 0.0.3
+
+- Fixing navigation back issues. by @dessalines in [#28](https://github.com/dessalines/rank-my-favs/pull/28)
+- Fixing navigation back issues. by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.2...0.0.3
+
 ## What's Changed in 0.0.2
 
+- Upping version. by @dessalines
 - Fixing failed migration. by @dessalines in [#26](https://github.com/dessalines/rank-my-favs/pull/26)
 - Fixing failed migration. by @dessalines
 - Fixing git cliff. by @dessalines
