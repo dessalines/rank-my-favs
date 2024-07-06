@@ -151,7 +151,7 @@ interface FavListItemDao {
         SELECT * FROM FavListItem
         WHERE fav_list_id = :favListId 
         AND glicko_deviation > (1500 * (1 - (SELECT min_confidence/100.0 from AppSettings)))
-        ORDER BY glicko_deviation DESC, RANDOM()
+        ORDER BY RANDOM()
         LIMIT 1
     """,
     )
