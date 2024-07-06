@@ -71,8 +71,11 @@ composeCompiler {
 }
 
 dependencies {
+    // CSV exporting
+    implementation 'com.floern.castingcsv:casting-csv-kt:1.2'
+
     // Tables
-    implementation("com.github.Breens-Mbaka:BeeTablesCompose:1.2.0")
+    implementation 'com.github.Breens-Mbaka:BeeTablesCompose:1.2.0'
 
     // Glicko2
     implementation 'com.github.goochjs:glicko2:master'
