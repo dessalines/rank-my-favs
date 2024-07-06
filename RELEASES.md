@@ -1,5 +1,17 @@
+## What's Changed in 0.0.4
+
+- Export csv by @dessalines in [#31](https://github.com/dessalines/rank-my-favs/pull/31)
+- Merge remote-tracking branch 'origin/main' into export_csv by @dessalines
+- Fixing rank order to be more random. by @dessalines in [#30](https://github.com/dessalines/rank-my-favs/pull/30)
+- Fixing rank order to be more random. by @dessalines
+- Add ability to export list as CSV. by @dessalines
+- Adding app icon svg. by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.3...0.0.4
+
 ## What's Changed in 0.0.3
 
+- Upping version. by @dessalines
 - Fixing navigation back issues. by @dessalines in [#28](https://github.com/dessalines/rank-my-favs/pull/28)
 - Fixing navigation back issues. by @dessalines
 
