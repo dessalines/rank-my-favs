@@ -1,6 +1,8 @@
 package com.dessalines.rankmyfavs.ui.components.favlist
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -16,8 +18,9 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.ImportExport
+import androidx.compose.material.icons.outlined.FileOpen
 import androidx.compose.material.icons.outlined.Reviews
+import androidx.compose.material.icons.outlined.SaveAs
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -53,6 +56,8 @@ import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.numToString
+import com.dessalines.rankmyfavs.utils.writeData
+import com.floern.castingcsv.castingCSV
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -70,6 +75,18 @@ fun FavListDetailScreen(
 
     val favList by remember(id) { mutableStateOf(favListViewModel.getById(id)) }
     val favListItems by favListItemViewModel.getFromList(id).asLiveData().observeAsState()
+
+    // For exporting the csv
+    val contentResolver = ctx.contentResolver
+    val exportCsvLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("text/csv"),
+        ) {
+            it?.also {
+                val csv = castingCSV().toCSV(favListItems.orEmpty())
+                writeData(contentResolver, it, csv)
+            }
+        }
 
     Scaffold(
         topBar = {
@@ -165,8 +182,26 @@ fun FavListDetailScreen(
                             },
                         ) {
                             Icon(
-                                Icons.Outlined.ImportExport,
+                                Icons.Outlined.FileOpen,
                                 contentDescription = stringResource(R.string.import_list),
+                            )
+                        }
+                    }
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.export_list_as_csv))
+                        },
+                    ) {
+                        IconButton(
+                            onClick = {
+                                exportCsvLauncher.launch(favList.name)
+                            },
+                        ) {
+                            Icon(
+                                Icons.Outlined.SaveAs,
+                                contentDescription = stringResource(R.string.export_list_as_csv),
                             )
                         }
                     }
