@@ -24,6 +24,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -35,6 +37,7 @@ import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.sampleFavListItem
+import com.dessalines.rankmyfavs.ui.components.common.AreYouSureDialog
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
@@ -56,6 +59,10 @@ fun FavListItemDetailScreen(
     val listState = rememberLazyListState()
 
     val favListItem = favListItemViewModel.getById(id)
+
+    val showDeleteDialog = remember { mutableStateOf(false) }
+
+    val deletedMessage = stringResource(R.string.item_deleted)
 
     Scaffold(
         topBar = {
@@ -81,6 +88,16 @@ fun FavListItemDetailScreen(
             )
         },
         content = { padding ->
+
+            AreYouSureDialog(
+                show = showDeleteDialog,
+                title = stringResource(R.string.delete),
+                onYes = {
+                    favListItemViewModel.delete(favListItem)
+                    navController.navigateUp()
+                    Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                },
+            )
             LazyColumn(
                 state = listState,
                 modifier =
@@ -100,7 +117,6 @@ fun FavListItemDetailScreen(
         bottomBar = {
             BottomAppBar(
                 actions = {
-                    val deletedMessage = stringResource(R.string.item_deleted)
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
@@ -110,9 +126,7 @@ fun FavListItemDetailScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                favListItemViewModel.delete(favListItem)
-                                navController.navigateUp()
-                                Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                                showDeleteDialog.value = true
                             },
                         ) {
                             Icon(

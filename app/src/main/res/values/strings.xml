@@ -52,4 +52,7 @@
     <string name="min_confidence">Minimum Confidence: %1$s%%</string>
     <string name="min_confidence_summary">Higher requires more matches</string>
     <string name="list_already_exists">List already exists.</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="yes">Yes</string>
 </resources>

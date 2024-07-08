@@ -51,6 +51,7 @@ import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListMatchViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.db.sampleFavListItem
+import com.dessalines.rankmyfavs.ui.components.common.AreYouSureDialog
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
@@ -76,6 +77,9 @@ fun FavListDetailScreen(
     val favList by remember(id) { mutableStateOf(favListViewModel.getById(id)) }
     val favListItems by favListItemViewModel.getFromList(id).asLiveData().observeAsState()
 
+    val showClearStatsDialog = remember { mutableStateOf(false) }
+    val showDeleteDialog = remember { mutableStateOf(false) }
+
     // For exporting the csv
     val contentResolver = ctx.contentResolver
     val exportCsvLauncher =
@@ -87,6 +91,9 @@ fun FavListDetailScreen(
                 writeData(contentResolver, it, csv)
             }
         }
+
+    val clearStatsMessage = stringResource(R.string.clear_stats)
+    val deletedMessage = stringResource(R.string.list_deleted)
 
     Scaffold(
         topBar = {
@@ -103,6 +110,26 @@ fun FavListDetailScreen(
                     modifier = Modifier.padding(horizontal = LARGE_PADDING, vertical = padding.calculateTopPadding()),
                 )
             }
+
+            AreYouSureDialog(
+                show = showClearStatsDialog,
+                title = clearStatsMessage,
+                onYes = {
+                    favListItemViewModel.clearStatsForList(favListId = id)
+                    favListMatchViewModel.deleteMatchesForList(favListId = id)
+                    Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
+                },
+            )
+
+            AreYouSureDialog(
+                show = showDeleteDialog,
+                title = stringResource(R.string.delete),
+                onYes = {
+                    favListViewModel.delete(favList)
+                    navController.navigateUp()
+                    Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                },
+            )
 
             LazyColumn(
                 state = listState,
@@ -205,7 +232,6 @@ fun FavListDetailScreen(
                             )
                         }
                     }
-                    val clearStatsMessage = stringResource(R.string.clear_stats)
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
@@ -215,9 +241,7 @@ fun FavListDetailScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                favListItemViewModel.clearStatsForList(favListId = id)
-                                favListMatchViewModel.deleteMatchesForList(favListId = id)
-                                Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
+                                showClearStatsDialog.value = true
                             },
                         ) {
                             Icon(
@@ -226,7 +250,6 @@ fun FavListDetailScreen(
                             )
                         }
                     }
-                    val deletedMessage = stringResource(R.string.list_deleted)
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
@@ -236,9 +259,7 @@ fun FavListDetailScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                favListViewModel.delete(favList)
-                                navController.navigateUp()
-                                Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                                showDeleteDialog.value = true
                             },
                         ) {
                             Icon(
