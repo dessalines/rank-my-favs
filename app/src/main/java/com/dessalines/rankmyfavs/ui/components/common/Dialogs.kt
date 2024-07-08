@@ -6,13 +6,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -25,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.asLiveData
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.AppSettingsViewModel
@@ -112,4 +118,57 @@ fun ToolTip(text: String) {
             modifier = Modifier.padding(SMALL_PADDING),
         )
     }
+}
+
+@Composable
+fun AreYouSureDialog(
+    show: MutableState<Boolean>,
+    title: String,
+    onYes: () -> Unit,
+) {
+    if (show.value) {
+        AlertDialog(
+            title = { Text(title) },
+            text = { Text(stringResource(R.string.are_you_sure)) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = stringResource(R.string.are_you_sure),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onYes()
+                        show.value = false
+                    },
+                ) {
+                    Text(
+                        stringResource(R.string.yes),
+                    )
+                }
+            },
+            onDismissRequest = {
+                show.value = false
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { show.value = false },
+                ) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewAreYouSureDialog() {
+    val show = remember { mutableStateOf(true) }
+    AreYouSureDialog(
+        show = show,
+        title = "Test title",
+        onYes = {},
+    )
 }
