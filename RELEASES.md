@@ -1,5 +1,20 @@
+## What's Changed in 0.0.5
+
+- Fixing export. by @dessalines in [#38](https://github.com/dessalines/rank-my-favs/pull/38)
+- Add confirmation dialogs for destructive actions. by @dessalines in [#37](https://github.com/dessalines/rank-my-favs/pull/37)
+- Add confirmation dialogs for destructive actions. by @dessalines
+- Enabling edge-to-edge to fix status bar color. by @dessalines in [#35](https://github.com/dessalines/rank-my-favs/pull/35)
+- Update cimg/android Docker tag to v2024.07.1 by @dessalines in [#36](https://github.com/dessalines/rank-my-favs/pull/36)
+- Adding readme badges for app stores. by @dessalines in [#33](https://github.com/dessalines/rank-my-favs/pull/33)
+- Adding readme badges for app stores. by @dessalines
+- Adding dependenciesInfo for f-droid builds by @dessalines in [#32](https://github.com/dessalines/rank-my-favs/pull/32)
+- Adding dependenciesInfo for f-droid builds by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.4...0.0.5
+
 ## What's Changed in 0.0.4
 
+- Upping version. by @dessalines
 - Export csv by @dessalines in [#31](https://github.com/dessalines/rank-my-favs/pull/31)
 - Merge remote-tracking branch 'origin/main' into export_csv by @dessalines
 - Fixing rank order to be more random. by @dessalines in [#30](https://github.com/dessalines/rank-my-favs/pull/30)
