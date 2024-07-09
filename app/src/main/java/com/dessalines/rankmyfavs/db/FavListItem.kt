@@ -1,5 +1,6 @@
 package com.dessalines.rankmyfavs.db
 
+import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -35,6 +36,7 @@ const val DEFAULT_MATCH_COUNT = 0
     ],
     indices = [Index(value = ["fav_list_id", "name"], unique = true)],
 )
+@Keep
 data class FavListItem(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
