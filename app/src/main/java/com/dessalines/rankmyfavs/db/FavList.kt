@@ -1,5 +1,6 @@
 package com.dessalines.rankmyfavs.db
 
+import androidx.annotation.Keep
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 @Entity(
     indices = [Index(value = ["name"], unique = true)],
 )
+@Keep
 data class FavList(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(
