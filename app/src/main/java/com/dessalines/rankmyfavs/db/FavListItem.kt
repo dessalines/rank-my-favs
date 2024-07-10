@@ -143,7 +143,7 @@ interface FavListItemDao {
     fun getFromList(favListId: Int): Flow<List<FavListItem>>
 
     @Query("SELECT * FROM FavListItem where id = :favListItemId")
-    fun getById(favListItemId: Int): FavListItem
+    fun getById(favListItemId: Int): Flow<FavListItem>
 
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.
@@ -192,7 +192,7 @@ interface FavListItemDao {
         WHERE fav_list_id = :favListId
     """,
     )
-    fun clearStatsForList(favListId: Int)
+    suspend fun clearStatsForList(favListId: Int)
 
     @Delete
     suspend fun delete(favListItem: FavListItem)
@@ -224,7 +224,8 @@ class FavListItemRepository(
     @WorkerThread
     suspend fun updateStats(favListItem: FavListItemUpdateStats) = favListItemDao.updateStats(favListItem)
 
-    fun clearStatsForList(favListId: Int) = favListItemDao.clearStatsForList(favListId)
+    @WorkerThread
+    suspend fun clearStatsForList(favListId: Int) = favListItemDao.clearStatsForList(favListId)
 
     @WorkerThread
     suspend fun delete(favListItem: FavListItem) = favListItemDao.delete(favListItem)
@@ -256,7 +257,10 @@ class FavListItemViewModel(
             repository.updateStats(favListItem)
         }
 
-    fun clearStatsForList(favListId: Int) = repository.clearStatsForList(favListId)
+    fun clearStatsForList(favListId: Int) =
+        viewModelScope.launch {
+            repository.clearStatsForList(favListId)
+        }
 
     fun delete(favListItem: FavListItem) =
         viewModelScope.launch {

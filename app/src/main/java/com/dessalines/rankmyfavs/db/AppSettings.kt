@@ -71,11 +71,8 @@ interface AppSettingsDao {
     @Query("SELECT * FROM AppSettings limit 1")
     fun getSettings(): Flow<AppSettings>
 
-    @Update
-    suspend fun updateAppSettings(appSettings: AppSettings)
-
     @Update(entity = AppSettings::class)
-    fun updateSettings(settings: SettingsUpdate)
+    suspend fun updateSettings(settings: SettingsUpdate)
 
     @Query("UPDATE AppSettings SET last_version_code_viewed = :versionCode")
     suspend fun updateLastVersionCode(versionCode: Int)
@@ -94,12 +91,7 @@ class AppSettingsRepository(
     val appSettings = appSettingsDao.getSettings()
 
     @WorkerThread
-    suspend fun update(appSettings: AppSettings) {
-        appSettingsDao.updateAppSettings(appSettings)
-    }
-
-    @WorkerThread
-    fun updateSettings(settings: SettingsUpdate) {
+    suspend fun updateSettings(settings: SettingsUpdate) {
         appSettingsDao.updateSettings(settings)
     }
 
@@ -130,11 +122,6 @@ class AppSettingsViewModel(
 ) : ViewModel() {
     val appSettings = repository.appSettings
     val changelog = repository.changelog
-
-    fun update(appSettings: AppSettings) =
-        viewModelScope.launch {
-            repository.update(appSettings)
-        }
 
     fun updateSettings(settings: SettingsUpdate) =
         viewModelScope.launch {

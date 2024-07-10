@@ -18,11 +18,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListUpdate
@@ -40,7 +42,7 @@ fun EditFavListScreen(
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
-    val favList = favListViewModel.getById(id)
+    val favList by favListViewModel.getById(id).asLiveData().observeAsState()
 
     // Copy the favlist from the DB first
     var editedList by remember {
@@ -78,14 +80,16 @@ fun EditFavListScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        val update =
-                            FavListUpdate(
-                                id = editedList.id,
-                                name = editedList.name,
-                                description = editedList.description,
-                            )
-                        favListViewModel.update(update)
-                        navController.navigateUp()
+                        editedList?.let {
+                            val update =
+                                FavListUpdate(
+                                    id = it.id,
+                                    name = it.name,
+                                    description = it.description,
+                                )
+                            favListViewModel.update(update)
+                            navController.navigateUp()
+                        }
                     },
                     shape = CircleShape,
                 ) {
