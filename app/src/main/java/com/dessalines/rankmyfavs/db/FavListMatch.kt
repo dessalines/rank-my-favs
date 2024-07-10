@@ -100,6 +100,15 @@ interface FavListMatchDao {
     """,
     )
     suspend fun deleteMatchesForList(favListId: Int)
+
+    @Query(
+        """
+        DELETE FROM FavListMatch
+        WHERE item_id_1 = :itemId
+        or item_id_2 = :itemId
+    """,
+    )
+    suspend fun deleteMatchesForItem(itemId: Int)
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -118,6 +127,9 @@ class FavListMatchRepository(
 
     @WorkerThread
     suspend fun deleteMatchesForList(favListId: Int) = favListDao.deleteMatchesForList(favListId)
+
+    @WorkerThread
+    suspend fun deleteMatchesForItem(itemId: Int) = favListDao.deleteMatchesForItem(itemId)
 }
 
 class FavListMatchViewModel(
@@ -135,6 +147,11 @@ class FavListMatchViewModel(
     fun deleteMatchesForList(favListId: Int) =
         viewModelScope.launch {
             repository.deleteMatchesForList(favListId)
+        }
+
+    fun deleteMatchesForItem(itemId: Int) =
+        viewModelScope.launch {
+            repository.deleteMatchesForItem(itemId)
         }
 }
 

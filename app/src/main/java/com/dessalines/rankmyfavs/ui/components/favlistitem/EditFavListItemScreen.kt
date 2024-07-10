@@ -40,7 +40,7 @@ fun EditFavListItemScreen(
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
-    val favListItem = favListItemViewModel.getById(id)
+    val favListItem = favListItemViewModel.getByIdSync(id)
 
     // Copy the favlist from the DB first
     var editedItem by remember {
@@ -78,14 +78,16 @@ fun EditFavListItemScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        val update =
-                            FavListItemUpdateNameAndDesc(
-                                id = editedItem.id,
-                                name = editedItem.name,
-                                description = editedItem.description,
-                            )
-                        favListItemViewModel.updateNameAndDesc(update)
-                        navController.navigateUp()
+                        editedItem?.let {
+                            val update =
+                                FavListItemUpdateNameAndDesc(
+                                    id = it.id,
+                                    name = it.name,
+                                    description = it.description,
+                                )
+                            favListItemViewModel.updateNameAndDesc(update)
+                            navController.navigateUp()
+                        }
                     },
                     shape = CircleShape,
                 ) {

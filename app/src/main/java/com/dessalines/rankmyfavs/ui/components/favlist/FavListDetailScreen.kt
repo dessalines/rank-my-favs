@@ -74,7 +74,7 @@ fun FavListDetailScreen(
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
     val listState = rememberLazyListState()
 
-    val favList by remember(id) { mutableStateOf(favListViewModel.getById(id)) }
+    val favList by favListViewModel.getById(id).asLiveData().observeAsState()
     val favListItems by favListItemViewModel.getFromList(id).asLiveData().observeAsState()
 
     val showClearStatsDialog = remember { mutableStateOf(false) }
@@ -98,7 +98,7 @@ fun FavListDetailScreen(
     Scaffold(
         topBar = {
             SimpleTopAppBar(
-                text = favList.name,
+                text = favList?.name.orEmpty(),
                 navController = navController,
             )
         },
@@ -125,9 +125,11 @@ fun FavListDetailScreen(
                 show = showDeleteDialog,
                 title = stringResource(R.string.delete),
                 onYes = {
-                    favListViewModel.delete(favList)
-                    navController.navigateUp()
-                    Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                    favList?.let {
+                        favListViewModel.delete(it)
+                        navController.navigateUp()
+                        Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                    }
                 },
             )
 
@@ -169,7 +171,7 @@ fun FavListDetailScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                navController.navigate("createItem/${favList.id}")
+                                navController.navigate("createItem/${favList?.id}")
                             },
                         ) {
                             Icon(
@@ -205,7 +207,7 @@ fun FavListDetailScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                navController.navigate("importList/${favList.id}")
+                                navController.navigate("importList/${favList?.id}")
                             },
                         ) {
                             Icon(
@@ -223,7 +225,7 @@ fun FavListDetailScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                exportCsvLauncher.launch(favList.name)
+                                favList?.let { exportCsvLauncher.launch(it.name) }
                             },
                         ) {
                             Icon(

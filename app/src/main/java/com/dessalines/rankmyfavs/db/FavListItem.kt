@@ -137,13 +137,18 @@ data class FavListItemUpdateStats(
     val matchCount: Int,
 )
 
+private const val BY_ID_QUERY = "SELECT * FROM FavListItem where id = :favListItemId"
+
 @Dao
 interface FavListItemDao {
     @Query("SELECT * FROM FavListItem where fav_list_id = :favListId order by glicko_rating desc")
     fun getFromList(favListId: Int): Flow<List<FavListItem>>
 
-    @Query("SELECT * FROM FavListItem where id = :favListItemId")
-    fun getById(favListItemId: Int): FavListItem
+    @Query(BY_ID_QUERY)
+    fun getById(favListItemId: Int): Flow<FavListItem>
+
+    @Query(BY_ID_QUERY)
+    fun getByIdSync(favListItemId: Int): FavListItem
 
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.
@@ -192,7 +197,7 @@ interface FavListItemDao {
         WHERE fav_list_id = :favListId
     """,
     )
-    fun clearStatsForList(favListId: Int)
+    suspend fun clearStatsForList(favListId: Int)
 
     @Delete
     suspend fun delete(favListItem: FavListItem)
@@ -209,6 +214,8 @@ class FavListItemRepository(
 
     fun getById(favListItemId: Int) = favListItemDao.getById(favListItemId)
 
+    fun getByIdSync(favListItemId: Int) = favListItemDao.getByIdSync(favListItemId)
+
     fun leastTrained(favListId: Int) = favListItemDao.leastTrained(favListId)
 
     fun randomAndNot(
@@ -224,7 +231,8 @@ class FavListItemRepository(
     @WorkerThread
     suspend fun updateStats(favListItem: FavListItemUpdateStats) = favListItemDao.updateStats(favListItem)
 
-    fun clearStatsForList(favListId: Int) = favListItemDao.clearStatsForList(favListId)
+    @WorkerThread
+    suspend fun clearStatsForList(favListId: Int) = favListItemDao.clearStatsForList(favListId)
 
     @WorkerThread
     suspend fun delete(favListItem: FavListItem) = favListItemDao.delete(favListItem)
@@ -236,6 +244,8 @@ class FavListItemViewModel(
     fun getFromList(favListId: Int) = repository.getFromList(favListId)
 
     fun getById(favListItemId: Int) = repository.getById(favListItemId)
+
+    fun getByIdSync(favListItemId: Int) = repository.getByIdSync(favListItemId)
 
     fun leastTrained(favListId: Int) = repository.leastTrained(favListId)
 
@@ -256,7 +266,10 @@ class FavListItemViewModel(
             repository.updateStats(favListItem)
         }
 
-    fun clearStatsForList(favListId: Int) = repository.clearStatsForList(favListId)
+    fun clearStatsForList(favListId: Int) =
+        viewModelScope.launch {
+            repository.clearStatsForList(favListId)
+        }
 
     fun delete(favListItem: FavListItem) =
         viewModelScope.launch {

@@ -40,7 +40,7 @@ fun EditFavListScreen(
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
-    val favList = favListViewModel.getById(id)
+    val favList = favListViewModel.getByIdSync(id)
 
     // Copy the favlist from the DB first
     var editedList by remember {
