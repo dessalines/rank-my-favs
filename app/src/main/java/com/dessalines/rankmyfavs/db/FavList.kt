@@ -59,13 +59,18 @@ data class FavListUpdate(
     val description: String? = null,
 )
 
+private const val BY_ID_QUERY = "SELECT * FROM FavList where id = :id"
+
 @Dao
 interface FavListDao {
     @Query("SELECT * FROM FavList")
     fun getAll(): Flow<List<FavList>>
 
-    @Query("SELECT * FROM FavList where id = :id")
+    @Query(BY_ID_QUERY)
     fun getById(id: Int): Flow<FavList>
+
+    @Query(BY_ID_QUERY)
+    fun getByIdSync(id: Int): FavList
 
     @Insert(entity = FavList::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(favList: FavListInsert): Long
@@ -88,6 +93,8 @@ class FavListRepository(
 
     fun getById(id: Int) = favListDao.getById(id)
 
+    fun getByIdSync(id: Int) = favListDao.getByIdSync(id)
+
     fun insert(favList: FavListInsert) = favListDao.insert(favList)
 
     @WorkerThread
@@ -103,6 +110,8 @@ class FavListViewModel(
     val getAll = repository.getAll
 
     fun getById(id: Int) = repository.getById(id)
+
+    fun getByIdSync(id: Int) = repository.getByIdSync(id)
 
     fun insert(favList: FavListInsert) = repository.insert(favList)
 

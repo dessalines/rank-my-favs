@@ -18,13 +18,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItemUpdateNameAndDesc
@@ -42,7 +40,7 @@ fun EditFavListItemScreen(
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
-    val favListItem by favListItemViewModel.getById(id).asLiveData().observeAsState()
+    val favListItem = favListItemViewModel.getByIdSync(id)
 
     // Copy the favlist from the DB first
     var editedItem by remember {

@@ -137,13 +137,18 @@ data class FavListItemUpdateStats(
     val matchCount: Int,
 )
 
+private const val BY_ID_QUERY = "SELECT * FROM FavListItem where id = :favListItemId"
+
 @Dao
 interface FavListItemDao {
     @Query("SELECT * FROM FavListItem where fav_list_id = :favListId order by glicko_rating desc")
     fun getFromList(favListId: Int): Flow<List<FavListItem>>
 
-    @Query("SELECT * FROM FavListItem where id = :favListItemId")
+    @Query(BY_ID_QUERY)
     fun getById(favListItemId: Int): Flow<FavListItem>
+
+    @Query(BY_ID_QUERY)
+    fun getByIdSync(favListItemId: Int): FavListItem
 
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.
@@ -209,6 +214,8 @@ class FavListItemRepository(
 
     fun getById(favListItemId: Int) = favListItemDao.getById(favListItemId)
 
+    fun getByIdSync(favListItemId: Int) = favListItemDao.getByIdSync(favListItemId)
+
     fun leastTrained(favListId: Int) = favListItemDao.leastTrained(favListId)
 
     fun randomAndNot(
@@ -237,6 +244,8 @@ class FavListItemViewModel(
     fun getFromList(favListId: Int) = repository.getFromList(favListId)
 
     fun getById(favListItemId: Int) = repository.getById(favListItemId)
+
+    fun getByIdSync(favListItemId: Int) = repository.getByIdSync(favListItemId)
 
     fun leastTrained(favListId: Int) = repository.leastTrained(favListId)
 
