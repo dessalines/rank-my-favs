@@ -4,6 +4,7 @@ import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,6 +38,7 @@ import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.goochjs.glicko2.Rating
 import org.goochjs.glicko2.RatingCalculator
 import org.goochjs.glicko2.RatingPeriodResults
@@ -79,7 +82,10 @@ fun MatchScreen(
             ) {
                 if (first !== null && second !== null) {
                     FlowRow(
-                        modifier = Modifier.fillMaxWidth().padding(SMALL_PADDING),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(SMALL_PADDING),
                         horizontalArrangement = Arrangement.SpaceAround,
                     ) {
                         MatchItem(
@@ -220,10 +226,19 @@ fun MatchItem(
     OutlinedCard(
         onClick = onClick,
     ) {
-        Text(
+        Column(
             modifier = Modifier.padding(SMALL_PADDING),
-            text = favListItem.name,
-        )
+        ) {
+            Text(
+                text = favListItem.name,
+            )
+            if (!favListItem.description.isNullOrBlank()) {
+                MarkdownText(
+                    markdown = favListItem.description,
+                    linkColor = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
     }
 }
 
