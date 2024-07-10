@@ -1,5 +1,13 @@
+## What's Changed in 0.0.6
+
+- Clear ranking data for specific entry. by @dessalines in [#50](https://github.com/dessalines/rank-my-favs/pull/50)
+- Show description in matches page. by @dessalines in [#49](https://github.com/dessalines/rank-my-favs/pull/49)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.5...0.0.6
+
 ## What's Changed in 0.0.5
 
+- Upping version. by @dessalines
 - Fixing export. by @dessalines in [#38](https://github.com/dessalines/rank-my-favs/pull/38)
 - Add confirmation dialogs for destructive actions. by @dessalines in [#37](https://github.com/dessalines/rank-my-favs/pull/37)
 - Add confirmation dialogs for destructive actions. by @dessalines
