@@ -1,5 +1,12 @@
+## What's Changed in 0.1.0
+
+- Matchup with closest rank, not a random pick. by @dessalines in [#55](https://github.com/dessalines/rank-my-favs/pull/55)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.6...0.1.0
+
 ## What's Changed in 0.0.6
 
+- Upping version. by @dessalines
 - Clear ranking data for specific entry. by @dessalines in [#50](https://github.com/dessalines/rank-my-favs/pull/50)
 - Show description in matches page. by @dessalines in [#49](https://github.com/dessalines/rank-my-favs/pull/49)
 
