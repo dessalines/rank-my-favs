@@ -60,7 +60,7 @@ fun MatchScreen(
     val first = favListItemViewModel.leastTrained(favListId)
     val second =
         if (first !== null) {
-            favListItemViewModel.randomAndNot(favListId, first.id)
+            favListItemViewModel.closestMatch(favListId, first.id, first.glickoRating)
         } else {
             null
         }
@@ -236,6 +236,7 @@ fun MatchItem(
                 MarkdownText(
                     markdown = favListItem.description,
                     linkColor = MaterialTheme.colorScheme.primary,
+                    disableLinkMovementMethod = true,
                 )
             }
         }

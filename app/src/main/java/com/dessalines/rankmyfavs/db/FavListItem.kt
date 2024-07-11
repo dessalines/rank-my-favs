@@ -164,18 +164,20 @@ interface FavListItemDao {
     )
     fun leastTrained(favListId: Int): FavListItem?
 
+    // Sort the second match by the closest neighbor, IE abs(difference)
     @Query(
         """
         SELECT * FROM FavListItem
         WHERE fav_list_id = :favListId 
-        AND id <> :firstFavListItemId
-        ORDER BY RANDOM()
+        AND id <> :firstItemId
+        ORDER BY ABS(glicko_rating - :firstGlickoRating), RANDOM()
         LIMIT 1
     """,
     )
-    fun randomAndNot(
+    fun closestMatch(
         favListId: Int,
-        firstFavListItemId: Int,
+        firstItemId: Int,
+        firstGlickoRating: Float,
     ): FavListItem?
 
     @Insert(entity = FavListItem::class, onConflict = OnConflictStrategy.IGNORE)
@@ -218,10 +220,11 @@ class FavListItemRepository(
 
     fun leastTrained(favListId: Int) = favListItemDao.leastTrained(favListId)
 
-    fun randomAndNot(
+    fun closestMatch(
         favListId: Int,
-        favListItemId: Int,
-    ) = favListItemDao.randomAndNot(favListId, favListItemId)
+        firstItemId: Int,
+        firstGlickoRating: Float,
+    ) = favListItemDao.closestMatch(favListId, firstItemId, firstGlickoRating)
 
     fun insert(favListItem: FavListItemInsert) = favListItemDao.insert(favListItem)
 
@@ -249,10 +252,11 @@ class FavListItemViewModel(
 
     fun leastTrained(favListId: Int) = repository.leastTrained(favListId)
 
-    fun randomAndNot(
+    fun closestMatch(
         favListId: Int,
-        favListItemId: Int,
-    ) = repository.randomAndNot(favListId, favListItemId)
+        firstItemId: Int,
+        firstGlickoRating: Float,
+    ) = repository.closestMatch(favListId, firstItemId, firstGlickoRating)
 
     fun insert(favListItem: FavListItemInsert) = repository.insert(favListItem)
 
