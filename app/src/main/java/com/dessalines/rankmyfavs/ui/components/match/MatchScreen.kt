@@ -132,7 +132,9 @@ fun MatchScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate("favListDetails/$favListId")
+                        navController.navigate("favListDetails/$favListId") {
+                            popUpTo("favListDetails/$favListId")
+                        }
                     },
                     shape = CircleShape,
                 ) {

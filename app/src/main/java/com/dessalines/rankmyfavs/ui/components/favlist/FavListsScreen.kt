@@ -22,10 +22,13 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.asLiveData
@@ -44,17 +47,21 @@ fun FavListsScreen(
     favListViewModel: FavListViewModel,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
-    val favLists by favListViewModel.getAll.asLiveData().observeAsState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val listState = rememberLazyListState()
+
+    val favLists by favListViewModel.getAll.asLiveData().observeAsState()
 
     Scaffold(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.app_name),
                 navController = navController,
+                scrollBehavior = scrollBehavior,
                 showBack = false,
             )
         },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
             LazyColumn(
                 state = listState,
