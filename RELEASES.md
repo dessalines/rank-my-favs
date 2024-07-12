@@ -1,5 +1,13 @@
+## What's Changed in 0.1.1
+
+- Adding screen transitions, adding top app bar enter always. by @dessalines in [#58](https://github.com/dessalines/rank-my-favs/pull/58)
+- Merge remote-tracking branch 'refs/remotes/origin/main' by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.1.0...0.1.1
+
 ## What's Changed in 0.1.0
 
+- Upping version. by @dessalines
 - Matchup with closest rank, not a random pick. by @dessalines in [#55](https://github.com/dessalines/rank-my-favs/pull/55)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.6...0.1.0
