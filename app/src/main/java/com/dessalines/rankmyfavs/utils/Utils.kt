@@ -17,6 +17,8 @@ const val LEMMY_URL = "https://lemmy.ml/c/rankmyfavs"
 const val MASTODON_URL = "https://mastodon.social/@dessalines"
 const val GLICKO_WIKI_URL = "https://en.m.wikipedia.org/wiki/Glicko_rating_system"
 
+const val ANIMATION_SPEED = 300
+
 fun openLink(
     url: String,
     ctx: Context,

@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.asLiveData
@@ -40,6 +42,7 @@ import com.dessalines.rankmyfavs.ui.components.favlistitem.FavListItemDetailScre
 import com.dessalines.rankmyfavs.ui.components.match.MatchScreen
 import com.dessalines.rankmyfavs.ui.components.settings.SettingsScreen
 import com.dessalines.rankmyfavs.ui.theme.RankMyFavsTheme
+import com.dessalines.rankmyfavs.utils.ANIMATION_SPEED
 
 class RankMyFavsApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -87,6 +90,42 @@ class MainActivity : AppCompatActivity() {
                 NavHost(
                     navController = navController,
                     startDestination = startDestination,
+                    enterTransition = {
+                        slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec =
+                                tween(
+                                    ANIMATION_SPEED,
+                                ),
+                        )
+                    },
+                    exitTransition = {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                            animationSpec =
+                                tween(
+                                    ANIMATION_SPEED,
+                                ),
+                        )
+                    },
+                    popEnterTransition = {
+                        slideIntoContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec =
+                                tween(
+                                    ANIMATION_SPEED,
+                                ),
+                        )
+                    },
+                    popExitTransition = {
+                        slideOutOfContainer(
+                            towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                            animationSpec =
+                                tween(
+                                    ANIMATION_SPEED,
+                                ),
+                        )
+                    },
                 ) {
                     composable(route = "favLists") {
                         FavListsScreen(
