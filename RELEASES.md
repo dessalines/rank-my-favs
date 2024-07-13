@@ -1,5 +1,12 @@
+## What's Changed in 0.2.0
+
+- Displaying rank position for items. by @dessalines in [#61](https://github.com/dessalines/rank-my-favs/pull/61)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.1.1...0.2.0
+
 ## What's Changed in 0.1.1
 
+- Upping version. by @dessalines
 - Adding screen transitions, adding top app bar enter always. by @dessalines in [#58](https://github.com/dessalines/rank-my-favs/pull/58)
 - Merge remote-tracking branch 'refs/remotes/origin/main' by @dessalines
 
