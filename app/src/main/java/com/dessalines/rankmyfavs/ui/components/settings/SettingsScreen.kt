@@ -31,6 +31,7 @@ import com.dessalines.rankmyfavs.db.AppSettingsViewModel
 import com.dessalines.rankmyfavs.db.DEFAULT_MIN_CONFIDENCE
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME_COLOR
+import com.dessalines.rankmyfavs.db.MIN_CONFIDENCE_BOUND
 import com.dessalines.rankmyfavs.db.SettingsUpdate
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.utils.ThemeColor
@@ -104,7 +105,7 @@ fun SettingsScreen(
                             updateSettings()
                         },
                         onSliderValueChange = { minConfidenceSliderState = it },
-                        valueRange = 75f..99f,
+                        valueRange = MIN_CONFIDENCE_BOUND.toFloat()..99f,
                         title = {
                             val confidenceStr = stringResource(R.string.min_confidence, minConfidenceSliderState.toInt().toString())
                             Text(confidenceStr)

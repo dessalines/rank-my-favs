@@ -14,9 +14,12 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
+import androidx.compose.material.icons.outlined.SkipNext
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
@@ -122,31 +125,61 @@ fun MatchScreen(
                 }
             }
         },
-        floatingActionButton = {
-            BasicTooltipBox(
-                positionProvider = tooltipPosition,
-                state = rememberBasicTooltipState(isPersistent = false),
-                tooltip = {
-                    ToolTip(stringResource(R.string.done))
-                },
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        navController.navigate("favListDetails/$favListId") {
-                            popUpTo("favListDetails/$favListId")
+        bottomBar = {
+            BottomAppBar(
+                actions = {
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(id = R.string.skip))
+                        },
+                    ) {
+                        IconButton(
+                            onClick = {
+                                navController.navigate("match/$favListId") {
+                                    popUpTo("favListDetails/$favListId")
+                                }
+                            },
+                        ) {
+                            Icon(
+                                Icons.Outlined.SkipNext,
+                                contentDescription = stringResource(R.string.skip),
+                            )
                         }
-                    },
-                    shape = CircleShape,
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Done,
-                        contentDescription = stringResource(R.string.done),
-                    )
-                }
-            }
+                    }
+                },
+                floatingActionButton = {
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.done))
+                        },
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                navController.navigate("favListDetails/$favListId") {
+                                    popUpTo("favListDetails/$favListId")
+                                }
+                            },
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Done,
+                                contentDescription = stringResource(R.string.done),
+                            )
+                        }
+                    }
+                },
+            )
         },
     )
 }
+
+/**
+ * The win rate and other scores are stored on the item row.
+ */
 
 /**
  * The win rate and other scores are stored on the item row.
