@@ -180,10 +180,6 @@ fun MatchScreen(
 /**
  * The win rate and other scores are stored on the item row.
  */
-
-/**
- * The win rate and other scores are stored on the item row.
- */
 fun recalculateStats(
     favListItemViewModel: FavListItemViewModel,
     favListMatchViewModel: FavListMatchViewModel,
