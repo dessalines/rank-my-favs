@@ -3,6 +3,7 @@ package com.dessalines.rankmyfavs.ui.components.favlist
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -63,25 +64,25 @@ fun FavListsScreen(
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
-            LazyColumn(
-                state = listState,
-                modifier =
-                    Modifier
-                        .padding(padding)
-                        .imePadding(),
+            Box(
+                modifier = Modifier.padding(padding).imePadding(),
             ) {
-                items(favLists.orEmpty()) { favList ->
-                    FavListRow(
-                        favList = favList,
-                        onClick = { navController.navigate("favListDetails/${favList.id}") },
-                    )
-                }
-                item {
-                    if (favLists.isNullOrEmpty()) {
-                        Text(
-                            text = stringResource(R.string.no_lists),
-                            modifier = Modifier.padding(horizontal = LARGE_PADDING),
+                LazyColumn(
+                    state = listState,
+                ) {
+                    items(favLists.orEmpty()) { favList ->
+                        FavListRow(
+                            favList = favList,
+                            onClick = { navController.navigate("favListDetails/${favList.id}") },
                         )
+                    }
+                    item {
+                        if (favLists.isNullOrEmpty()) {
+                            Text(
+                                text = stringResource(R.string.no_lists),
+                                modifier = Modifier.padding(horizontal = LARGE_PADDING),
+                            )
+                        }
                     }
                 }
             }
