@@ -78,16 +78,14 @@ fun EditFavListItemScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        editedItem?.let {
-                            val update =
-                                FavListItemUpdateNameAndDesc(
-                                    id = it.id,
-                                    name = it.name,
-                                    description = it.description,
-                                )
-                            favListItemViewModel.updateNameAndDesc(update)
-                            navController.navigateUp()
-                        }
+                        val update =
+                            FavListItemUpdateNameAndDesc(
+                                id = editedItem.id,
+                                name = editedItem.name,
+                                description = editedItem.description,
+                            )
+                        favListItemViewModel.updateNameAndDesc(update)
+                        navController.navigateUp()
                     },
                     shape = CircleShape,
                 ) {
