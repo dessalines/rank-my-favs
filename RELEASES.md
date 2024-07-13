@@ -1,5 +1,12 @@
+## What's Changed in 0.2.1
+
+- Adding a ? for uncertain rankings, and a skip button. by @dessalines in [#65](https://github.com/dessalines/rank-my-favs/pull/65)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.2.0...0.2.1
+
 ## What's Changed in 0.2.0
 
+- Upping version. by @dessalines
 - Displaying rank position for items. by @dessalines in [#61](https://github.com/dessalines/rank-my-favs/pull/61)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.1.1...0.2.0
