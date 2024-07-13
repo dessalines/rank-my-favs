@@ -93,37 +93,25 @@ class MainActivity : AppCompatActivity() {
                     enterTransition = {
                         slideIntoContainer(
                             towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                            animationSpec =
-                                tween(
-                                    ANIMATION_SPEED,
-                                ),
+                            animationSpec = tween(ANIMATION_SPEED),
                         )
                     },
                     exitTransition = {
                         slideOutOfContainer(
                             towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                            animationSpec =
-                                tween(
-                                    ANIMATION_SPEED,
-                                ),
+                            animationSpec = tween(ANIMATION_SPEED),
                         )
                     },
                     popEnterTransition = {
                         slideIntoContainer(
                             towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                            animationSpec =
-                                tween(
-                                    ANIMATION_SPEED,
-                                ),
+                            animationSpec = tween(ANIMATION_SPEED),
                         )
                     },
                     popExitTransition = {
                         slideOutOfContainer(
                             towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                            animationSpec =
-                                tween(
-                                    ANIMATION_SPEED,
-                                ),
+                            animationSpec = tween(ANIMATION_SPEED),
                         )
                     },
                 ) {

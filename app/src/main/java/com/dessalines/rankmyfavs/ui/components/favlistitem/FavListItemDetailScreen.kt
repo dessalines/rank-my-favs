@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.annotation.Keep
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -135,20 +136,20 @@ fun FavListItemDetailScreen(
                 },
             )
 
-            LazyColumn(
-                state = listState,
-                modifier =
-                    Modifier
-                        .padding(padding)
-                        .imePadding(),
+            Box(
+                modifier = Modifier.padding(padding).imePadding(),
             ) {
-                favListItem?.let {
-                    item {
-                        FavListItemDetails(it)
-                    }
+                LazyColumn(
+                    state = listState,
+                ) {
+                    favListItem?.let {
+                        item {
+                            FavListItemDetails(it)
+                        }
 
-                    item {
-                        Stats(it)
+                        item {
+                            Stats(it)
+                        }
                     }
                 }
             }

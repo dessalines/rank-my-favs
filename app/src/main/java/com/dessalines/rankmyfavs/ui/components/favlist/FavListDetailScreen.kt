@@ -6,10 +6,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
@@ -43,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.asLiveData
@@ -59,7 +62,6 @@ import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
-import com.dessalines.rankmyfavs.utils.numToString
 import com.dessalines.rankmyfavs.utils.writeData
 import com.floern.castingcsv.castingCSV
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -139,29 +141,33 @@ fun FavListDetailScreen(
                 },
             )
 
-            LazyColumn(
-                state = listState,
+            Box(
                 modifier =
                     Modifier
                         .padding(padding)
                         .imePadding(),
             ) {
-                // Unfortunately showing these details messes up the scroll remember position.
-                // Comment it for now
+                LazyColumn(
+                    state = listState,
+                ) {
+                    // Unfortunately showing these details messes up the scroll remember position.
+                    // Comment it for now
 //                item {
 //                    FavListDetails(favList)
 //                }
 
-                items(
-                    key = { it.id },
-                    items = favListItems.orEmpty(),
-                ) { favListItem ->
-                    FavListItemRow(
-                        favListItem = favListItem,
-                        onClick = {
-                            navController.navigate("itemDetails/${favListItem.id}")
-                        },
-                    )
+                    itemsIndexed(
+                        key = { _, item -> item.id },
+                        items = favListItems.orEmpty(),
+                    ) { index, favListItem ->
+                        FavListItemRow(
+                            favListItem = favListItem,
+                            index = index + 1,
+                            onClick = {
+                                navController.navigate("itemDetails/${favListItem.id}")
+                            },
+                        )
+                    }
                 }
             }
         },
@@ -332,6 +338,7 @@ fun FavListDetailsPreview() {
 @Composable
 fun FavListItemRow(
     favListItem: FavListItem,
+    index: Int,
     onClick: () -> Unit,
 ) {
     ListItem(
@@ -340,8 +347,8 @@ fun FavListItemRow(
         },
         trailingContent = {
             Text(
-                text = numToString(favListItem.glickoRating, 0),
-                style = MaterialTheme.typography.labelMedium,
+                text = index.toString(),
+                style = MaterialTheme.typography.labelMedium.copy(fontFamily = FontFamily.Monospace),
             )
         },
         modifier =
@@ -356,6 +363,7 @@ fun FavListItemRow(
 fun FavListItemRowPreview() {
     FavListItemRow(
         favListItem = sampleFavListItem,
+        index = 23,
         onClick = {},
     )
 }
