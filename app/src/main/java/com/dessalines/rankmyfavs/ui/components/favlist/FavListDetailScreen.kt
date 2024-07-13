@@ -55,12 +55,14 @@ import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListMatchViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModel
+import com.dessalines.rankmyfavs.db.MIN_CONFIDENCE_BOUND
 import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.AreYouSureDialog
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import com.dessalines.rankmyfavs.ui.components.favlistitem.calculateConfidence
 import com.dessalines.rankmyfavs.utils.writeData
 import com.floern.castingcsv.castingCSV
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -340,13 +342,15 @@ fun FavListItemRow(
     index: Int,
     onClick: () -> Unit,
 ) {
+    // Only show the rank if its above the min confidence bound
+    val rank = if (calculateConfidence(favListItem.glickoDeviation) >= MIN_CONFIDENCE_BOUND) index.toString() else "?"
     ListItem(
         headlineContent = {
             Text(favListItem.name)
         },
         trailingContent = {
             Text(
-                text = index.toString(),
+                text = rank,
                 style = MaterialTheme.typography.labelMedium.copy(fontFamily = FontFamily.Monospace),
             )
         },

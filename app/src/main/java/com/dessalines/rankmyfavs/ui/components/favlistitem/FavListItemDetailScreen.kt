@@ -237,7 +237,7 @@ fun Stats(favListItem: FavListItem) {
             ),
             StatItem(
                 key = stringResource(R.string.confidence),
-                v = calculateConfidence(favListItem.glickoDeviation),
+                v = calculateConfidenceStr(favListItem.glickoDeviation),
             ),
             StatItem(
                 key = stringResource(R.string.deviation),
@@ -263,7 +263,9 @@ fun Stats(favListItem: FavListItem) {
     }
 }
 
-fun calculateConfidence(deviation: Float): String = numToString(((1500F - deviation) / 1500F * 100F), 1) + "%"
+fun calculateConfidence(deviation: Float) = ((1500F - deviation) / 1500F * 100F)
+
+fun calculateConfidenceStr(deviation: Float): String = numToString(calculateConfidence(deviation), 1) + "%"
 
 @Composable
 @Preview

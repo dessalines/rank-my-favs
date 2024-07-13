@@ -23,6 +23,7 @@ import kotlinx.coroutines.withContext
 const val DEFAULT_THEME = 0
 const val DEFAULT_THEME_COLOR = 0
 const val DEFAULT_MIN_CONFIDENCE = 85
+const val MIN_CONFIDENCE_BOUND = 80
 
 @Entity
 data class AppSettings(
