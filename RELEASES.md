@@ -1,5 +1,12 @@
+## What's Changed in 0.2.2
+
+- Adding the ability to import descriptions. by @dessalines in [#69](https://github.com/dessalines/rank-my-favs/pull/69)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.2.1...0.2.2
+
 ## What's Changed in 0.2.1
 
+- Upping version. by @dessalines
 - Adding a ? for uncertain rankings, and a skip button. by @dessalines in [#65](https://github.com/dessalines/rank-my-favs/pull/65)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.2.0...0.2.1
