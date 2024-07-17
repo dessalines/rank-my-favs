@@ -84,7 +84,8 @@ fun ImportListScreen(
                             val insert =
                                 FavListItemInsert(
                                     favListId = favListId,
-                                    name = item,
+                                    name = item.name,
+                                    description = item.description,
                                 )
                             favListItemViewModel.insert(insert)
                         }
@@ -102,18 +103,34 @@ fun ImportListScreen(
     )
 }
 
-private fun extractLines(listStr: String): List<String> {
+data class FavListItemLine(
+    val name: String,
+    val description: String?,
+)
+
+/**
+ * This is of the form: - option 1 name | option 1 description
+ */
+private fun extractLines(listStr: String): List<FavListItemLine> {
     val listItems =
         listStr
             .lines()
             .map { it.trim() }
             // Remove the preceding list items if necessary
             .map {
-                if (it.startsWith("- ") || it.startsWith("* ")) {
-                    it.substring(2)
-                } else {
-                    it
-                }
+                // Remove the markdown list start
+                val removedMarkdownListStart =
+                    if (it.startsWith("- ") || it.startsWith("* ")) {
+                        it.substring(2)
+                    } else {
+                        it
+                    }
+
+                // Split it with |
+                val split = removedMarkdownListStart.split("|")
+                val name = split[0].trim()
+                val description = split.getOrNull(1)?.trim()
+                FavListItemLine(name, description)
             }
     return listItems
 }

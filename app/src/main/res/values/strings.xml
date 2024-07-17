@@ -45,7 +45,7 @@
     <string name="what_do_these_numbers_mean">What do these numbers mean?</string>
     <string name="clear_stats">Clear Stats</string>
     <string name="import_list">Import List</string>
-    <string name="import_list_description">Copy-Paste an existing list for an import.\n\nEach line should be a different item.</string>
+    <string name="import_list_description">Copy-Paste an existing list for an import.\n\nEach line should be a different item, of the form:\n- Name | Description\n\nThe starting - and | are optional.</string>
     <string name="export_list_as_csv">Export List as CSV</string>
     <string name="confidence">Confidence</string>
     <string name="match_count">Match Count</string>
