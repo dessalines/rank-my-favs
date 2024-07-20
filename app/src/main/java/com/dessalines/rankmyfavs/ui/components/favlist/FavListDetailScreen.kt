@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FileOpen
 import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.material.icons.outlined.SaveAs
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -32,15 +34,24 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -87,6 +98,10 @@ fun FavListDetailScreen(
     val showClearStatsDialog = remember { mutableStateOf(false) }
     val showDeleteDialog = remember { mutableStateOf(false) }
 
+    var showSearchBar by remember { mutableStateOf(false) }
+    var searchFilter by rememberSaveable { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+
     // For exporting the csv
     val contentResolver = ctx.contentResolver
     val exportCsvLauncher =
@@ -104,11 +119,67 @@ fun FavListDetailScreen(
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = favList?.name.orEmpty(),
-                navController = navController,
-                scrollBehavior = scrollBehavior,
-            )
+            if (!showSearchBar) {
+                SimpleTopAppBar(
+                    text = favList?.name.orEmpty(),
+                    navController = navController,
+                    scrollBehavior = scrollBehavior,
+                    actions = {
+                        BasicTooltipBox(
+                            positionProvider = tooltipPosition,
+                            state = rememberBasicTooltipState(isPersistent = false),
+                            tooltip = {
+                                ToolTip(stringResource(R.string.search))
+                            },
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    showSearchBar = true
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Search,
+                                    contentDescription = stringResource(R.string.search),
+                                )
+                            }
+                        }
+                    },
+                )
+            } else {
+                TopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        TextField(
+                            value = searchFilter,
+                            onValueChange = { searchFilter = it },
+                            singleLine = true,
+                            modifier = Modifier.focusRequester(focusRequester),
+                            colors =
+                                TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                ),
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = { showSearchBar = false },
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Outlined.ArrowBack,
+                                contentDescription = stringResource(R.string.hide_search_bar),
+                            )
+                        }
+                    },
+                )
+                // Focus when the searchbar is expanded
+                LaunchedEffect(Unit) {
+                    focusRequester.requestFocus()
+                }
+            }
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
@@ -159,7 +230,7 @@ fun FavListDetailScreen(
 
                     itemsIndexed(
                         key = { _, item -> item.id },
-                        items = favListItems.orEmpty(),
+                        items = favListItems.orEmpty().filter { it.name.contains(searchFilter) },
                     ) { index, favListItem ->
                         FavListItemRow(
                             favListItem = favListItem,

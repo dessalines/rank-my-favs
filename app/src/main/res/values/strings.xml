@@ -56,4 +56,6 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="yes">Yes</string>
     <string name="skip">Skip</string>
+    <string name="search">Search</string>
+    <string name="hide_search_bar">Hide Search Bar</string>
 </resources>
