@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -161,6 +162,24 @@ fun FavListItemDetailScreen(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
                         tooltip = {
+                            ToolTip(stringResource(R.string.edit_list))
+                        },
+                    ) {
+                        IconButton(
+                            onClick = {
+                                navController.navigate("editItem/$id")
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Edit,
+                                contentDescription = stringResource(R.string.edit_list),
+                            )
+                        }
+                    }
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
                             ToolTip(clearStatsMessage)
                         },
                     ) {
@@ -199,18 +218,18 @@ fun FavListItemDetailScreen(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
                         tooltip = {
-                            ToolTip(stringResource(R.string.edit_list))
+                            ToolTip(stringResource(R.string.rate))
                         },
                     ) {
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate("editItem/$id")
+                                navController.navigate("match?favListItemId=$id")
                             },
                             shape = CircleShape,
                         ) {
                             Icon(
-                                imageVector = Icons.Outlined.Edit,
-                                contentDescription = stringResource(R.string.edit_list),
+                                Icons.Outlined.Reviews,
+                                contentDescription = stringResource(R.string.rate),
                             )
                         }
                     }
