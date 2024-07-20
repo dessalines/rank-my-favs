@@ -1,5 +1,14 @@
+## What's Changed in 0.3.0
+
+- Add filtering items in list. by @dessalines in [#75](https://github.com/dessalines/rank-my-favs/pull/75)
+- Adding more actions dropdown menu. by @dessalines in [#74](https://github.com/dessalines/rank-my-favs/pull/74)
+- Adding ability to force-train an item. by @dessalines in [#73](https://github.com/dessalines/rank-my-favs/pull/73)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.2.2...0.3.0
+
 ## What's Changed in 0.2.2
 
+- Upping version. by @dessalines
 - Adding the ability to import descriptions. by @dessalines in [#69](https://github.com/dessalines/rank-my-favs/pull/69)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.2.1...0.2.2
