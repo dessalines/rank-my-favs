@@ -56,14 +56,36 @@ fun MatchScreen(
     navController: NavController,
     favListItemViewModel: FavListItemViewModel,
     favListMatchViewModel: FavListMatchViewModel,
-    favListId: Int,
+    favListId: Int?,
+    favListItemId: Int?,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
 
-    val first = favListItemViewModel.leastTrained(favListId)
+    val first =
+        if (favListId !== null) {
+            favListItemViewModel.leastTrained(favListId)
+        } else if (favListItemId !== null) {
+            favListItemViewModel.getByIdSync(favListItemId)
+        } else {
+            null
+        }
+
+    fun rematchNav() =
+        if (favListId !== null) {
+            navController.navigate("match?favListId=$favListId") {
+                popUpTo("favListDetails/${first?.favListId}")
+            }
+        } else if (favListItemId !== null) {
+            navController.navigate("match?favListItemId=$favListItemId") {
+                popUpTo("favListDetails/${first?.favListId}")
+            }
+        } else {
+            null
+        }
+
     val second =
         if (first !== null) {
-            favListItemViewModel.closestMatch(favListId, first.id, first.glickoRating)
+            favListItemViewModel.closestMatch(first.favListId, first.id, first.glickoRating)
         } else {
             null
         }
@@ -100,9 +122,7 @@ fun MatchScreen(
                                     winner = first,
                                     loser = second,
                                 )
-                                navController.navigate("match/$favListId") {
-                                    popUpTo("favListDetails/$favListId")
-                                }
+                                rematchNav()
                             },
                         )
                         MatchItem(
@@ -114,9 +134,7 @@ fun MatchScreen(
                                     winner = second,
                                     loser = first,
                                 )
-                                navController.navigate("match/$favListId") {
-                                    popUpTo("favListDetails/$favListId")
-                                }
+                                rematchNav()
                             },
                         )
                     }
@@ -137,9 +155,7 @@ fun MatchScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                navController.navigate("match/$favListId") {
-                                    popUpTo("favListDetails/$favListId")
-                                }
+                                rematchNav()
                             },
                         ) {
                             Icon(
@@ -159,8 +175,9 @@ fun MatchScreen(
                     ) {
                         FloatingActionButton(
                             onClick = {
-                                navController.navigate("favListDetails/$favListId") {
-                                    popUpTo("favListDetails/$favListId")
+                                val listId = first?.favListId ?: favListId ?: 1
+                                navController.navigate("favListDetails/$listId") {
+                                    popUpTo("favListDetails/$listId")
                                 }
                             },
                             shape = CircleShape,

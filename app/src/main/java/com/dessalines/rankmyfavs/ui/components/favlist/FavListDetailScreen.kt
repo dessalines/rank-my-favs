@@ -295,7 +295,7 @@ fun FavListDetailScreen(
                         ) {
                             FloatingActionButton(
                                 onClick = {
-                                    navController.navigate("match/$id")
+                                    navController.navigate("match?favListId=$id")
                                 },
                                 shape = CircleShape,
                             ) {

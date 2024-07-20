@@ -204,16 +204,28 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     composable(
-                        route = "match/{id}",
-                        arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                        route = "match?favListId={favListId}&favListItemId={favListItemId}",
+                        arguments =
+                            listOf(
+                                navArgument("favListId") {
+                                    type = NavType.StringType
+                                    nullable = true
+                                },
+                                navArgument("favListItemId") {
+                                    type = NavType.StringType
+                                    nullable = true
+                                },
+                            ),
                     ) {
-                        val favListId = it.arguments?.getInt("id") ?: 0
+                        val favListId = it.arguments?.getString("favListId")?.toInt()
+                        val favListItemId = it.arguments?.getString("favListItemId")?.toInt()
 
                         MatchScreen(
                             navController = navController,
                             favListItemViewModel = favListItemViewModel,
                             favListMatchViewModel = favListMatchViewModel,
                             favListId = favListId,
+                            favListItemId = favListItemId,
                         )
                     }
 
