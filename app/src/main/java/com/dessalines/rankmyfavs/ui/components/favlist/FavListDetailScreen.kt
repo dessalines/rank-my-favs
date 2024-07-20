@@ -234,7 +234,13 @@ fun FavListDetailScreen(
 
                     itemsIndexed(
                         key = { _, item -> item.id },
-                        items = favListItems.orEmpty().filter { it.name.contains(searchFilter) },
+                        items =
+                            favListItems.orEmpty().filter {
+                                it.name.contains(
+                                    searchFilter,
+                                    ignoreCase = true,
+                                )
+                            },
                     ) { index, favListItem ->
                         FavListItemRow(
                             favListItem = favListItem,
