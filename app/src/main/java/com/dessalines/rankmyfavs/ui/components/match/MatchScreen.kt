@@ -284,7 +284,8 @@ fun MatchItem(
                 MarkdownText(
                     markdown = favListItem.description,
                     linkColor = MaterialTheme.colorScheme.primary,
-                    disableLinkMovementMethod = true,
+                    // There's no way to actually override this
+                    onClick = onClick,
                 )
             }
         }
