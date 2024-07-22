@@ -162,7 +162,7 @@ fun FavListItemDetailScreen(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
                         tooltip = {
-                            ToolTip(stringResource(R.string.edit_list))
+                            ToolTip(stringResource(R.string.edit_item))
                         },
                     ) {
                         IconButton(
@@ -172,7 +172,7 @@ fun FavListItemDetailScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Edit,
-                                contentDescription = stringResource(R.string.edit_list),
+                                contentDescription = stringResource(R.string.edit_item),
                             )
                         }
                     }
