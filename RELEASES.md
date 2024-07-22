@@ -1,5 +1,12 @@
+## What's Changed in 0.3.1
+
+- Make search filter ignore case. by @dessalines in [#76](https://github.com/dessalines/rank-my-favs/pull/76)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.3.0...0.3.1
+
 ## What's Changed in 0.3.0
 
+- Upping version. by @dessalines
 - Add filtering items in list. by @dessalines in [#75](https://github.com/dessalines/rank-my-favs/pull/75)
 - Adding more actions dropdown menu. by @dessalines in [#74](https://github.com/dessalines/rank-my-favs/pull/74)
 - Adding ability to force-train an item. by @dessalines in [#73](https://github.com/dessalines/rank-my-favs/pull/73)
