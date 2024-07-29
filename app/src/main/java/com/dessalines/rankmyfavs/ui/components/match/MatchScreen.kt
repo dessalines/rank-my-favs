@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberBasicTooltipState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.SkipNext
@@ -60,6 +62,7 @@ fun MatchScreen(
     favListItemId: Int?,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val scrollState = rememberScrollState()
 
     val first =
         if (favListId !== null) {
@@ -103,7 +106,8 @@ fun MatchScreen(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(padding),
+                        .padding(padding)
+                        .verticalScroll(scrollState),
             ) {
                 if (first !== null && second !== null) {
                     FlowRow(

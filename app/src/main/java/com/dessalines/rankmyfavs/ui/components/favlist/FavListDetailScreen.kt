@@ -7,6 +7,7 @@ import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -404,12 +405,13 @@ fun FavListDetails(favList: FavList) {
             markdown = favList.description,
             linkColor = MaterialTheme.colorScheme.primary,
             modifier =
-                Modifier.padding(
-                    top = 0.dp,
-                    bottom = SMALL_PADDING,
-                    start = LARGE_PADDING,
-                    end = LARGE_PADDING,
-                ),
+                Modifier
+                    .padding(
+                        top = 0.dp,
+                        bottom = SMALL_PADDING,
+                        start = LARGE_PADDING,
+                        end = LARGE_PADDING,
+                    ).fillMaxWidth(),
         )
     }
 }
