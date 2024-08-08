@@ -137,6 +137,15 @@ data class FavListItemUpdateStats(
     val matchCount: Int,
 )
 
+@Keep
+data class FavListItemWithTier(
+    val id: Int,
+    val favListId: Int,
+    val name: String,
+    val glickoRating: Float,
+    val tier: String
+)
+
 private const val BY_ID_QUERY = "SELECT * FROM FavListItem where id = :favListItemId"
 
 @Dao
@@ -149,6 +158,25 @@ interface FavListItemDao {
 
     @Query(BY_ID_QUERY)
     fun getByIdSync(favListItemId: Int): FavListItem
+
+    @Query("""
+        SELECT *,
+        CASE
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 1 / 5) THEN 'S'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 2 / 5) THEN 'A'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 3 / 5) THEN 'B'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 4 / 5) THEN 'C'
+            ELSE 'D'
+        END AS tier
+        FROM FavListItem
+        WHERE fav_list_id = :favListId
+        ORDER BY glicko_rating DESC
+    """)
+    fun getFromListTiered(favListId: Int): Flow<List<FavListItemWithTier>>
 
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.
@@ -218,6 +246,8 @@ class FavListItemRepository(
 
     fun getByIdSync(favListItemId: Int) = favListItemDao.getByIdSync(favListItemId)
 
+    fun getFromListTiered(favListId: Int) = favListItemDao.getFromListTiered(favListId)
+
     fun leastTrained(favListId: Int) = favListItemDao.leastTrained(favListId)
 
     fun closestMatch(
@@ -249,6 +279,8 @@ class FavListItemViewModel(
     fun getById(favListItemId: Int) = repository.getById(favListItemId)
 
     fun getByIdSync(favListItemId: Int) = repository.getByIdSync(favListItemId)
+
+    fun getFromListTiered(favListId: Int) = repository.getFromListTiered(favListId)
 
     fun leastTrained(favListId: Int) = repository.leastTrained(favListId)
 

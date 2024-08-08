@@ -118,6 +118,7 @@ fun FavListDetailScreen(
                 writeData(contentResolver, it, csv)
             }
         }
+    val exportPngLauncher = null; // TODO
 
     val clearStatsMessage = stringResource(R.string.clear_stats)
     val deletedMessage = stringResource(R.string.list_deleted)
@@ -294,6 +295,19 @@ fun FavListDetailScreen(
                         )
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.export_list_as_csv)) },
+                            onClick = {
+                                showMoreDropdown = false
+                                favList?.let { exportCsvLauncher.launch(it.name) }
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Outlined.SaveAs,
+                                    contentDescription = stringResource(R.string.export_list_as_csv),
+                                )
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.export_list_as_tier_list)) },
                             onClick = {
                                 showMoreDropdown = false
                                 favList?.let { exportCsvLauncher.launch(it.name) }
