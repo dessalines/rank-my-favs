@@ -1,5 +1,12 @@
+## What's Changed in 0.3.3
+
+- Adding renovate automerge. by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.3.2...0.3.3
+
 ## What's Changed in 0.3.2
 
+- Upping version. by @dessalines
 - Adding support for markdown images. by @dessalines in [#92](https://github.com/dessalines/rank-my-favs/pull/92)
 - Fix match screen description tap. by @dessalines in [#85](https://github.com/dessalines/rank-my-favs/pull/85)
 - Fixing edit item translation by @dessalines in [#84](https://github.com/dessalines/rank-my-favs/pull/84)
