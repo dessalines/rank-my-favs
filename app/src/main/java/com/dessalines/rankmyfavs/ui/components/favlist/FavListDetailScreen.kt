@@ -1,6 +1,5 @@
 package com.dessalines.rankmyfavs.ui.components.favlist
 
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -308,7 +307,7 @@ fun FavListDetailScreen(
                             },
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.export_list_as_tier_list)) },
+                            text = { Text(stringResource(R.string.tier_list)) },
                             onClick = {
                                 showMoreDropdown = false
                                 navController.navigate("tierList/${favList?.id}")
@@ -316,7 +315,7 @@ fun FavListDetailScreen(
                             leadingIcon = {
                                 Icon(
                                     Icons.AutoMirrored.Outlined.List,
-                                    contentDescription = stringResource(R.string.export_list_as_tier_list),
+                                    contentDescription = stringResource(R.string.tier_list),
                                 )
                             },
                         )

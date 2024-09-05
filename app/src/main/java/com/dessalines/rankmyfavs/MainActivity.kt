@@ -212,6 +212,7 @@ class MainActivity : AppCompatActivity() {
                         TierListScreen(
                             navController = navController,
                             favListItemViewModel = favListItemViewModel,
+                            favListViewModel = favListViewModel,
                             favListId = favListId,
                         )
                     }

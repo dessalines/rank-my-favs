@@ -1,5 +1,7 @@
 package com.dessalines.rankmyfavs.ui.components.favlist
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -31,23 +33,30 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
+import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import com.dessalines.rankmyfavs.utils.writeBitmap
+import com.smarttoolfactory.screenshot.ScreenshotBox
+import com.smarttoolfactory.screenshot.rememberScreenshotState
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -55,13 +64,28 @@ import kotlinx.coroutines.delay
 fun TierListScreen(
     navController: NavController,
     favListItemViewModel: FavListItemViewModel,
+    favListViewModel: FavListViewModel,
     favListId: Int,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
     var inputLimit by remember { mutableStateOf("") }
     var limit by remember { mutableStateOf<Int?>(null) }
+    val screenshotState = rememberScreenshotState()
+
+    val context = LocalContext.current
+    val exportPngLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("image/png"),
+        ) {
+            it?.let {
+                screenshotState.bitmap?.let { bitmap ->
+                    writeBitmap(context.contentResolver, it, bitmap)
+                }
+            }
+        }
 
     val tierList = favListItemViewModel.getFromListTiered(favListId, limit)
+    val favList by favListViewModel.getById(favListId).asLiveData().observeAsState()
 
     LaunchedEffect(inputLimit) {
         delay(500) // limit shouldn't be updated instantly
@@ -103,7 +127,9 @@ fun TierListScreen(
                     singleLine = true
                 )
 
-                TierList(tierList)
+                ScreenshotBox(screenshotState = screenshotState) {
+                    TierList(tierList)
+                }
             }
         },
         floatingActionButton = {
@@ -116,8 +142,10 @@ fun TierListScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        // TODO: take TierList component screenshot and save
-                        navController.navigateUp()
+                        screenshotState.capture()
+                        screenshotState.bitmap?.let {
+                            exportPngLauncher.launch("${favList?.name}_tier_list.png")
+                        }
                     },
                     shape = CircleShape,
                 ) {

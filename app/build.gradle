@@ -79,6 +79,11 @@ composeCompiler {
 }
 
 dependencies {
+    // Composable screenshot
+    implementation('com.github.SmartToolFactory:Compose-Screenshot:1.0.3') {
+        exclude group: 'androidx.compose.material', module: 'material-icons-extended-android'
+    }
+
     // CSV exporting
     implementation 'com.floern.castingcsv:casting-csv-kt:1.2'
 

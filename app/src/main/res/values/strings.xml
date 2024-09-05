@@ -49,7 +49,6 @@
     <string name="tier_list_limit_description">Limit top X number of items (optional)</string>
     <string name="import_list_description">Copy-Paste an existing list for an import.\n\nEach line should be a different item, of the form:\n- Name | Description\n\nThe starting - and | are optional.</string>
     <string name="export_list_as_csv">Export List as CSV</string>
-    <string name="export_list_as_tier_list">Export as Tier List</string>
     <string name="confidence">Confidence</string>
     <string name="match_count">Match Count</string>
     <string name="min_confidence">Minimum Confidence: %1$s%%</string>
