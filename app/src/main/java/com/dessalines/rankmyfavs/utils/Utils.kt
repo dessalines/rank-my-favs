@@ -61,7 +61,11 @@ fun writeData(
     }
 }
 
-fun writeBitmap(contentResolver: ContentResolver, uri: Uri, bitmap: Bitmap) {
+fun writeBitmap(
+    contentResolver: ContentResolver,
+    uri: Uri,
+    bitmap: Bitmap,
+) {
     try {
         val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
         outputStream?.use {
@@ -71,4 +75,3 @@ fun writeBitmap(contentResolver: ContentResolver, uri: Uri, bitmap: Bitmap) {
         e.printStackTrace()
     }
 }
-

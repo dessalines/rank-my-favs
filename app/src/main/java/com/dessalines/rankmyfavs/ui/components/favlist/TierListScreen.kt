@@ -111,20 +111,21 @@ fun TierListScreen(
         content = { padding ->
             Column(
                 modifier =
-                Modifier
-                    .padding(padding)
-                    .imePadding(),
+                    Modifier
+                        .padding(padding)
+                        .imePadding(),
             ) {
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.tier_list_limit_description)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(SMALL_PADDING),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(SMALL_PADDING),
                     value = inputLimit,
                     onValueChange = { newLimit ->
                         inputLimit = newLimit
                     },
-                    singleLine = true
+                    singleLine = true,
                 )
 
                 ScreenshotBox(screenshotState = screenshotState) {
@@ -172,33 +173,39 @@ fun TierList(tierList: Map<String, List<FavListItem>>) {
 }
 
 @Composable
-fun TierSection(tier: String, items: List<FavListItem>) {
-    val tierColors = mapOf(
-        "S" to Color(0XFFFF7F7F),
-        "A" to Color(0XFFFFBF7F),
-        "B" to Color(0XFFFFDF7F),
-        "C" to Color(0XFFFFFF7F),
-        "D" to Color(0XFFBFFF7F)
-    )
+fun TierSection(
+    tier: String,
+    items: List<FavListItem>,
+) {
+    val tierColors =
+        mapOf(
+            "S" to Color(0XFFFF7F7F),
+            "A" to Color(0XFFFFBF7F),
+            "B" to Color(0XFFFFDF7F),
+            "C" to Color(0XFFFFFF7F),
+            "D" to Color(0XFFBFFF7F),
+        )
 
     val backgroundColor = tierColors[tier] ?: Color.LightGray
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
-            .padding(LARGE_PADDING),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
+                .padding(LARGE_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier
-                .weight(0.2f),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .weight(0.2f),
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = tier,
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.Black
+                color = Color.Black,
             )
         }
 
@@ -206,9 +213,10 @@ fun TierSection(tier: String, items: List<FavListItem>) {
 
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 100.dp),
-            modifier = Modifier
-                .weight(0.8f)
-                .padding(start = SMALL_PADDING),
+            modifier =
+                Modifier
+                    .weight(0.8f)
+                    .padding(start = SMALL_PADDING),
             verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
@@ -217,7 +225,7 @@ fun TierSection(tier: String, items: List<FavListItem>) {
                     text = item.name,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(vertical = 4.dp),
-                    color = Color.Black
+                    color = Color.Black,
                 )
             }
         }
@@ -229,22 +237,81 @@ fun TierSection(tier: String, items: List<FavListItem>) {
 fun TierListPreview() {
     TierList(
         mapOf(
-            "S" to listOf(
-                FavListItem(id = 1, favListId = 1, name = "Item 1", winRate = 0f, glickoRating = 0f, glickoDeviation = 0f, glickoVolatility = 0f, matchCount = 0),
-                FavListItem(id = 2, favListId = 1, name = "Item 2", winRate = 0f, glickoRating = 0f, glickoDeviation = 0f, glickoVolatility = 0f, matchCount = 0)
-            ),
-            "A" to listOf(
-                FavListItem(id = 3, favListId = 1, name = "Item 3", winRate = 0f, glickoRating = 0f, glickoDeviation = 0f, glickoVolatility = 0f, matchCount = 0)
-            ),
-            "B" to listOf(
-                FavListItem(id = 3, favListId = 1, name = "Item 4", winRate = 0f, glickoRating = 0f, glickoDeviation = 0f, glickoVolatility = 0f, matchCount = 0)
-            ),
-            "C" to listOf(
-                FavListItem(id = 3, favListId = 1, name = "Item 5", winRate = 0f, glickoRating = 0f, glickoDeviation = 0f, glickoVolatility = 0f, matchCount = 0)
-            ),
-            "D" to listOf(
-                FavListItem(id = 3, favListId = 1, name = "Item 6", winRate = 0f, glickoRating = 0f, glickoDeviation = 0f, glickoVolatility = 0f, matchCount = 0)
-            )
-        )
+            "S" to
+                listOf(
+                    FavListItem(
+                        id = 1,
+                        favListId = 1,
+                        name = "Item 1",
+                        winRate = 0f,
+                        glickoRating = 0f,
+                        glickoDeviation = 0f,
+                        glickoVolatility = 0f,
+                        matchCount = 0,
+                    ),
+                    FavListItem(
+                        id = 2,
+                        favListId = 1,
+                        name = "Item 2",
+                        winRate = 0f,
+                        glickoRating = 0f,
+                        glickoDeviation = 0f,
+                        glickoVolatility = 0f,
+                        matchCount = 0,
+                    ),
+                ),
+            "A" to
+                listOf(
+                    FavListItem(
+                        id = 3,
+                        favListId = 1,
+                        name = "Item 3",
+                        winRate = 0f,
+                        glickoRating = 0f,
+                        glickoDeviation = 0f,
+                        glickoVolatility = 0f,
+                        matchCount = 0,
+                    ),
+                ),
+            "B" to
+                listOf(
+                    FavListItem(
+                        id = 3,
+                        favListId = 1,
+                        name = "Item 4",
+                        winRate = 0f,
+                        glickoRating = 0f,
+                        glickoDeviation = 0f,
+                        glickoVolatility = 0f,
+                        matchCount = 0,
+                    ),
+                ),
+            "C" to
+                listOf(
+                    FavListItem(
+                        id = 3,
+                        favListId = 1,
+                        name = "Item 5",
+                        winRate = 0f,
+                        glickoRating = 0f,
+                        glickoDeviation = 0f,
+                        glickoVolatility = 0f,
+                        matchCount = 0,
+                    ),
+                ),
+            "D" to
+                listOf(
+                    FavListItem(
+                        id = 3,
+                        favListId = 1,
+                        name = "Item 6",
+                        winRate = 0f,
+                        glickoRating = 0f,
+                        glickoDeviation = 0f,
+                        glickoVolatility = 0f,
+                        matchCount = 0,
+                    ),
+                ),
+        ),
     )
 }

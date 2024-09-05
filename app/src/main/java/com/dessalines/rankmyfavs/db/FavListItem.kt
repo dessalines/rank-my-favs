@@ -224,7 +224,10 @@ interface FavListItemDao {
         ORDER BY glicko_rating DESC
     """,
     )
-    fun getFromListTieredWithLimit(favListId: Int, limit: Int): List<FavListItemWithTier>
+    fun getFromListTieredWithLimit(
+        favListId: Int,
+        limit: Int,
+    ): List<FavListItemWithTier>
 
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.
@@ -294,19 +297,22 @@ class FavListItemRepository(
 
     fun getByIdSync(favListItemId: Int) = favListItemDao.getByIdSync(favListItemId)
 
-    fun getFromListTiered(favListId: Int, limit: Int? = null): Map<String, List<FavListItem>> {
+    fun getFromListTiered(
+        favListId: Int,
+        limit: Int? = null,
+    ): Map<String, List<FavListItem>> {
         val tierList =
             limit?.let { lim ->
                 favListItemDao.getFromListTieredWithLimit(
                     favListId,
-                    min(lim, favListItemDao.getCountByIdSync(favListId))
+                    min(lim, favListItemDao.getCountByIdSync(favListId)),
                 )
             }
                 ?: favListItemDao.getFromListTiered(favListId)
 
         return tierList.groupBy(
             keySelector = { it.tier },
-            valueTransform = { getByIdSync(it.id) }
+            valueTransform = { getByIdSync(it.id) },
         )
     }
 
@@ -321,12 +327,10 @@ class FavListItemRepository(
     fun insert(favListItem: FavListItemInsert) = favListItemDao.insert(favListItem)
 
     @WorkerThread
-    suspend fun updateNameAndDesc(favListItem: FavListItemUpdateNameAndDesc) =
-        favListItemDao.updateNameAndDesc(favListItem)
+    suspend fun updateNameAndDesc(favListItem: FavListItemUpdateNameAndDesc) = favListItemDao.updateNameAndDesc(favListItem)
 
     @WorkerThread
-    suspend fun updateStats(favListItem: FavListItemUpdateStats) =
-        favListItemDao.updateStats(favListItem)
+    suspend fun updateStats(favListItem: FavListItemUpdateStats) = favListItemDao.updateStats(favListItem)
 
     @WorkerThread
     suspend fun clearStatsForList(favListId: Int) = favListItemDao.clearStatsForList(favListId)
@@ -344,8 +348,10 @@ class FavListItemViewModel(
 
     fun getByIdSync(favListItemId: Int) = repository.getByIdSync(favListItemId)
 
-    fun getFromListTiered(favListId: Int, limit: Int? = null) =
-        repository.getFromListTiered(favListId, limit)
+    fun getFromListTiered(
+        favListId: Int,
+        limit: Int? = null,
+    ) = repository.getFromListTiered(favListId, limit)
 
     fun leastTrained(favListId: Int) = repository.leastTrained(favListId)
 
