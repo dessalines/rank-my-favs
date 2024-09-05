@@ -36,6 +36,7 @@ import com.dessalines.rankmyfavs.ui.components.favlist.EditFavListScreen
 import com.dessalines.rankmyfavs.ui.components.favlist.FavListDetailScreen
 import com.dessalines.rankmyfavs.ui.components.favlist.FavListsScreen
 import com.dessalines.rankmyfavs.ui.components.favlist.ImportListScreen
+import com.dessalines.rankmyfavs.ui.components.favlist.TierListScreen
 import com.dessalines.rankmyfavs.ui.components.favlistitem.CreateFavListItemScreen
 import com.dessalines.rankmyfavs.ui.components.favlistitem.EditFavListItemScreen
 import com.dessalines.rankmyfavs.ui.components.favlistitem.FavListItemDetailScreen
@@ -197,6 +198,18 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val favListId = it.arguments?.getInt("favListId") ?: 0
                         ImportListScreen(
+                            navController = navController,
+                            favListItemViewModel = favListItemViewModel,
+                            favListId = favListId,
+                        )
+                    }
+
+                    composable(
+                        route = "tierList/{favListId}",
+                        arguments = listOf(navArgument("favListId") { type = NavType.IntType }),
+                    ) {
+                        val favListId = it.arguments?.getInt("favListId") ?: 0
+                        TierListScreen(
                             navController = navController,
                             favListItemViewModel = favListItemViewModel,
                             favListId = favListId,

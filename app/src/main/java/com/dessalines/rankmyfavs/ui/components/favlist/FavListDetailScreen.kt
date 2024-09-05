@@ -1,5 +1,6 @@
 package com.dessalines.rankmyfavs.ui.components.favlist
 
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +18,7 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
@@ -118,7 +120,6 @@ fun FavListDetailScreen(
                 writeData(contentResolver, it, csv)
             }
         }
-    val exportPngLauncher = null; // TODO
 
     val clearStatsMessage = stringResource(R.string.clear_stats)
     val deletedMessage = stringResource(R.string.list_deleted)
@@ -310,12 +311,12 @@ fun FavListDetailScreen(
                             text = { Text(stringResource(R.string.export_list_as_tier_list)) },
                             onClick = {
                                 showMoreDropdown = false
-                                favList?.let { exportCsvLauncher.launch(it.name) }
+                                navController.navigate("tierList/${favList?.id}")
                             },
                             leadingIcon = {
                                 Icon(
-                                    Icons.Outlined.SaveAs,
-                                    contentDescription = stringResource(R.string.export_list_as_csv),
+                                    Icons.AutoMirrored.Outlined.List,
+                                    contentDescription = stringResource(R.string.export_list_as_tier_list),
                                 )
                             },
                         )
