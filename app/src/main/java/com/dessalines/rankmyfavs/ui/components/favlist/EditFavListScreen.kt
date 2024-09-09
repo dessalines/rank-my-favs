@@ -77,6 +77,7 @@ fun EditFavListScreen(
                 },
             ) {
                 FloatingActionButton(
+                    modifier = Modifier.imePadding(),
                     onClick = {
                         val update =
                             FavListUpdate(

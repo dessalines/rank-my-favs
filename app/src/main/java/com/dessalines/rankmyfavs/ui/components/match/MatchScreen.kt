@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.rememberScrollState
@@ -178,6 +179,7 @@ fun MatchScreen(
                         },
                     ) {
                         FloatingActionButton(
+                            modifier = Modifier.imePadding(),
                             onClick = {
                                 val listId = first?.favListId ?: favListId ?: 1
                                 navController.navigate("favListDetails/$listId") {

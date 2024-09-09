@@ -142,6 +142,7 @@ fun TierListScreen(
                 },
             ) {
                 FloatingActionButton(
+                    modifier = Modifier.imePadding(),
                     onClick = {
                         screenshotState.capture()
                         screenshotState.bitmap?.let {

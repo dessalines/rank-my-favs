@@ -393,6 +393,7 @@ fun FavListDetailScreen(
                             },
                         ) {
                             FloatingActionButton(
+                                modifier = Modifier.imePadding(),
                                 onClick = {
                                     navController.navigate("match?favListId=$id")
                                 },
