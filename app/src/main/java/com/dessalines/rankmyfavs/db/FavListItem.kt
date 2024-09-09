@@ -18,6 +18,7 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.math.min
 
 const val DEFAULT_WIN_RATE = 0F
 const val DEFAULT_GLICKO_RATING = 1500F
@@ -137,6 +138,12 @@ data class FavListItemUpdateStats(
     val matchCount: Int,
 )
 
+@Keep
+data class FavListItemWithTier(
+    val id: Int,
+    val tier: String,
+)
+
 private const val BY_ID_QUERY = "SELECT * FROM FavListItem where id = :favListItemId"
 
 @Dao
@@ -144,11 +151,83 @@ interface FavListItemDao {
     @Query("SELECT * FROM FavListItem where fav_list_id = :favListId order by glicko_rating desc")
     fun getFromList(favListId: Int): Flow<List<FavListItem>>
 
+    @Query("SELECT COUNT(*) FROM FavListItem where fav_list_id = :favListId")
+    fun getCountByIdSync(favListId: Int): Int
+
     @Query(BY_ID_QUERY)
     fun getById(favListItemId: Int): Flow<FavListItem>
 
     @Query(BY_ID_QUERY)
     fun getByIdSync(favListItemId: Int): FavListItem
+
+    @Query(
+        """
+        SELECT id,
+        CASE
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 1 / 5) THEN 'S'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 2 / 5) THEN 'A'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 3 / 5) THEN 'B'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM FavListItem ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET (SELECT COUNT(*) FROM FavListItem) * 4 / 5) THEN 'C'
+            ELSE 'D'
+        END AS tier
+        FROM FavListItem
+        WHERE fav_list_id = :favListId
+        ORDER BY glicko_rating DESC
+    """,
+    )
+    fun getFromListTiered(favListId: Int): List<FavListItemWithTier>
+
+    @Query(
+        """
+        SELECT id,
+        CASE
+            WHEN glicko_rating >= (SELECT glicko_rating FROM (
+                SELECT glicko_rating FROM FavListItem 
+                WHERE fav_list_id = :favListId
+                ORDER BY glicko_rating DESC
+                LIMIT :limit
+            ) subquery ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET :limit * 1 / 5) THEN 'S'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM (
+                SELECT glicko_rating FROM FavListItem 
+                WHERE fav_list_id = :favListId
+                ORDER BY glicko_rating DESC
+                LIMIT :limit
+            ) subquery ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET :limit * 2 / 5) THEN 'A'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM (
+                SELECT glicko_rating FROM FavListItem 
+                WHERE fav_list_id = :favListId
+                ORDER BY glicko_rating DESC
+                LIMIT :limit
+            ) subquery ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET :limit * 3 / 5) THEN 'B'
+            WHEN glicko_rating >= (SELECT glicko_rating FROM (
+                SELECT glicko_rating FROM FavListItem 
+                WHERE fav_list_id = :favListId
+                ORDER BY glicko_rating DESC
+                LIMIT :limit
+            ) subquery ORDER BY glicko_rating DESC
+                LIMIT 1 OFFSET :limit * 4 / 5) THEN 'C'
+            ELSE 'D'
+        END AS tier
+        FROM (
+            SELECT * FROM FavListItem 
+            WHERE fav_list_id = :favListId
+            ORDER BY glicko_rating DESC
+            LIMIT :limit
+        ) AS top_items
+        ORDER BY glicko_rating DESC
+    """,
+    )
+    fun getFromListTieredWithLimit(
+        favListId: Int,
+        limit: Int,
+    ): List<FavListItemWithTier>
 
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.
@@ -218,6 +297,25 @@ class FavListItemRepository(
 
     fun getByIdSync(favListItemId: Int) = favListItemDao.getByIdSync(favListItemId)
 
+    fun getFromListTiered(
+        favListId: Int,
+        limit: Int? = null,
+    ): Map<String, List<FavListItem>> {
+        val tierList =
+            limit?.let { lim ->
+                favListItemDao.getFromListTieredWithLimit(
+                    favListId,
+                    min(lim, favListItemDao.getCountByIdSync(favListId)),
+                )
+            }
+                ?: favListItemDao.getFromListTiered(favListId)
+
+        return tierList.groupBy(
+            keySelector = { it.tier },
+            valueTransform = { getByIdSync(it.id) },
+        )
+    }
+
     fun leastTrained(favListId: Int) = favListItemDao.leastTrained(favListId)
 
     fun closestMatch(
@@ -249,6 +347,11 @@ class FavListItemViewModel(
     fun getById(favListItemId: Int) = repository.getById(favListItemId)
 
     fun getByIdSync(favListItemId: Int) = repository.getByIdSync(favListItemId)
+
+    fun getFromListTiered(
+        favListId: Int,
+        limit: Int? = null,
+    ) = repository.getFromListTiered(favListId, limit)
 
     fun leastTrained(favListId: Int) = repository.leastTrained(favListId)
 

@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import java.io.IOException
+import java.io.OutputStream
 
 const val TAG = "com.rank-my-favs"
 
@@ -55,5 +58,20 @@ fun writeData(
     contentResolver.openOutputStream(uri)?.use {
         val bytes = data.toByteArray()
         it.write(bytes)
+    }
+}
+
+fun writeBitmap(
+    contentResolver: ContentResolver,
+    uri: Uri,
+    bitmap: Bitmap,
+) {
+    try {
+        val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
+        outputStream?.use {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+        } ?: throw IOException("Failed to get output stream")
+    } catch (e: IOException) {
+        e.printStackTrace()
     }
 }

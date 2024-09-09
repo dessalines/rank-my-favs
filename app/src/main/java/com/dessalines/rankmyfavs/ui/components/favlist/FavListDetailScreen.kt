@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
@@ -302,6 +303,19 @@ fun FavListDetailScreen(
                                 Icon(
                                     Icons.Outlined.SaveAs,
                                     contentDescription = stringResource(R.string.export_list_as_csv),
+                                )
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.tier_list)) },
+                            onClick = {
+                                showMoreDropdown = false
+                                navController.navigate("tierList/${favList?.id}")
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.AutoMirrored.Outlined.List,
+                                    contentDescription = stringResource(R.string.tier_list),
                                 )
                             },
                         )
