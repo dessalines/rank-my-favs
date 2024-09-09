@@ -78,6 +78,7 @@ fun ImportListScreen(
                 },
             ) {
                 FloatingActionButton(
+                    modifier = Modifier.imePadding(),
                     onClick = {
                         val listItems = extractLines(listStr)
                         for (item in listItems) {

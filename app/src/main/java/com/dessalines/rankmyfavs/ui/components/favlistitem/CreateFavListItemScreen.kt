@@ -68,6 +68,7 @@ fun CreateFavListItemScreen(
                 },
             ) {
                 FloatingActionButton(
+                    modifier = Modifier.imePadding(),
                     onClick = {
                         favListItem?.let {
                             val insert =

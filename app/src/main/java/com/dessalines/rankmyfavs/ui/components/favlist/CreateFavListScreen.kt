@@ -70,6 +70,7 @@ fun CreateFavListScreen(
                 },
             ) {
                 FloatingActionButton(
+                    modifier = Modifier.imePadding(),
                     onClick = {
                         favList?.let {
                             val insert = FavListInsert(name = it.name, description = it.description)
