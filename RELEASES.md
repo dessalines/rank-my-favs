@@ -1,5 +1,17 @@
+## What's Changed in 0.4.0
+
+- Adding imePadding to floating action buttons. by @dessalines in [#123](https://github.com/dessalines/rank-my-favs/pull/123)
+- Created Tier List feature by @iByteABit256 in [#108](https://github.com/dessalines/rank-my-favs/pull/108)
+
+## New Contributors
+
+- @iByteABit256 made their first contribution in [#108](https://github.com/dessalines/rank-my-favs/pull/108)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.3.3...0.4.0
+
 ## What's Changed in 0.3.3
 
+- Upping version. by @dessalines
 - Adding renovate automerge. by @dessalines
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.3.2...0.3.3
