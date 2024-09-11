@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
+import com.dessalines.rankmyfavs.utils.nameIsValid
 
 @Composable
 fun FavListItemForm(
@@ -40,6 +41,7 @@ fun FavListItemForm(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             value = name,
+            isError = !nameIsValid(name),
             onValueChange = {
                 name = it
                 onChange(

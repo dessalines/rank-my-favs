@@ -26,6 +26,7 @@ import com.dessalines.rankmyfavs.db.FavListItemInsert
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import com.dessalines.rankmyfavs.utils.nameIsValid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -71,14 +72,16 @@ fun CreateFavListItemScreen(
                     modifier = Modifier.imePadding(),
                     onClick = {
                         favListItem?.let {
-                            val insert =
-                                FavListItemInsert(
-                                    favListId = favListId,
-                                    name = it.name,
-                                    description = it.description,
-                                )
-                            favListItemViewModel.insert(insert)
-                            navController.navigateUp()
+                            if (nameIsValid(it.name)) {
+                                val insert =
+                                    FavListItemInsert(
+                                        favListId = favListId,
+                                        name = it.name,
+                                        description = it.description,
+                                    )
+                                favListItemViewModel.insert(insert)
+                                navController.navigateUp()
+                            }
                         }
                     },
                     shape = CircleShape,
