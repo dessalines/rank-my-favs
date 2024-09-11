@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import androidx.compose.ui.graphics.Color
 import java.io.IOException
 import java.io.OutputStream
 
@@ -21,6 +22,15 @@ const val MASTODON_URL = "https://mastodon.social/@dessalines"
 const val GLICKO_WIKI_URL = "https://en.m.wikipedia.org/wiki/Glicko_rating_system"
 
 const val ANIMATION_SPEED = 300
+
+val TIER_COLORS =
+    mapOf(
+        "S" to Color(0XFFFF7F7F),
+        "A" to Color(0XFFFFBF7F),
+        "B" to Color(0XFFFFDF7F),
+        "C" to Color(0XFFFFFF7F),
+        "D" to Color(0XFFBFFF7F),
+    )
 
 fun openLink(
     url: String,

@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -18,8 +20,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberBasicTooltipState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,15 +35,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,12 +62,19 @@ import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import com.dessalines.rankmyfavs.utils.TIER_COLORS
 import com.dessalines.rankmyfavs.utils.writeBitmap
-import com.smarttoolfactory.screenshot.ScreenshotBox
-import com.smarttoolfactory.screenshot.rememberScreenshotState
+import dev.shreyaspatil.capturable.capturable
+import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalComposeApi::class,
+    ExperimentalComposeUiApi::class,
+    ExperimentalFoundationApi::class,
+)
 @Composable
 fun TierListScreen(
     navController: NavController,
@@ -68,9 +83,11 @@ fun TierListScreen(
     favListId: Int,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+
     var inputLimit by remember { mutableStateOf("") }
     var limit by remember { mutableStateOf<Int?>(null) }
-    val screenshotState = rememberScreenshotState()
+    val captureController = rememberCaptureController()
+    val scope = rememberCoroutineScope()
 
     val context = LocalContext.current
     val exportPngLauncher =
@@ -78,7 +95,9 @@ fun TierListScreen(
             ActivityResultContracts.CreateDocument("image/png"),
         ) {
             it?.let {
-                screenshotState.bitmap?.let { bitmap ->
+                scope.launch {
+                    val bitmapAsync = captureController.captureAsync()
+                    val bitmap = bitmapAsync.await().asAndroidBitmap()
                     writeBitmap(context.contentResolver, it, bitmap)
                 }
             }
@@ -120,7 +139,7 @@ fun TierListScreen(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(SMALL_PADDING),
+                            .padding(horizontal = SMALL_PADDING),
                     value = inputLimit,
                     onValueChange = { newLimit ->
                         inputLimit = newLimit
@@ -128,7 +147,9 @@ fun TierListScreen(
                     singleLine = true,
                 )
 
-                ScreenshotBox(screenshotState = screenshotState) {
+                Column(
+                    modifier = Modifier.capturable(captureController),
+                ) {
                     TierList(tierList)
                 }
             }
@@ -144,10 +165,7 @@ fun TierListScreen(
                 FloatingActionButton(
                     modifier = Modifier.imePadding(),
                     onClick = {
-                        screenshotState.capture()
-                        screenshotState.bitmap?.let {
-                            exportPngLauncher.launch("${favList?.name}_tier_list.png")
-                        }
+                        exportPngLauncher.launch("${favList?.name}_tier_list.png")
                     },
                     shape = CircleShape,
                 ) {
@@ -163,8 +181,13 @@ fun TierListScreen(
 
 @Composable
 fun TierList(tierList: Map<String, List<FavListItem>>) {
+    val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.padding(horizontal = SMALL_PADDING),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(SMALL_PADDING)
+                .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         tierList.forEach { (tier, items) ->
@@ -178,16 +201,7 @@ fun TierSection(
     tier: String,
     items: List<FavListItem>,
 ) {
-    val tierColors =
-        mapOf(
-            "S" to Color(0XFFFF7F7F),
-            "A" to Color(0XFFFFBF7F),
-            "B" to Color(0XFFFFDF7F),
-            "C" to Color(0XFFFFFF7F),
-            "D" to Color(0XFFBFFF7F),
-        )
-
-    val backgroundColor = tierColors[tier] ?: Color.LightGray
+    val backgroundColor = TIER_COLORS[tier] ?: Color.LightGray
 
     Row(
         modifier =
@@ -217,6 +231,8 @@ fun TierSection(
             modifier =
                 Modifier
                     .weight(0.8f)
+                    // Needs a max height, else it cant calculate the scroll correctly
+                    .heightIn(max = 160.dp)
                     .padding(start = SMALL_PADDING),
             verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
