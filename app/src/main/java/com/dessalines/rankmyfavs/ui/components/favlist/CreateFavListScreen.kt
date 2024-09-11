@@ -28,6 +28,7 @@ import com.dessalines.rankmyfavs.db.FavListInsert
 import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import com.dessalines.rankmyfavs.utils.nameIsValid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -73,16 +74,24 @@ fun CreateFavListScreen(
                     modifier = Modifier.imePadding(),
                     onClick = {
                         favList?.let {
-                            val insert = FavListInsert(name = it.name, description = it.description)
-                            val insertedId = favListViewModel.insert(insert)
+                            if (nameIsValid(it.name)) {
+                                val insert =
+                                    FavListInsert(name = it.name, description = it.description)
+                                val insertedId = favListViewModel.insert(insert)
 
-                            // The id is -1 if its a failed insert
-                            if (insertedId != -1L) {
-                                navController.navigate("favListDetails/$insertedId") {
-                                    popUpTo("favLists")
+                                // The id is -1 if its a failed insert
+                                if (insertedId != -1L) {
+                                    navController.navigate("favListDetails/$insertedId") {
+                                        popUpTo("favLists")
+                                    }
+                                } else {
+                                    Toast
+                                        .makeText(
+                                            ctx,
+                                            ctx.getString(R.string.list_already_exists),
+                                            Toast.LENGTH_SHORT,
+                                        ).show()
                                 }
-                            } else {
-                                Toast.makeText(ctx, ctx.getString(R.string.list_already_exists), Toast.LENGTH_SHORT).show()
                             }
                         }
                     },

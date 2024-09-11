@@ -85,3 +85,5 @@ fun writeBitmap(
         e.printStackTrace()
     }
 }
+
+fun nameIsValid(name: String): Boolean = name.isNotEmpty()
