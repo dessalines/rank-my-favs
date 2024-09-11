@@ -1,5 +1,14 @@
+## What's Changed in 0.4.1
+
+- Make sure name / title is not empty, in form fields and import. by @dessalines in [#127](https://github.com/dessalines/rank-my-favs/pull/127)
+- Adding ability to scroll tier list. by @dessalines in [#126](https://github.com/dessalines/rank-my-favs/pull/126)
+- Change skip to a proper glicko tie. by @dessalines in [#125](https://github.com/dessalines/rank-my-favs/pull/125)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.4.0...0.4.1
+
 ## What's Changed in 0.4.0
 
+- Upping version. by @dessalines
 - Adding imePadding to floating action buttons. by @dessalines in [#123](https://github.com/dessalines/rank-my-favs/pull/123)
 - Created Tier List feature by @iByteABit256 in [#108](https://github.com/dessalines/rank-my-favs/pull/108)
 
