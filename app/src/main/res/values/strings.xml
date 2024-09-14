@@ -66,4 +66,5 @@
     <string name="restore_database_warning">Warning: This will clear out your current database</string>
     <string name="database_restored">Database Restored.</string>
     <string name="database_backed_up">Database Backed up.</string>
+    <string name="export_list_as_markdown">Export List as Markdown</string>
 </resources>
