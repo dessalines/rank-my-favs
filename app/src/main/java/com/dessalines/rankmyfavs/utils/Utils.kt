@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import androidx.compose.ui.graphics.Color
+import com.dessalines.rankmyfavs.db.FavListItem
 import java.io.IOException
 import java.io.OutputStream
 
@@ -87,3 +88,11 @@ fun writeBitmap(
 }
 
 fun nameIsValid(name: String): Boolean = name.isNotEmpty()
+
+fun convertFavlistToMarkdown(
+    title: String,
+    favListItems: List<FavListItem>,
+): String {
+    val items = favListItems.joinToString(separator = "\n") { "1. ${it.name}" }
+    return "# $title\n\n$items"
+}
