@@ -1,5 +1,6 @@
 package com.dessalines.rankmyfavs.ui.components.settings
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,8 @@ import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.DataThresholding
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -27,6 +30,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
+import com.dessalines.rankmyfavs.db.AppDB
 import com.dessalines.rankmyfavs.db.AppSettingsViewModel
 import com.dessalines.rankmyfavs.db.DEFAULT_MIN_CONFIDENCE
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME
@@ -49,6 +53,7 @@ fun SettingsScreen(
     appSettingsViewModel: AppSettingsViewModel,
 ) {
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
+    val ctx = LocalContext.current
 
     var minConfidenceState = (settings?.minConfidence ?: DEFAULT_MIN_CONFIDENCE).toFloat()
     var minConfidenceSliderState by remember { mutableFloatStateOf(minConfidenceState) }
@@ -66,8 +71,6 @@ fun SettingsScreen(
             ),
         )
     }
-
-    val ctx = LocalContext.current
 
     val scrollState = rememberScrollState()
 
@@ -167,6 +170,38 @@ fun SettingsScreen(
                                 imageVector = Icons.Outlined.Colorize,
                                 contentDescription = null,
                             )
+                        },
+                    )
+                    val dbSavedText = stringResource(R.string.database_backed_up)
+                    Preference(
+                        title = { Text(stringResource(R.string.backup_database)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Save,
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {
+                            AppDB.backupDatabase(ctx)
+                            Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
+                        },
+                    )
+                    val dbRestoredText = stringResource(R.string.database_restored)
+                    Preference(
+                        title = { Text(stringResource(R.string.restore_database)) },
+                        summary = {
+                            Text(stringResource(R.string.restore_database_warning))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Restore,
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {
+                            AppDB.restoreDatabase(ctx)
+                            // This toast is pointless, as it restarts
+                            Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
                         },
                     )
                 }
