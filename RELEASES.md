@@ -1,5 +1,13 @@
+## What's Changed in 0.5.0
+
+- Adding Database backup and restore. by @dessalines in [#130](https://github.com/dessalines/rank-my-favs/pull/130)
+- Adding export list as markdown. by @dessalines in [#129](https://github.com/dessalines/rank-my-favs/pull/129)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.4.1...0.5.0
+
 ## What's Changed in 0.4.1
 
+- Upping version. by @dessalines
 - Make sure name / title is not empty, in form fields and import. by @dessalines in [#127](https://github.com/dessalines/rank-my-favs/pull/127)
 - Adding ability to scroll tier list. by @dessalines in [#126](https://github.com/dessalines/rank-my-favs/pull/126)
 - Change skip to a proper glicko tie. by @dessalines in [#125](https://github.com/dessalines/rank-my-favs/pull/125)
