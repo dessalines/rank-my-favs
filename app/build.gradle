@@ -114,7 +114,7 @@ dependencies {
     implementation "com.github.jeziellago:compose-markdown:0.5.4"
 
     // Preferences
-    implementation 'me.zhanghai.compose.preference:library:1.0.0'
+    implementation 'me.zhanghai.compose.preference:library:1.1.1'
 
     // Room
     // To use Kotlin annotation processing tool
