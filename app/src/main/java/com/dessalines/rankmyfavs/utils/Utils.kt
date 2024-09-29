@@ -1,5 +1,4 @@
 package com.dessalines.rankmyfavs.utils
-
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -62,11 +61,11 @@ fun numToString(
 ): String = String.format("%.${decimalPlaces}f", num)
 
 fun writeData(
-    contentResolver: ContentResolver,
+    ctx: Context,
     uri: Uri,
     data: String,
 ) {
-    contentResolver.openOutputStream(uri)?.use {
+    ctx.contentResolver.openOutputStream(uri)?.use {
         val bytes = data.toByteArray()
         it.write(bytes)
     }

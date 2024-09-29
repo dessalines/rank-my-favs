@@ -1,6 +1,9 @@
 package com.dessalines.rankmyfavs.ui.components.settings
 
+import android.os.Build
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -40,6 +43,7 @@ import com.dessalines.rankmyfavs.db.SettingsUpdate
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.utils.ThemeColor
 import com.dessalines.rankmyfavs.utils.ThemeMode
+import com.roomdbexportimport.RoomDBExportImport
 import me.zhanghai.compose.preference.ListPreference
 import me.zhanghai.compose.preference.ListPreferenceType
 import me.zhanghai.compose.preference.Preference
@@ -60,6 +64,35 @@ fun SettingsScreen(
 
     var themeState = ThemeMode.entries[settings?.theme ?: DEFAULT_THEME]
     var themeColorState = ThemeColor.entries[settings?.themeColor ?: DEFAULT_THEME_COLOR]
+
+    val dbSavedText = stringResource(R.string.database_backed_up)
+    val dbRestoredText = stringResource(R.string.database_restored)
+
+    val dbHelper = RoomDBExportImport(AppDB.getDatabase(ctx).openHelper)
+
+    val exportDbLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("application/zip"),
+        ) {
+            it?.also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    dbHelper.export(ctx, it)
+                    Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    val importDbLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.OpenDocument(),
+        ) {
+            it?.also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    dbHelper.import(ctx, it, true)
+                    Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
     fun updateSettings() {
         appSettingsViewModel.updateSettings(
@@ -172,7 +205,6 @@ fun SettingsScreen(
                             )
                         },
                     )
-                    val dbSavedText = stringResource(R.string.database_backed_up)
                     Preference(
                         title = { Text(stringResource(R.string.backup_database)) },
                         icon = {
@@ -182,11 +214,9 @@ fun SettingsScreen(
                             )
                         },
                         onClick = {
-                            AppDB.backupDatabase(ctx)
-                            Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
+                            exportDbLauncher.launch("rank-my-favs")
                         },
                     )
-                    val dbRestoredText = stringResource(R.string.database_restored)
                     Preference(
                         title = { Text(stringResource(R.string.restore_database)) },
                         summary = {
@@ -199,9 +229,7 @@ fun SettingsScreen(
                             )
                         },
                         onClick = {
-                            AppDB.restoreDatabase(ctx)
-                            // This toast is pointless, as it restarts
-                            Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
+                            importDbLauncher.launch(arrayOf("application/zip"))
                         },
                     )
                 }

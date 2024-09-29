@@ -110,14 +110,13 @@ fun FavListDetailScreen(
     val focusRequester = remember { FocusRequester() }
 
     // For exporting the csv
-    val contentResolver = ctx.contentResolver
     val exportCsvLauncher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.CreateDocument("text/csv"),
         ) {
             it?.also {
                 val csv = castingCSV().toCSV(favListItems.orEmpty())
-                writeData(contentResolver, it, csv)
+                writeData(ctx, it, csv)
             }
         }
 
@@ -128,7 +127,7 @@ fun FavListDetailScreen(
         ) {
             it?.also {
                 val markdown = convertFavlistToMarkdown(favList?.name.orEmpty(), favListItems.orEmpty())
-                writeData(contentResolver, it, markdown)
+                writeData(ctx, it, markdown)
             }
         }
 
