@@ -1,3 +1,10 @@
+## What's Changed in 0.5.2
+
+- Adding DB import / export to a file. by @dessalines in [#150](https://github.com/dessalines/rank-my-favs/pull/150)
+- Updating git cliff. by @dessalines in [#148](https://github.com/dessalines/rank-my-favs/pull/148)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.5.1...0.5.2
+
 ## What's Changed in 0.5.1
 
 - Add renovate more often. by @dessalines in [#139](https://github.com/dessalines/rank-my-favs/pull/139)
