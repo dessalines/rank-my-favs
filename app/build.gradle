@@ -79,6 +79,9 @@ composeCompiler {
 }
 
 dependencies {
+    // Exporting / importing DB helper
+    implementation 'com.github.dessalines:room-db-export-import:0.1.0'
+
     // Composable screenshot
     implementation "dev.shreyaspatil:capturable:3.0.0"
 
