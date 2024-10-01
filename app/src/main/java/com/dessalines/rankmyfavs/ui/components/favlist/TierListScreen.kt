@@ -3,6 +3,7 @@ package com.dessalines.rankmyfavs.ui.components.favlist
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BasicTooltipBox
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,13 +31,18 @@ import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.asLiveData
@@ -227,15 +234,18 @@ fun TierList(tierList: Map<String, List<FavListItem>>, editTierList: Boolean) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TierSection(
     tier: String,
     items: List<FavListItem>,
     editTierList: Boolean
 ) {
+    var tierName by remember { mutableStateOf(tier) }
     var backgroundColor by remember { mutableStateOf(TIER_COLORS[tier]
         ?: generateRandomColor()) }
     var showColorPicker by remember { mutableStateOf(false) }
+    var editTierName by remember { mutableStateOf(false) }
     val controller = rememberColorPickerController()
 
     Row(
@@ -252,11 +262,25 @@ fun TierSection(
                     .weight(0.2f),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = tier,
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color.Black,
-            )
+            Button(
+                onClick = { editTierName = true },
+                enabled = editTierList,
+                colors = ButtonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.Black,
+                    disabledContainerColor = Color.Transparent,
+                    disabledContentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(SMALL_PADDING),
+                border = if (editTierList) BorderStroke(1.dp, Color.Black) else null
+            ) {
+                Text(
+                    text = tierName,
+                    fontStyle = if (editTierList) FontStyle.Italic else FontStyle.Normal,
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color.Black,
+                )
+            }
         }
 
         Spacer(modifier = Modifier.width(LARGE_PADDING))
@@ -306,6 +330,30 @@ fun TierSection(
                 onColorSelected = { backgroundColor = it },
                 onDismissRequest = { showColorPicker = false },
             )
+        }
+
+        if (editTierName) {
+            BasicAlertDialog(onDismissRequest = { editTierName = false }) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.padding(LARGE_PADDING)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(LARGE_PADDING),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(SMALL_PADDING),
+                            text = stringResource(R.string.enter_tier_name)
+                        )
+                        TextField(modifier = Modifier.padding(SMALL_PADDING), value = tierName,
+                            onValueChange = {
+                                tierName = it
+                            })
+                    }
+                }
+            }
         }
     }
 }
