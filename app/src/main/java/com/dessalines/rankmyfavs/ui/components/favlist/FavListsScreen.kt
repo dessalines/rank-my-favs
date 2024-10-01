@@ -118,6 +118,7 @@ fun FavListsScreen(
                         },
                     ) {
                         FloatingActionButton(
+                            modifier = Modifier.imePadding(),
                             onClick = {
                                 navController.navigate("createFavList")
                             },

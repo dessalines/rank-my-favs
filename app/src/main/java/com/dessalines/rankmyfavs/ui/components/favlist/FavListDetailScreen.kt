@@ -79,6 +79,7 @@ import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.ui.components.favlistitem.calculateConfidence
+import com.dessalines.rankmyfavs.utils.convertFavlistToMarkdown
 import com.dessalines.rankmyfavs.utils.writeData
 import com.floern.castingcsv.castingCSV
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -109,14 +110,24 @@ fun FavListDetailScreen(
     val focusRequester = remember { FocusRequester() }
 
     // For exporting the csv
-    val contentResolver = ctx.contentResolver
     val exportCsvLauncher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.CreateDocument("text/csv"),
         ) {
             it?.also {
                 val csv = castingCSV().toCSV(favListItems.orEmpty())
-                writeData(contentResolver, it, csv)
+                writeData(ctx, it, csv)
+            }
+        }
+
+    // For exporting the markdown list
+    val exportMarkdownLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("text/markdown"),
+        ) {
+            it?.also {
+                val markdown = convertFavlistToMarkdown(favList?.name.orEmpty(), favListItems.orEmpty())
+                writeData(ctx, it, markdown)
             }
         }
 
@@ -307,6 +318,19 @@ fun FavListDetailScreen(
                             },
                         )
                         DropdownMenuItem(
+                            text = { Text(stringResource(R.string.export_list_as_markdown)) },
+                            onClick = {
+                                showMoreDropdown = false
+                                favList?.let { exportMarkdownLauncher.launch(it.name) }
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Outlined.SaveAs,
+                                    contentDescription = stringResource(R.string.export_list_as_markdown),
+                                )
+                            },
+                        )
+                        DropdownMenuItem(
                             text = { Text(stringResource(R.string.tier_list)) },
                             onClick = {
                                 showMoreDropdown = false
@@ -393,6 +417,7 @@ fun FavListDetailScreen(
                             },
                         ) {
                             FloatingActionButton(
+                                modifier = Modifier.imePadding(),
                                 onClick = {
                                     navController.navigate("match?favListId=$id")
                                 },

@@ -57,8 +57,14 @@
     <string name="cancel">Cancel</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="yes">Yes</string>
-    <string name="skip">Skip</string>
+    <string name="tie">Tie</string>
     <string name="search">Search</string>
     <string name="hide_search_bar">Hide Search Bar</string>
     <string name="more_actions">More Actions</string>
+    <string name="backup_database">Backup Database</string>
+    <string name="restore_database">Restore Database</string>
+    <string name="restore_database_warning">Warning: This will clear out your current database</string>
+    <string name="database_restored">Database Restored.</string>
+    <string name="database_backed_up">Database Backed up.</string>
+    <string name="export_list_as_markdown">Export List as Markdown</string>
 </resources>

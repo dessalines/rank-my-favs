@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.rememberScrollState
@@ -125,6 +126,7 @@ fun MatchScreen(
                                     favListMatchViewModel = favListMatchViewModel,
                                     winner = first,
                                     loser = second,
+                                    tie = false,
                                 )
                                 rematchNav()
                             },
@@ -137,6 +139,7 @@ fun MatchScreen(
                                     favListMatchViewModel = favListMatchViewModel,
                                     winner = second,
                                     loser = first,
+                                    tie = false,
                                 )
                                 rematchNav()
                             },
@@ -150,22 +153,31 @@ fun MatchScreen(
         bottomBar = {
             BottomAppBar(
                 actions = {
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(id = R.string.skip))
-                        },
-                    ) {
-                        IconButton(
-                            onClick = {
-                                rematchNav()
+                    if (first !== null && second !== null) {
+                        BasicTooltipBox(
+                            positionProvider = tooltipPosition,
+                            state = rememberBasicTooltipState(isPersistent = false),
+                            tooltip = {
+                                ToolTip(stringResource(id = R.string.tie))
                             },
                         ) {
-                            Icon(
-                                Icons.Outlined.SkipNext,
-                                contentDescription = stringResource(R.string.skip),
-                            )
+                            IconButton(
+                                onClick = {
+                                    recalculateStats(
+                                        favListItemViewModel = favListItemViewModel,
+                                        favListMatchViewModel = favListMatchViewModel,
+                                        winner = first,
+                                        loser = second,
+                                        tie = true,
+                                    )
+                                    rematchNav()
+                                },
+                            ) {
+                                Icon(
+                                    Icons.Outlined.SkipNext,
+                                    contentDescription = stringResource(R.string.tie),
+                                )
+                            }
                         }
                     }
                 },
@@ -178,6 +190,7 @@ fun MatchScreen(
                         },
                     ) {
                         FloatingActionButton(
+                            modifier = Modifier.imePadding(),
                             onClick = {
                                 val listId = first?.favListId ?: favListId ?: 1
                                 navController.navigate("favListDetails/$listId") {
@@ -206,11 +219,14 @@ fun recalculateStats(
     favListMatchViewModel: FavListMatchViewModel,
     winner: FavListItem,
     loser: FavListItem,
+    tie: Boolean,
 ) {
-    // Insert the winner
-    favListMatchViewModel.insert(
-        FavListMatchInsert(winner.id, loser.id, winner.id),
-    )
+    if (!tie) {
+        // Insert the winner
+        favListMatchViewModel.insert(
+            FavListMatchInsert(winner.id, loser.id, winner.id),
+        )
+    }
     val (winRateWinner, matchCountWinner) = calculateWinRate(favListMatchViewModel, winner)
     val (winRateLoser, matchCountLoser) = calculateWinRate(favListMatchViewModel, loser)
 
@@ -229,7 +245,11 @@ fun recalculateStats(
     gLoser.ratingDeviation = loser.glickoDeviation.toDouble()
     gLoser.volatility = loser.glickoVolatility.toDouble()
 
-    results.addResult(gWinner, gLoser)
+    if (!tie) {
+        results.addResult(gWinner, gLoser)
+    } else {
+        results.addDraw(gWinner, gLoser)
+    }
 
     ratingSystem.updateRatings(results)
 
@@ -266,7 +286,13 @@ fun calculateWinRate(
 
     val matchCount = matches.count()
     val winCount = matches.count { it.winnerId == item.id }
-    val winRate = 100F * winCount / matchCount
+    var winRate = (100F * winCount / matchCount)
+
+    // Need to do a nanCheck here, for ties
+    if (winRate.isNaN()) {
+        winRate = 0F
+    }
+
     return Pair(winRate, matchCount)
 }
 

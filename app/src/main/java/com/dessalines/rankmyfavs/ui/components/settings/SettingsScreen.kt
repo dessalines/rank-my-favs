@@ -1,5 +1,9 @@
 package com.dessalines.rankmyfavs.ui.components.settings
 
+import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -10,6 +14,8 @@ import androidx.compose.material.icons.outlined.Colorize
 import androidx.compose.material.icons.outlined.DataThresholding
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -27,6 +33,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
+import com.dessalines.rankmyfavs.db.AppDB
 import com.dessalines.rankmyfavs.db.AppSettingsViewModel
 import com.dessalines.rankmyfavs.db.DEFAULT_MIN_CONFIDENCE
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME
@@ -36,6 +43,7 @@ import com.dessalines.rankmyfavs.db.SettingsUpdate
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.utils.ThemeColor
 import com.dessalines.rankmyfavs.utils.ThemeMode
+import com.roomdbexportimport.RoomDBExportImport
 import me.zhanghai.compose.preference.ListPreference
 import me.zhanghai.compose.preference.ListPreferenceType
 import me.zhanghai.compose.preference.Preference
@@ -49,12 +57,42 @@ fun SettingsScreen(
     appSettingsViewModel: AppSettingsViewModel,
 ) {
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
+    val ctx = LocalContext.current
 
     var minConfidenceState = (settings?.minConfidence ?: DEFAULT_MIN_CONFIDENCE).toFloat()
     var minConfidenceSliderState by remember { mutableFloatStateOf(minConfidenceState) }
 
     var themeState = ThemeMode.entries[settings?.theme ?: DEFAULT_THEME]
     var themeColorState = ThemeColor.entries[settings?.themeColor ?: DEFAULT_THEME_COLOR]
+
+    val dbSavedText = stringResource(R.string.database_backed_up)
+    val dbRestoredText = stringResource(R.string.database_restored)
+
+    val dbHelper = RoomDBExportImport(AppDB.getDatabase(ctx).openHelper)
+
+    val exportDbLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("application/zip"),
+        ) {
+            it?.also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    dbHelper.export(ctx, it)
+                    Toast.makeText(ctx, dbSavedText, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    val importDbLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.OpenDocument(),
+        ) {
+            it?.also {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    dbHelper.import(ctx, it, true)
+                    Toast.makeText(ctx, dbRestoredText, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
     fun updateSettings() {
         appSettingsViewModel.updateSettings(
@@ -66,8 +104,6 @@ fun SettingsScreen(
             ),
         )
     }
-
-    val ctx = LocalContext.current
 
     val scrollState = rememberScrollState()
 
@@ -167,6 +203,33 @@ fun SettingsScreen(
                                 imageVector = Icons.Outlined.Colorize,
                                 contentDescription = null,
                             )
+                        },
+                    )
+                    Preference(
+                        title = { Text(stringResource(R.string.backup_database)) },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Save,
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {
+                            exportDbLauncher.launch("rank-my-favs")
+                        },
+                    )
+                    Preference(
+                        title = { Text(stringResource(R.string.restore_database)) },
+                        summary = {
+                            Text(stringResource(R.string.restore_database_warning))
+                        },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Outlined.Restore,
+                                contentDescription = null,
+                            )
+                        },
+                        onClick = {
+                            importDbLauncher.launch(arrayOf("application/zip"))
                         },
                     )
                 }

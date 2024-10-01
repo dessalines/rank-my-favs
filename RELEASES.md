@@ -1,3 +1,42 @@
+## What's Changed in 0.5.2
+
+- Adding DB import / export to a file. by @dessalines in [#150](https://github.com/dessalines/rank-my-favs/pull/150)
+- Updating git cliff. by @dessalines in [#148](https://github.com/dessalines/rank-my-favs/pull/148)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.5.1...0.5.2
+
+## What's Changed in 0.5.1
+
+- Add renovate more often. by @dessalines in [#139](https://github.com/dessalines/rank-my-favs/pull/139)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.5.0...0.5.1
+
+## What's Changed in 0.5.0
+
+- Adding Database backup and restore. by @dessalines in [#130](https://github.com/dessalines/rank-my-favs/pull/130)
+- Adding export list as markdown. by @dessalines in [#129](https://github.com/dessalines/rank-my-favs/pull/129)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.4.1...0.5.0
+
+## What's Changed in 0.4.1
+
+- Make sure name / title is not empty, in form fields and import. by @dessalines in [#127](https://github.com/dessalines/rank-my-favs/pull/127)
+- Adding ability to scroll tier list. by @dessalines in [#126](https://github.com/dessalines/rank-my-favs/pull/126)
+- Change skip to a proper glicko tie. by @dessalines in [#125](https://github.com/dessalines/rank-my-favs/pull/125)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.4.0...0.4.1
+
+## What's Changed in 0.4.0
+
+- Adding imePadding to floating action buttons. by @dessalines in [#123](https://github.com/dessalines/rank-my-favs/pull/123)
+- Created Tier List feature by @iByteABit256 in [#108](https://github.com/dessalines/rank-my-favs/pull/108)
+
+## New Contributors
+
+- @iByteABit256 made their first contribution in [#108](https://github.com/dessalines/rank-my-favs/pull/108)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.3.3...0.4.0
+
 ## What's Changed in 0.3.3
 
 - Adding renovate automerge. by @dessalines
@@ -6,7 +45,6 @@
 
 ## What's Changed in 0.3.2
 
-- Upping version. by @dessalines
 - Adding support for markdown images. by @dessalines in [#92](https://github.com/dessalines/rank-my-favs/pull/92)
 - Fix match screen description tap. by @dessalines in [#85](https://github.com/dessalines/rank-my-favs/pull/85)
 - Fixing edit item translation by @dessalines in [#84](https://github.com/dessalines/rank-my-favs/pull/84)
@@ -15,14 +53,12 @@
 
 ## What's Changed in 0.3.1
 
-- Upping version. by @dessalines
 - Make search filter ignore case. by @dessalines in [#76](https://github.com/dessalines/rank-my-favs/pull/76)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.3.0...0.3.1
 
 ## What's Changed in 0.3.0
 
-- Upping version. by @dessalines
 - Add filtering items in list. by @dessalines in [#75](https://github.com/dessalines/rank-my-favs/pull/75)
 - Adding more actions dropdown menu. by @dessalines in [#74](https://github.com/dessalines/rank-my-favs/pull/74)
 - Adding ability to force-train an item. by @dessalines in [#73](https://github.com/dessalines/rank-my-favs/pull/73)
@@ -31,28 +67,24 @@
 
 ## What's Changed in 0.2.2
 
-- Upping version. by @dessalines
 - Adding the ability to import descriptions. by @dessalines in [#69](https://github.com/dessalines/rank-my-favs/pull/69)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.2.1...0.2.2
 
 ## What's Changed in 0.2.1
 
-- Upping version. by @dessalines
 - Adding a ? for uncertain rankings, and a skip button. by @dessalines in [#65](https://github.com/dessalines/rank-my-favs/pull/65)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.2.0...0.2.1
 
 ## What's Changed in 0.2.0
 
-- Upping version. by @dessalines
 - Displaying rank position for items. by @dessalines in [#61](https://github.com/dessalines/rank-my-favs/pull/61)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.1.1...0.2.0
 
 ## What's Changed in 0.1.1
 
-- Upping version. by @dessalines
 - Adding screen transitions, adding top app bar enter always. by @dessalines in [#58](https://github.com/dessalines/rank-my-favs/pull/58)
 - Merge remote-tracking branch 'refs/remotes/origin/main' by @dessalines
 
@@ -60,14 +92,12 @@
 
 ## What's Changed in 0.1.0
 
-- Upping version. by @dessalines
 - Matchup with closest rank, not a random pick. by @dessalines in [#55](https://github.com/dessalines/rank-my-favs/pull/55)
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.0.6...0.1.0
 
 ## What's Changed in 0.0.6
 
-- Upping version. by @dessalines
 - Clear ranking data for specific entry. by @dessalines in [#50](https://github.com/dessalines/rank-my-favs/pull/50)
 - Show description in matches page. by @dessalines in [#49](https://github.com/dessalines/rank-my-favs/pull/49)
 
@@ -75,7 +105,6 @@
 
 ## What's Changed in 0.0.5
 
-- Upping version. by @dessalines
 - Fixing export. by @dessalines in [#38](https://github.com/dessalines/rank-my-favs/pull/38)
 - Add confirmation dialogs for destructive actions. by @dessalines in [#37](https://github.com/dessalines/rank-my-favs/pull/37)
 - Add confirmation dialogs for destructive actions. by @dessalines
@@ -90,7 +119,6 @@
 
 ## What's Changed in 0.0.4
 
-- Upping version. by @dessalines
 - Export csv by @dessalines in [#31](https://github.com/dessalines/rank-my-favs/pull/31)
 - Merge remote-tracking branch 'origin/main' into export_csv by @dessalines
 - Fixing rank order to be more random. by @dessalines in [#30](https://github.com/dessalines/rank-my-favs/pull/30)
@@ -102,7 +130,6 @@
 
 ## What's Changed in 0.0.3
 
-- Upping version. by @dessalines
 - Fixing navigation back issues. by @dessalines in [#28](https://github.com/dessalines/rank-my-favs/pull/28)
 - Fixing navigation back issues. by @dessalines
 
@@ -110,7 +137,6 @@
 
 ## What's Changed in 0.0.2
 
-- Upping version. by @dessalines
 - Fixing failed migration. by @dessalines in [#26](https://github.com/dessalines/rank-my-favs/pull/26)
 - Fixing failed migration. by @dessalines
 - Fixing git cliff. by @dessalines

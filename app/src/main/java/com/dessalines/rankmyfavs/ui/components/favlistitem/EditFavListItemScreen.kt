@@ -29,6 +29,7 @@ import com.dessalines.rankmyfavs.db.FavListItemUpdateNameAndDesc
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import com.dessalines.rankmyfavs.utils.nameIsValid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -77,15 +78,18 @@ fun EditFavListItemScreen(
                 },
             ) {
                 FloatingActionButton(
+                    modifier = Modifier.imePadding(),
                     onClick = {
-                        val update =
-                            FavListItemUpdateNameAndDesc(
-                                id = editedItem.id,
-                                name = editedItem.name,
-                                description = editedItem.description,
-                            )
-                        favListItemViewModel.updateNameAndDesc(update)
-                        navController.navigateUp()
+                        if (nameIsValid(editedItem.name)) {
+                            val update =
+                                FavListItemUpdateNameAndDesc(
+                                    id = editedItem.id,
+                                    name = editedItem.name,
+                                    description = editedItem.description,
+                                )
+                            favListItemViewModel.updateNameAndDesc(update)
+                            navController.navigateUp()
+                        }
                     },
                     shape = CircleShape,
                 ) {

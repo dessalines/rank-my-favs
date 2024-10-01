@@ -36,6 +36,7 @@ import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.ui.components.favlistitem.FavListItemForm
+import com.dessalines.rankmyfavs.utils.nameIsValid
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -78,6 +79,7 @@ fun ImportListScreen(
                 },
             ) {
                 FloatingActionButton(
+                    modifier = Modifier.imePadding(),
                     onClick = {
                         val listItems = extractLines(listStr)
                         for (item in listItems) {
@@ -131,7 +133,7 @@ private fun extractLines(listStr: String): List<FavListItemLine> {
                 val name = split[0].trim()
                 val description = split.getOrNull(1)?.trim()
                 FavListItemLine(name, description)
-            }
+            }.filter { nameIsValid(it.name) }
     return listItems
 }
 
