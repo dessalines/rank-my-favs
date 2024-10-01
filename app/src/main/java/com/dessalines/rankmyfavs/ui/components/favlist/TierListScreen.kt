@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -60,8 +61,11 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
@@ -248,6 +252,13 @@ fun TierSection(
     var editTierName by remember { mutableStateOf(false) }
     val controller = rememberColorPickerController()
 
+    // Define minimum and maximum text sizes
+    val minTextSize = 8.sp
+    val maxTextSize = 32.sp
+
+    // Calculate the text size based on the length of the tier name
+    val textSize = lerp(maxTextSize, minTextSize, (tierName.length - 5) / 50f)
+
     Row(
         modifier =
         Modifier
@@ -258,11 +269,11 @@ fun TierSection(
     ) {
         Box(
             modifier =
-                Modifier
-                    .weight(0.2f),
+                Modifier.fillMaxWidth().weight(0.4f),
             contentAlignment = Alignment.Center,
         ) {
             Button(
+                modifier = Modifier.wrapContentWidth(),
                 onClick = { editTierName = true },
                 enabled = editTierList,
                 colors = ButtonColors(
@@ -277,8 +288,11 @@ fun TierSection(
                 Text(
                     text = tierName,
                     fontStyle = if (editTierList) FontStyle.Italic else FontStyle.Normal,
+                    fontSize = textSize,
                     style = MaterialTheme.typography.headlineLarge,
                     color = Color.Black,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -286,10 +300,10 @@ fun TierSection(
         Spacer(modifier = Modifier.width(LARGE_PADDING))
 
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 100.dp),
+            columns = GridCells.Adaptive(minSize = 80.dp),
             modifier =
             Modifier
-                .weight(0.8f)
+                .weight(0.6f)
                 // Needs a max height, else it cant calculate the scroll correctly
                 .heightIn(max = 160.dp)
                 .padding(start = SMALL_PADDING),
