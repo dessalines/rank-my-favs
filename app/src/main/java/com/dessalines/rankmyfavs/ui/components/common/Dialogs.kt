@@ -1,10 +1,13 @@
 package com.dessalines.rankmyfavs.ui.components.common
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -13,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,17 +28,23 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.asLiveData
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.AppSettingsViewModel
 import com.dessalines.rankmyfavs.utils.getVersionCode
+import com.github.skydoves.colorpicker.compose.ColorPickerController
+import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 val DONATION_MARKDOWN =
@@ -78,9 +88,9 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                 text = {
                     Column(
                         modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .verticalScroll(scrollState),
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState),
                     ) {
                         val markdownText = DONATION_MARKDOWN + markdown
                         MarkdownText(
@@ -172,3 +182,43 @@ fun PreviewAreYouSureDialog() {
         onYes = {},
     )
 }
+
+@Composable
+fun ColorPickerDialog(
+    onColorSelected: (Color) -> Unit,
+    onDismissRequest: () -> Unit,
+    controller: ColorPickerController,
+) {
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.pick_a_color),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                HsvColorPicker(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    onColorChanged = { colorEnvelope ->
+                        onColorSelected(colorEnvelope.color)
+                    },
+                    controller = controller
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onDismissRequest) {
+                    Text("Done")
+                }
+            }
+        }
+    }
+}
+

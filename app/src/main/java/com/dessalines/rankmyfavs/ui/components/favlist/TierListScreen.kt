@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,6 +26,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -35,7 +39,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -58,12 +61,15 @@ import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModel
+import com.dessalines.rankmyfavs.ui.components.common.ColorPickerDialog
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.TIER_COLORS
+import com.dessalines.rankmyfavs.utils.generateRandomColor
 import com.dessalines.rankmyfavs.utils.writeBitmap
+import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
 import kotlinx.coroutines.delay
@@ -71,7 +77,6 @@ import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalComposeApi::class,
     ExperimentalComposeUiApi::class,
     ExperimentalFoundationApi::class,
 )
@@ -86,6 +91,7 @@ fun TierListScreen(
 
     var inputLimit by remember { mutableStateOf("") }
     var limit by remember { mutableStateOf<Int?>(null) }
+    var editTierList by remember { mutableStateOf(false) }
     val captureController = rememberCaptureController()
     val scope = rememberCoroutineScope()
 
@@ -130,16 +136,16 @@ fun TierListScreen(
         content = { padding ->
             Column(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .imePadding(),
+                Modifier
+                    .padding(padding)
+                    .imePadding(),
             ) {
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.tier_list_limit_description)) },
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = SMALL_PADDING),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = SMALL_PADDING),
                     value = inputLimit,
                     onValueChange = { newLimit ->
                         inputLimit = newLimit
@@ -150,7 +156,7 @@ fun TierListScreen(
                 Column(
                     modifier = Modifier.capturable(captureController),
                 ) {
-                    TierList(tierList)
+                    TierList(tierList, editTierList)
                 }
             }
         },
@@ -162,17 +168,42 @@ fun TierListScreen(
                     ToolTip(stringResource(R.string.save))
                 },
             ) {
-                FloatingActionButton(
-                    modifier = Modifier.imePadding(),
-                    onClick = {
-                        exportPngLauncher.launch("${favList?.name}_tier_list.png")
-                    },
-                    shape = CircleShape,
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Save,
-                        contentDescription = stringResource(R.string.save),
-                    )
+                if (!editTierList) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING)) {
+                        FloatingActionButton(
+                            modifier = Modifier.imePadding(),
+                            onClick = { editTierList = true },
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Edit,
+                                contentDescription = stringResource(R.string.edit_list),
+                            )
+                        }
+                        FloatingActionButton(
+                            modifier = Modifier.imePadding(),
+                            onClick = {
+                                exportPngLauncher.launch("${favList?.name}_tier_list.png")
+                            },
+                            shape = CircleShape,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Save,
+                                contentDescription = stringResource(R.string.save),
+                            )
+                        }
+                    }
+                } else {
+                    FloatingActionButton(
+                        modifier = Modifier.imePadding(),
+                        onClick = { editTierList = false },
+                        shape = CircleShape,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Check,
+                            contentDescription = stringResource(R.string.done),
+                        )
+                    }
                 }
             }
         },
@@ -180,18 +211,18 @@ fun TierListScreen(
 }
 
 @Composable
-fun TierList(tierList: Map<String, List<FavListItem>>) {
+fun TierList(tierList: Map<String, List<FavListItem>>, editTierList: Boolean) {
     val scrollState = rememberScrollState()
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(SMALL_PADDING)
-                .verticalScroll(scrollState),
+        Modifier
+            .fillMaxSize()
+            .padding(SMALL_PADDING)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         tierList.forEach { (tier, items) ->
-            TierSection(tier, items)
+            TierSection(tier, items, editTierList)
         }
     }
 }
@@ -200,15 +231,19 @@ fun TierList(tierList: Map<String, List<FavListItem>>) {
 fun TierSection(
     tier: String,
     items: List<FavListItem>,
+    editTierList: Boolean
 ) {
-    val backgroundColor = TIER_COLORS[tier] ?: Color.LightGray
+    var backgroundColor by remember { mutableStateOf(TIER_COLORS[tier]
+        ?: generateRandomColor()) }
+    var showColorPicker by remember { mutableStateOf(false) }
+    val controller = rememberColorPickerController()
 
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
-                .padding(LARGE_PADDING),
+        Modifier
+            .fillMaxWidth()
+            .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
+            .padding(LARGE_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -229,11 +264,11 @@ fun TierSection(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 100.dp),
             modifier =
-                Modifier
-                    .weight(0.8f)
-                    // Needs a max height, else it cant calculate the scroll correctly
-                    .heightIn(max = 160.dp)
-                    .padding(start = SMALL_PADDING),
+            Modifier
+                .weight(0.8f)
+                // Needs a max height, else it cant calculate the scroll correctly
+                .heightIn(max = 160.dp)
+                .padding(start = SMALL_PADDING),
             verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
@@ -246,6 +281,32 @@ fun TierSection(
                 )
             }
         }
+
+        if (editTierList) {
+            FloatingActionButton(
+                modifier = Modifier
+                    .imePadding()
+                    .size(28.dp)
+                    .align(Alignment.Bottom),
+                onClick = {
+                    showColorPicker = true
+                },
+                shape = RoundedCornerShape(SMALL_PADDING),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Colorize,
+                    contentDescription = stringResource(R.string.edit_item),
+                )
+            }
+        }
+
+        if (showColorPicker) {
+            ColorPickerDialog(
+                controller = controller,
+                onColorSelected = { backgroundColor = it },
+                onDismissRequest = { showColorPicker = false },
+            )
+        }
     }
 }
 
@@ -255,80 +316,81 @@ fun TierListPreview() {
     TierList(
         mapOf(
             "S" to
-                listOf(
-                    FavListItem(
-                        id = 1,
-                        favListId = 1,
-                        name = "Item 1",
-                        winRate = 0f,
-                        glickoRating = 0f,
-                        glickoDeviation = 0f,
-                        glickoVolatility = 0f,
-                        matchCount = 0,
+                    listOf(
+                        FavListItem(
+                            id = 1,
+                            favListId = 1,
+                            name = "Item 1",
+                            winRate = 0f,
+                            glickoRating = 0f,
+                            glickoDeviation = 0f,
+                            glickoVolatility = 0f,
+                            matchCount = 0,
+                        ),
+                        FavListItem(
+                            id = 2,
+                            favListId = 1,
+                            name = "Item 2",
+                            winRate = 0f,
+                            glickoRating = 0f,
+                            glickoDeviation = 0f,
+                            glickoVolatility = 0f,
+                            matchCount = 0,
+                        ),
                     ),
-                    FavListItem(
-                        id = 2,
-                        favListId = 1,
-                        name = "Item 2",
-                        winRate = 0f,
-                        glickoRating = 0f,
-                        glickoDeviation = 0f,
-                        glickoVolatility = 0f,
-                        matchCount = 0,
-                    ),
-                ),
             "A" to
-                listOf(
-                    FavListItem(
-                        id = 3,
-                        favListId = 1,
-                        name = "Item 3",
-                        winRate = 0f,
-                        glickoRating = 0f,
-                        glickoDeviation = 0f,
-                        glickoVolatility = 0f,
-                        matchCount = 0,
+                    listOf(
+                        FavListItem(
+                            id = 3,
+                            favListId = 1,
+                            name = "Item 3",
+                            winRate = 0f,
+                            glickoRating = 0f,
+                            glickoDeviation = 0f,
+                            glickoVolatility = 0f,
+                            matchCount = 0,
+                        ),
                     ),
-                ),
             "B" to
-                listOf(
-                    FavListItem(
-                        id = 3,
-                        favListId = 1,
-                        name = "Item 4",
-                        winRate = 0f,
-                        glickoRating = 0f,
-                        glickoDeviation = 0f,
-                        glickoVolatility = 0f,
-                        matchCount = 0,
+                    listOf(
+                        FavListItem(
+                            id = 3,
+                            favListId = 1,
+                            name = "Item 4",
+                            winRate = 0f,
+                            glickoRating = 0f,
+                            glickoDeviation = 0f,
+                            glickoVolatility = 0f,
+                            matchCount = 0,
+                        ),
                     ),
-                ),
             "C" to
-                listOf(
-                    FavListItem(
-                        id = 3,
-                        favListId = 1,
-                        name = "Item 5",
-                        winRate = 0f,
-                        glickoRating = 0f,
-                        glickoDeviation = 0f,
-                        glickoVolatility = 0f,
-                        matchCount = 0,
+                    listOf(
+                        FavListItem(
+                            id = 3,
+                            favListId = 1,
+                            name = "Item 5",
+                            winRate = 0f,
+                            glickoRating = 0f,
+                            glickoDeviation = 0f,
+                            glickoVolatility = 0f,
+                            matchCount = 0,
+                        ),
                     ),
-                ),
             "D" to
-                listOf(
-                    FavListItem(
-                        id = 3,
-                        favListId = 1,
-                        name = "Item 6",
-                        winRate = 0f,
-                        glickoRating = 0f,
-                        glickoDeviation = 0f,
-                        glickoVolatility = 0f,
-                        matchCount = 0,
+                    listOf(
+                        FavListItem(
+                            id = 3,
+                            favListId = 1,
+                            name = "Item 6",
+                            winRate = 0f,
+                            glickoRating = 0f,
+                            glickoDeviation = 0f,
+                            glickoVolatility = 0f,
+                            matchCount = 0,
+                        ),
                     ),
-                ),
         ),
+        false
     )
 }

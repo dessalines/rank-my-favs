@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import com.dessalines.rankmyfavs.db.FavListItem
 import java.io.IOException
 import java.io.OutputStream
+import java.util.Random
 
 const val TAG = "com.rank-my-favs"
 
@@ -94,4 +95,9 @@ fun convertFavlistToMarkdown(
 ): String {
     val items = favListItems.joinToString(separator = "\n") { "1. ${it.name}" }
     return "# $title\n\n$items"
+}
+
+fun generateRandomColor(): Color {
+    val rnd = Random()
+    return Color(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
 }
