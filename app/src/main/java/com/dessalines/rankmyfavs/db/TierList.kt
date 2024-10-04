@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
     indices = [
         Index(value = ["fav_list_id"], unique = false),
         // Uniqueness is hard to deal with when swapping tier orders so I kept it false
-        Index(value = ["tier_order"], unique = false)
+        Index(value = ["tier_order"], unique = false),
     ],
 )
 @Keep
@@ -101,19 +101,11 @@ interface TierListDao {
     @Query("SELECT * FROM TierList where fav_list_id = :favListId ORDER BY tier_order ASC")
     fun getFromList(favListId: Int): Flow<List<TierList>>
 
-    @Query("SELECT * FROM TierList where fav_list_id = :favListId ORDER BY tier_order ASC")
-    fun getFromListSync(favListId: Int): List<TierList>
-
-    @Query("SELECT * FROM TierList where id = :tierListId ORDER BY tier_order ASC")
-    fun getById(tierListId: Int): Flow<TierList>
-
-    @Query("SELECT * FROM TierList where id = :tierListId ORDER BY tier_order ASC")
-    fun getByIdSync(tierListId: Int): TierList
-
     @Query("SELECT * FROM TierList where tier_order = :tierOrder")
     fun getByTierOrder(tierOrder: Int): TierList?
 
-    @Query("""
+    @Query(
+        """
         UPDATE TierList
         SET tier_order = CASE
             WHEN id = :tier1Id THEN :tier2Order
@@ -121,8 +113,14 @@ interface TierListDao {
             ELSE tier_order
         END
         WHERE id IN (:tier1Id, :tier2Id)
-    """)
-    suspend fun swapTierOrders(tier1Id: Int, tier1Order: Int, tier2Id: Int, tier2Order: Int)
+    """,
+    )
+    suspend fun swapTierOrders(
+        tier1Id: Int,
+        tier1Order: Int,
+        tier2Id: Int,
+        tier2Order: Int,
+    )
 
     @Insert(entity = TierList::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(tierList: TierListInsert): Long
@@ -133,14 +131,18 @@ interface TierListDao {
     @Delete
     suspend fun delete(tierList: TierList)
 
-    @Query("""
+    @Query(
+        """
         UPDATE TierList
         SET tier_order = tier_order - 1
         WHERE tier_order > :deletedTierOrder
         AND fav_list_id = :favListId
     """,
     )
-    suspend fun deleteAndDecrementHigherTierOrders(deletedTierOrder: Int, favListId: Int)
+    suspend fun deleteAndDecrementHigherTierOrders(
+        deletedTierOrder: Int,
+        favListId: Int,
+    )
 }
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -152,17 +154,17 @@ class TierListRepository(
     // Observed Flow will notify the observer when the data has changed.
     fun getFromList(favListId: Int) = tierListDao.getFromList(favListId)
 
-    fun getFromListSync(favListId: Int) = tierListDao.getFromListSync(favListId)
-
-    fun getById(tierListId: Int) = tierListDao.getById(tierListId)
-
-    fun getByIdSync(tierListId: Int) = tierListDao.getByIdSync(tierListId)
-
     fun getByTierOrder(tierOrder: Int) = tierListDao.getByTierOrder(tierOrder)
 
     @WorkerThread
-    suspend fun swapTierOrders(tierList1: TierList, tierList2: TierList) = tierListDao.swapTierOrders(
-        tierList1.id, tierList1.tierOrder, tierList2.id, tierList2.tierOrder
+    suspend fun swapTierOrders(
+        tierList1: TierList,
+        tierList2: TierList,
+    ) = tierListDao.swapTierOrders(
+        tierList1.id,
+        tierList1.tierOrder,
+        tierList2.id,
+        tierList2.tierOrder,
     )
 
     fun insert(tierList: TierListInsert) = tierListDao.insert(tierList)
@@ -174,8 +176,10 @@ class TierListRepository(
     suspend fun delete(tierList: TierList) = tierListDao.delete(tierList)
 
     @WorkerThread
-    suspend fun deleteAndDecrementHigherTierOrders(deletedTierOrder: Int, favListId: Int) =
-        tierListDao.deleteAndDecrementHigherTierOrders(deletedTierOrder, favListId)
+    suspend fun deleteAndDecrementHigherTierOrders(
+        deletedTierOrder: Int,
+        favListId: Int,
+    ) = tierListDao.deleteAndDecrementHigherTierOrders(deletedTierOrder, favListId)
 }
 
 class TierListViewModel(
@@ -183,20 +187,16 @@ class TierListViewModel(
 ) : ViewModel() {
     fun getFromList(favListId: Int) = repository.getFromList(favListId)
 
-    fun getFromListSync(favListId: Int) = repository.getFromListSync(favListId)
-
-    fun getById(tierListId: Int) = repository.getById(tierListId)
-
-    fun getByIdSync(tierListId: Int) = repository.getByIdSync(tierListId)
-
     fun getByTierOrder(tierOrder: Int) = repository.getByTierOrder(tierOrder)
 
-    fun swapTierOrders(tierList: TierList, relativeTierOrder: Int) =
-        viewModelScope.launch {
-            getByTierOrder(tierList.tierOrder + relativeTierOrder)?.let {
-                repository.swapTierOrders(tierList, it)
-            }
+    fun swapTierOrders(
+        tierList: TierList,
+        relativeTierOrder: Int,
+    ) = viewModelScope.launch {
+        getByTierOrder(tierList.tierOrder + relativeTierOrder)?.let {
+            repository.swapTierOrders(tierList, it)
         }
+    }
 
     fun insert(tierList: TierListInsert) = repository.insert(tierList)
 

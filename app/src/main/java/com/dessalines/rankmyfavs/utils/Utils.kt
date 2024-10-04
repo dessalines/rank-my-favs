@@ -108,7 +108,6 @@ fun assignTiersToItems(
     items: List<FavListItem>,
     limit: Int? = null,
 ): Map<TierList, List<FavListItem>> {
-
     if (tiers.isEmpty()) {
         return emptyMap()
     }

@@ -145,8 +145,11 @@ fun TierListScreen(
         favList?.let { fl ->
             favListViewModel.update(
                 FavListUpdate(
-                    fl.id, fl.name, fl.description, true
-                )
+                    fl.id,
+                    fl.name,
+                    fl.description,
+                    true,
+                ),
             )
         }
     }
@@ -179,16 +182,16 @@ fun TierListScreen(
         content = { padding ->
             Column(
                 modifier =
-                Modifier
-                    .padding(padding)
-                    .imePadding(),
+                    Modifier
+                        .padding(padding)
+                        .imePadding(),
             ) {
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.tier_list_limit_description)) },
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = SMALL_PADDING),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = SMALL_PADDING),
                     value = inputLimit,
                     onValueChange = { newLimit ->
                         inputLimit = newLimit
@@ -265,10 +268,10 @@ fun TierList(
 
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(SMALL_PADDING)
-            .verticalScroll(scrollState),
+            Modifier
+                .fillMaxSize()
+                .padding(SMALL_PADDING)
+                .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         tierList.forEach { (tier, items) ->
@@ -277,11 +280,12 @@ fun TierList(
 
         if (editTierList) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.LightGray, RoundedCornerShape(SMALL_PADDING))
-                    .height(60.dp)
-                    .clickable { showAddTierDialog = true },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .background(Color.LightGray, RoundedCornerShape(SMALL_PADDING))
+                        .height(60.dp)
+                        .clickable { showAddTierDialog = true },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
@@ -305,10 +309,10 @@ fun TierList(
                         name = tierName,
                         color = color.toArgb(),
                         tierOrder = tierList.size,
-                    )
+                    ),
                 )
                 showAddTierDialog = false
-            }
+            },
         )
     }
 }
@@ -336,17 +340,17 @@ fun TierSection(
 
     Row(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
-            .padding(LARGE_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
+                .padding(LARGE_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .weight(0.4f),
+                Modifier
+                    .fillMaxWidth()
+                    .weight(0.4f),
             contentAlignment = Alignment.Center,
         ) {
             Button(
@@ -380,11 +384,11 @@ fun TierSection(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 80.dp),
             modifier =
-            Modifier
-                .weight(0.6f)
-                // Needs a max height, else it cant calculate the scroll correctly
-                .heightIn(max = 160.dp)
-                .padding(start = SMALL_PADDING),
+                Modifier
+                    .weight(0.6f)
+                    // Needs a max height, else it cant calculate the scroll correctly
+                    .heightIn(max = 160.dp)
+                    .padding(start = SMALL_PADDING),
             verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
@@ -401,14 +405,14 @@ fun TierSection(
         if (editTierList) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly) {
-
+                verticalArrangement = Arrangement.SpaceEvenly,
+            ) {
                 IconButton(onClick = {
                     tierListViewModel?.swapTierOrders(tier, -1)
                 }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowUpward,
-                        contentDescription = stringResource(R.string.move_up)
+                        contentDescription = stringResource(R.string.move_up),
                     )
                 }
                 IconButton(onClick = {
@@ -416,7 +420,7 @@ fun TierSection(
                 }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowDownward,
-                        contentDescription = stringResource(R.string.move_down)
+                        contentDescription = stringResource(R.string.move_down),
                     )
                 }
 
@@ -427,9 +431,10 @@ fun TierSection(
                         tierListViewModel?.delete(tier)
                     },
                     shape = CircleShape,
-                    modifier = Modifier
-                        .imePadding()
-                        .size(28.dp),
+                    modifier =
+                        Modifier
+                            .imePadding()
+                            .size(28.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
@@ -441,9 +446,9 @@ fun TierSection(
 
                 FloatingActionButton(
                     modifier =
-                    Modifier
-                        .imePadding()
-                        .size(28.dp),
+                        Modifier
+                            .imePadding()
+                            .size(28.dp),
                     onClick = {
                         showColorPicker = true
                     },
@@ -555,13 +560,14 @@ fun AddTierDialog(
                 Spacer(modifier = Modifier.height(SMALL_PADDING))
 
                 Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .background(selectedColor, shape = CircleShape)
-                        .align(Alignment.CenterHorizontally)
-                        .clickable {
-                            showColorPicker = true
-                        },
+                    modifier =
+                        Modifier
+                            .size(50.dp)
+                            .background(selectedColor, shape = CircleShape)
+                            .align(Alignment.CenterHorizontally)
+                            .clickable {
+                                showColorPicker = true
+                            },
                 )
 
                 if (showColorPicker) {
@@ -570,7 +576,7 @@ fun AddTierDialog(
                         onColorSelected = { color ->
                             selectedColor = color
                         },
-                        onDismissRequest = { showColorPicker = false }
+                        onDismissRequest = { showColorPicker = false },
                     )
                 }
 
@@ -590,7 +596,6 @@ fun AddTierDialog(
         }
     }
 }
-
 
 @Composable
 @Preview
