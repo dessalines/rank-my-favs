@@ -29,6 +29,9 @@ import com.dessalines.rankmyfavs.db.FavListMatchViewModelFactory
 import com.dessalines.rankmyfavs.db.FavListRepository
 import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModelFactory
+import com.dessalines.rankmyfavs.db.TierListRepository
+import com.dessalines.rankmyfavs.db.TierListViewModel
+import com.dessalines.rankmyfavs.db.TierListViewModelFactory
 import com.dessalines.rankmyfavs.ui.components.about.AboutScreen
 import com.dessalines.rankmyfavs.ui.components.common.ShowChangelog
 import com.dessalines.rankmyfavs.ui.components.favlist.CreateFavListScreen
@@ -50,6 +53,9 @@ class RankMyFavsApplication : Application() {
     val appSettingsRepository by lazy { AppSettingsRepository(database.appSettingsDao()) }
     val favListRepository by lazy { FavListRepository(database.favListDao()) }
     val favListItemRepository by lazy { FavListItemRepository(database.favListItemDao()) }
+    val tierListRepository by lazy { TierListRepository(database.tierListDao()) }
+
+//    val tierListItemRepository by lazy { TierListItemRepository(database.tierListItemDao()) }
     val favListMatchRepository by lazy { FavListMatchRepository(database.favListMatchDao()) }
 }
 
@@ -65,6 +71,14 @@ class MainActivity : AppCompatActivity() {
     private val favListItemViewModel: FavListItemViewModel by viewModels {
         FavListItemViewModelFactory((application as RankMyFavsApplication).favListItemRepository)
     }
+
+    private val tierListViewModel: TierListViewModel by viewModels {
+        TierListViewModelFactory((application as RankMyFavsApplication).tierListRepository)
+    }
+
+//    private val tierListItemViewModel: TierListItemViewModel by viewModels {
+//        TierListItemViewModelFactory((application as RankMyFavsApplication).tierListItemRepository)
+//    }
 
     private val favListMatchViewModel: FavListMatchViewModel by viewModels {
         FavListMatchViewModelFactory((application as RankMyFavsApplication).favListMatchRepository)
@@ -214,6 +228,8 @@ class MainActivity : AppCompatActivity() {
                             favListItemViewModel = favListItemViewModel,
                             favListViewModel = favListViewModel,
                             favListId = favListId,
+                            tierListViewModel = tierListViewModel,
+//                            tierListItemViewModel = tierListItemViewModel,
                         )
                     }
 

@@ -58,6 +58,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -72,13 +73,17 @@ import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModel
+import com.dessalines.rankmyfavs.db.TierList
+import com.dessalines.rankmyfavs.db.TierListInsert
+import com.dessalines.rankmyfavs.db.TierListUpdate
+import com.dessalines.rankmyfavs.db.TierListViewModel
 import com.dessalines.rankmyfavs.ui.components.common.ColorPickerDialog
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.TIER_COLORS
-import com.dessalines.rankmyfavs.utils.generateRandomColor
+import com.dessalines.rankmyfavs.utils.assignTiersToItems
 import com.dessalines.rankmyfavs.utils.writeBitmap
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import dev.shreyaspatil.capturable.capturable
@@ -96,6 +101,7 @@ fun TierListScreen(
     navController: NavController,
     favListItemViewModel: FavListItemViewModel,
     favListViewModel: FavListViewModel,
+    tierListViewModel: TierListViewModel,
     favListId: Int,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
@@ -120,7 +126,17 @@ fun TierListScreen(
             }
         }
 
-    val tierList = favListItemViewModel.getFromListTiered(favListId, limit)
+    val tierList by tierListViewModel.getFromList(favListId).asLiveData().observeAsState()
+    if (tierList?.isEmpty() == true) {
+        TIER_COLORS.onEachIndexed { index, tier ->
+            tierListViewModel.insert(TierListInsert(favListId, tier.key, tier.value.toArgb(), index))
+        }
+    }
+
+    val favListItems by favListItemViewModel.getFromList(favListId).asLiveData().observeAsState()
+
+    val tieredItems = assignTiersToItems(tierList.orEmpty(), favListItems.orEmpty(), limit)
+
     val favList by favListViewModel.getById(favListId).asLiveData().observeAsState()
 
     LaunchedEffect(inputLimit) {
@@ -147,16 +163,16 @@ fun TierListScreen(
         content = { padding ->
             Column(
                 modifier =
-                Modifier
-                    .padding(padding)
-                    .imePadding(),
+                    Modifier
+                        .padding(padding)
+                        .imePadding(),
             ) {
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.tier_list_limit_description)) },
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = SMALL_PADDING),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = SMALL_PADDING),
                     value = inputLimit,
                     onValueChange = { newLimit ->
                         inputLimit = newLimit
@@ -167,7 +183,7 @@ fun TierListScreen(
                 Column(
                     modifier = Modifier.capturable(captureController),
                 ) {
-                    TierList(tierList, editTierList)
+                    TierList(favListId, tieredItems, editTierList, tierListViewModel)
                 }
             }
         },
@@ -222,18 +238,23 @@ fun TierListScreen(
 }
 
 @Composable
-fun TierList(tierList: Map<String, List<FavListItem>>, editTierList: Boolean) {
+fun TierList(
+    favListId: Int,
+    tierList: Map<TierList, List<FavListItem>>,
+    editTierList: Boolean,
+    tierListViewModel: TierListViewModel?,
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(SMALL_PADDING)
-            .verticalScroll(scrollState),
+            Modifier
+                .fillMaxSize()
+                .padding(SMALL_PADDING)
+                .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         tierList.forEach { (tier, items) ->
-            TierSection(tier, items, editTierList)
+            TierSection(favListId, tier, items, editTierList, tierListViewModel)
         }
     }
 }
@@ -241,13 +262,14 @@ fun TierList(tierList: Map<String, List<FavListItem>>, editTierList: Boolean) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TierSection(
-    tier: String,
+    favListId: Int,
+    tier: TierList,
     items: List<FavListItem>,
-    editTierList: Boolean
+    editTierList: Boolean,
+    tierListViewModel: TierListViewModel?,
 ) {
-    var tierName by remember { mutableStateOf(tier) }
-    var backgroundColor by remember { mutableStateOf(TIER_COLORS[tier]
-        ?: generateRandomColor()) }
+    var tierName by remember { mutableStateOf(tier.name) }
+    var backgroundColor by remember { mutableStateOf(Color(color = tier.color)) }
     var showColorPicker by remember { mutableStateOf(false) }
     var editTierName by remember { mutableStateOf(false) }
     val controller = rememberColorPickerController()
@@ -261,29 +283,32 @@ fun TierSection(
 
     Row(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
-            .padding(LARGE_PADDING),
+            Modifier
+                .fillMaxWidth()
+                .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
+                .padding(LARGE_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier =
-                Modifier.fillMaxWidth().weight(0.4f),
+                Modifier
+                    .fillMaxWidth()
+                    .weight(0.4f),
             contentAlignment = Alignment.Center,
         ) {
             Button(
                 modifier = Modifier.wrapContentWidth(),
                 onClick = { editTierName = true },
                 enabled = editTierList,
-                colors = ButtonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = Color.Black,
-                    disabledContainerColor = Color.Transparent,
-                    disabledContentColor = Color.Black
-                ),
+                colors =
+                    ButtonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.Black,
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Color.Black,
+                    ),
                 shape = RoundedCornerShape(SMALL_PADDING),
-                border = if (editTierList) BorderStroke(1.dp, Color.Black) else null
+                border = if (editTierList) BorderStroke(1.dp, Color.Black) else null,
             ) {
                 Text(
                     text = tierName,
@@ -302,11 +327,11 @@ fun TierSection(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 80.dp),
             modifier =
-            Modifier
-                .weight(0.6f)
-                // Needs a max height, else it cant calculate the scroll correctly
-                .heightIn(max = 160.dp)
-                .padding(start = SMALL_PADDING),
+                Modifier
+                    .weight(0.6f)
+                    // Needs a max height, else it cant calculate the scroll correctly
+                    .heightIn(max = 160.dp)
+                    .padding(start = SMALL_PADDING),
             verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
@@ -322,10 +347,11 @@ fun TierSection(
 
         if (editTierList) {
             FloatingActionButton(
-                modifier = Modifier
-                    .imePadding()
-                    .size(28.dp)
-                    .align(Alignment.Bottom),
+                modifier =
+                    Modifier
+                        .imePadding()
+                        .size(28.dp)
+                        .align(Alignment.Bottom),
                 onClick = {
                     showColorPicker = true
                 },
@@ -341,7 +367,18 @@ fun TierSection(
         if (showColorPicker) {
             ColorPickerDialog(
                 controller = controller,
-                onColorSelected = { backgroundColor = it },
+                onColorSelected = {
+                    backgroundColor = it
+                    tierListViewModel?.update(
+                        TierListUpdate(
+                            tier.id,
+                            favListId,
+                            tier.name,
+                            backgroundColor.toArgb(),
+                            tier.tierOrder,
+                        ),
+                    )
+                },
                 onDismissRequest = { showColorPicker = false },
             )
         }
@@ -351,7 +388,7 @@ fun TierSection(
                 Surface(
                     shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.surface,
-                    modifier = Modifier.padding(LARGE_PADDING)
+                    modifier = Modifier.padding(LARGE_PADDING),
                 ) {
                     Column(
                         modifier = Modifier.padding(LARGE_PADDING),
@@ -359,12 +396,24 @@ fun TierSection(
                     ) {
                         Text(
                             modifier = Modifier.padding(SMALL_PADDING),
-                            text = stringResource(R.string.enter_tier_name)
+                            text = stringResource(R.string.enter_tier_name),
                         )
-                        TextField(modifier = Modifier.padding(SMALL_PADDING), value = tierName,
+                        TextField(
+                            modifier = Modifier.padding(SMALL_PADDING),
+                            value = tierName,
                             onValueChange = {
                                 tierName = it
-                            })
+                                tierListViewModel?.update(
+                                    TierListUpdate(
+                                        tier.id,
+                                        favListId,
+                                        tierName,
+                                        tier.color,
+                                        tier.tierOrder,
+                                    ),
+                                )
+                            },
+                        )
                     }
                 }
             }
@@ -375,84 +424,34 @@ fun TierSection(
 @Composable
 @Preview
 fun TierListPreview() {
+    val tierList =
+        TIER_COLORS.entries
+            .mapIndexed { index, (tierName, color) ->
+                TierList(
+                    id = index + 1,
+                    favListId = 1,
+                    name = tierName,
+                    color = color.toArgb(),
+                    tierOrder = index,
+                ) to (
+                    mapOf(
+                        "S" to
+                            listOf(
+                                FavListItem(1, 1, "Item 1", "", 0f, 0f, 0f, 0f, 0),
+                                FavListItem(2, 1, "Item 2", "", 0f, 0f, 0f, 0f, 0),
+                            ),
+                        "A" to
+                            listOf(
+                                FavListItem(3, 1, "Item 3", "", 0f, 0f, 0f, 0f, 0),
+                            ),
+                    )[tierName] ?: emptyList()
+                )
+            }.toMap()
+
     TierList(
-        mapOf(
-            "S" to
-                    listOf(
-                        FavListItem(
-                            id = 1,
-                            favListId = 1,
-                            name = "Item 1",
-                            winRate = 0f,
-                            glickoRating = 0f,
-                            glickoDeviation = 0f,
-                            glickoVolatility = 0f,
-                            matchCount = 0,
-                        ),
-                        FavListItem(
-                            id = 2,
-                            favListId = 1,
-                            name = "Item 2",
-                            winRate = 0f,
-                            glickoRating = 0f,
-                            glickoDeviation = 0f,
-                            glickoVolatility = 0f,
-                            matchCount = 0,
-                        ),
-                    ),
-            "A" to
-                    listOf(
-                        FavListItem(
-                            id = 3,
-                            favListId = 1,
-                            name = "Item 3",
-                            winRate = 0f,
-                            glickoRating = 0f,
-                            glickoDeviation = 0f,
-                            glickoVolatility = 0f,
-                            matchCount = 0,
-                        ),
-                    ),
-            "B" to
-                    listOf(
-                        FavListItem(
-                            id = 3,
-                            favListId = 1,
-                            name = "Item 4",
-                            winRate = 0f,
-                            glickoRating = 0f,
-                            glickoDeviation = 0f,
-                            glickoVolatility = 0f,
-                            matchCount = 0,
-                        ),
-                    ),
-            "C" to
-                    listOf(
-                        FavListItem(
-                            id = 3,
-                            favListId = 1,
-                            name = "Item 5",
-                            winRate = 0f,
-                            glickoRating = 0f,
-                            glickoDeviation = 0f,
-                            glickoVolatility = 0f,
-                            matchCount = 0,
-                        ),
-                    ),
-            "D" to
-                    listOf(
-                        FavListItem(
-                            id = 3,
-                            favListId = 1,
-                            name = "Item 6",
-                            winRate = 0f,
-                            glickoRating = 0f,
-                            glickoDeviation = 0f,
-                            glickoVolatility = 0f,
-                            matchCount = 0,
-                        ),
-                    ),
-        ),
-        false
+        favListId = 1,
+        tierList = tierList,
+        editTierList = false,
+        tierListViewModel = null,
     )
 }

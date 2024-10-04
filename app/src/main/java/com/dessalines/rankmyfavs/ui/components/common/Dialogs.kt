@@ -88,9 +88,9 @@ fun ShowChangelog(appSettingsViewModel: AppSettingsViewModel) {
                 text = {
                     Column(
                         modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState),
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState),
                     ) {
                         val markdownText = DONATION_MARKDOWN + markdown
                         MarkdownText(
@@ -193,25 +193,26 @@ fun ColorPickerDialog(
         Surface(
             shape = RoundedCornerShape(12.dp),
             color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = stringResource(R.string.pick_a_color),
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineSmall,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 HsvColorPicker(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
                     onColorChanged = { colorEnvelope ->
                         onColorSelected(colorEnvelope.color)
                     },
-                    controller = controller
+                    controller = controller,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = onDismissRequest) {
@@ -221,4 +222,3 @@ fun ColorPickerDialog(
         }
     }
 }
-

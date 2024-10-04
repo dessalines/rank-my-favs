@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.ui.graphics.Color
 import com.dessalines.rankmyfavs.db.FavListItem
+import com.dessalines.rankmyfavs.db.TierList
 import java.io.IOException
 import java.io.OutputStream
 import java.util.Random
@@ -97,7 +98,26 @@ fun convertFavlistToMarkdown(
     return "# $title\n\n$items"
 }
 
-fun generateRandomColor(): Color {
-    val rnd = Random()
-    return Color(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+fun assignTiersToItems(
+    tiers: List<TierList>,
+    items: List<FavListItem>,
+    limit: Int? = null,
+): Map<TierList, List<FavListItem>> {
+    // Sort items by glickoRating in descending order
+    val sortedItems = items.sortedByDescending { it.glickoRating }
+
+    // Apply limit if provided
+    val limitedItems = limit?.let { sortedItems.take(it) } ?: sortedItems
+
+    // Calculate tier thresholds
+    val tierMap = mutableMapOf<TierList, List<FavListItem>>()
+
+    tiers.forEachIndexed { index, tier ->
+        val lowerBoundIndex = (limitedItems.size * index / tiers.size).coerceAtMost(limitedItems.size - 1)
+        val upperBoundIndex = (limitedItems.size * (index + 1) / tiers.size).coerceAtMost(limitedItems.size)
+
+        tierMap[tier] = limitedItems.subList(lowerBoundIndex, upperBoundIndex)
+    }
+
+    return tierMap
 }
