@@ -6,6 +6,7 @@ import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -28,8 +30,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Colorize
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.BasicAlertDialog
@@ -38,6 +44,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -72,6 +79,7 @@ import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
+import com.dessalines.rankmyfavs.db.FavListUpdate
 import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.db.TierList
 import com.dessalines.rankmyfavs.db.TierListInsert
@@ -84,6 +92,7 @@ import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.TIER_COLORS
 import com.dessalines.rankmyfavs.utils.assignTiersToItems
+import com.dessalines.rankmyfavs.utils.generateRandomColor
 import com.dessalines.rankmyfavs.utils.writeBitmap
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import dev.shreyaspatil.capturable.capturable
@@ -126,18 +135,25 @@ fun TierListScreen(
             }
         }
 
+    val favList by favListViewModel.getById(favListId).asLiveData().observeAsState()
     val tierList by tierListViewModel.getFromList(favListId).asLiveData().observeAsState()
-    if (tierList?.isEmpty() == true) {
+
+    if (tierList?.isEmpty() == true && favList?.tierListInitialized == false) {
         TIER_COLORS.onEachIndexed { index, tier ->
             tierListViewModel.insert(TierListInsert(favListId, tier.key, tier.value.toArgb(), index))
+        }
+        favList?.let { fl ->
+            favListViewModel.update(
+                FavListUpdate(
+                    fl.id, fl.name, fl.description, true
+                )
+            )
         }
     }
 
     val favListItems by favListItemViewModel.getFromList(favListId).asLiveData().observeAsState()
 
     val tieredItems = assignTiersToItems(tierList.orEmpty(), favListItems.orEmpty(), limit)
-
-    val favList by favListViewModel.getById(favListId).asLiveData().observeAsState()
 
     LaunchedEffect(inputLimit) {
         delay(500) // limit shouldn't be updated instantly
@@ -163,16 +179,16 @@ fun TierListScreen(
         content = { padding ->
             Column(
                 modifier =
-                    Modifier
-                        .padding(padding)
-                        .imePadding(),
+                Modifier
+                    .padding(padding)
+                    .imePadding(),
             ) {
                 OutlinedTextField(
                     label = { Text(stringResource(R.string.tier_list_limit_description)) },
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = SMALL_PADDING),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = SMALL_PADDING),
                     value = inputLimit,
                     onValueChange = { newLimit ->
                         inputLimit = newLimit
@@ -244,18 +260,56 @@ fun TierList(
     editTierList: Boolean,
     tierListViewModel: TierListViewModel?,
 ) {
+    var showAddTierDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(SMALL_PADDING)
-                .verticalScroll(scrollState),
+        Modifier
+            .fillMaxSize()
+            .padding(SMALL_PADDING)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
     ) {
         tierList.forEach { (tier, items) ->
             TierSection(favListId, tier, items, editTierList, tierListViewModel)
         }
+
+        if (editTierList) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray, RoundedCornerShape(SMALL_PADDING))
+                    .height(60.dp)
+                    .clickable { showAddTierDialog = true },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = stringResource(R.string.add_new_tier),
+                    modifier = Modifier.size(40.dp),
+                    tint = Color.Black,
+                )
+            }
+        }
+    }
+
+    if (showAddTierDialog) {
+        AddTierDialog(
+            onDismissRequest = { showAddTierDialog = false },
+            onAddTier = { tierName, color ->
+                tierListViewModel?.insert(
+                    TierListInsert(
+                        favListId = favListId,
+                        name = tierName,
+                        color = color.toArgb(),
+                        tierOrder = tierList.size,
+                    )
+                )
+                showAddTierDialog = false
+            }
+        )
     }
 }
 
@@ -268,8 +322,7 @@ fun TierSection(
     editTierList: Boolean,
     tierListViewModel: TierListViewModel?,
 ) {
-    var tierName by remember { mutableStateOf(tier.name) }
-    var backgroundColor by remember { mutableStateOf(Color(color = tier.color)) }
+    val backgroundColor = Color(tier.color)
     var showColorPicker by remember { mutableStateOf(false) }
     var editTierName by remember { mutableStateOf(false) }
     val controller = rememberColorPickerController()
@@ -279,21 +332,21 @@ fun TierSection(
     val maxTextSize = 32.sp
 
     // Calculate the text size based on the length of the tier name
-    val textSize = lerp(maxTextSize, minTextSize, (tierName.length - 5) / 50f)
+    val textSize = lerp(maxTextSize, minTextSize, (tier.name.length - 5) / 50f)
 
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
-                .padding(LARGE_PADDING),
+        Modifier
+            .fillMaxWidth()
+            .background(color = backgroundColor, shape = RoundedCornerShape(SMALL_PADDING))
+            .padding(LARGE_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .weight(0.4f),
+            Modifier
+                .fillMaxWidth()
+                .weight(0.4f),
             contentAlignment = Alignment.Center,
         ) {
             Button(
@@ -311,7 +364,7 @@ fun TierSection(
                 border = if (editTierList) BorderStroke(1.dp, Color.Black) else null,
             ) {
                 Text(
-                    text = tierName,
+                    text = tier.name,
                     fontStyle = if (editTierList) FontStyle.Italic else FontStyle.Normal,
                     fontSize = textSize,
                     style = MaterialTheme.typography.headlineLarge,
@@ -327,11 +380,11 @@ fun TierSection(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 80.dp),
             modifier =
-                Modifier
-                    .weight(0.6f)
-                    // Needs a max height, else it cant calculate the scroll correctly
-                    .heightIn(max = 160.dp)
-                    .padding(start = SMALL_PADDING),
+            Modifier
+                .weight(0.6f)
+                // Needs a max height, else it cant calculate the scroll correctly
+                .heightIn(max = 160.dp)
+                .padding(start = SMALL_PADDING),
             verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
         ) {
@@ -346,21 +399,61 @@ fun TierSection(
         }
 
         if (editTierList) {
-            FloatingActionButton(
-                modifier =
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly) {
+
+                IconButton(onClick = {
+                    tierListViewModel?.swapTierOrders(tier, -1)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowUpward,
+                        contentDescription = stringResource(R.string.move_up)
+                    )
+                }
+                IconButton(onClick = {
+                    tierListViewModel?.swapTierOrders(tier, 1)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowDownward,
+                        contentDescription = stringResource(R.string.move_down)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(SMALL_PADDING))
+
+                FloatingActionButton(
+                    onClick = {
+                        tierListViewModel?.delete(tier)
+                    },
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .imePadding()
+                        .size(28.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = stringResource(R.string.delete),
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(SMALL_PADDING))
+
+                FloatingActionButton(
+                    modifier =
                     Modifier
                         .imePadding()
-                        .size(28.dp)
-                        .align(Alignment.Bottom),
-                onClick = {
-                    showColorPicker = true
-                },
-                shape = RoundedCornerShape(SMALL_PADDING),
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Colorize,
-                    contentDescription = stringResource(R.string.edit_item),
-                )
+                        .size(28.dp),
+                    onClick = {
+                        showColorPicker = true
+                    },
+                    shape = RoundedCornerShape(SMALL_PADDING),
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Colorize,
+                        contentDescription = stringResource(R.string.edit_item),
+                    )
+                }
             }
         }
 
@@ -368,13 +461,12 @@ fun TierSection(
             ColorPickerDialog(
                 controller = controller,
                 onColorSelected = {
-                    backgroundColor = it
                     tierListViewModel?.update(
                         TierListUpdate(
                             tier.id,
                             favListId,
                             tier.name,
-                            backgroundColor.toArgb(),
+                            it.toArgb(),
                             tier.tierOrder,
                         ),
                     )
@@ -400,14 +492,13 @@ fun TierSection(
                         )
                         TextField(
                             modifier = Modifier.padding(SMALL_PADDING),
-                            value = tierName,
+                            value = tier.name,
                             onValueChange = {
-                                tierName = it
                                 tierListViewModel?.update(
                                     TierListUpdate(
                                         tier.id,
                                         favListId,
-                                        tierName,
+                                        it,
                                         tier.color,
                                         tier.tierOrder,
                                     ),
@@ -420,6 +511,86 @@ fun TierSection(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddTierDialog(
+    onDismissRequest: () -> Unit,
+    onAddTier: (String, Color) -> Unit,
+) {
+    var tierName by remember { mutableStateOf("") }
+    var selectedColor by remember { mutableStateOf(generateRandomColor()) }
+    var showColorPicker by remember { mutableStateOf(false) }
+    val controller = rememberColorPickerController()
+
+    BasicAlertDialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.padding(LARGE_PADDING),
+        ) {
+            Column(
+                modifier = Modifier.padding(LARGE_PADDING),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = stringResource(R.string.enter_tier_name),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                OutlinedTextField(
+                    value = tierName,
+                    onValueChange = { tierName = it },
+                    label = { Text(stringResource(R.string.enter_tier_name)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+
+                Spacer(modifier = Modifier.height(LARGE_PADDING))
+
+                Text(
+                    text = stringResource(R.string.pick_a_color),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+
+                Spacer(modifier = Modifier.height(SMALL_PADDING))
+
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(selectedColor, shape = CircleShape)
+                        .align(Alignment.CenterHorizontally)
+                        .clickable {
+                            showColorPicker = true
+                        },
+                )
+
+                if (showColorPicker) {
+                    ColorPickerDialog(
+                        controller = controller,
+                        onColorSelected = { color ->
+                            selectedColor = color
+                        },
+                        onDismissRequest = { showColorPicker = false }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        if (tierName.isNotBlank()) {
+                            onAddTier(tierName, selectedColor)
+                        }
+                    },
+                    enabled = tierName.isNotBlank(),
+                ) {
+                    Text(stringResource(R.string.done))
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 @Preview
@@ -454,4 +625,10 @@ fun TierListPreview() {
         editTierList = false,
         tierListViewModel = null,
     )
+}
+
+@Composable
+@Preview
+fun AddTierDialogPreview() {
+    AddTierDialog(onDismissRequest = {}) { name, color -> }
 }

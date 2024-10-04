@@ -98,11 +98,21 @@ fun convertFavlistToMarkdown(
     return "# $title\n\n$items"
 }
 
+fun generateRandomColor(): Color {
+    val rnd = Random()
+    return Color(rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+}
+
 fun assignTiersToItems(
     tiers: List<TierList>,
     items: List<FavListItem>,
     limit: Int? = null,
 ): Map<TierList, List<FavListItem>> {
+
+    if (tiers.isEmpty()) {
+        return emptyMap()
+    }
+
     // Sort items by glickoRating in descending order
     val sortedItems = items.sortedByDescending { it.glickoRating }
 
@@ -112,7 +122,8 @@ fun assignTiersToItems(
     // Calculate tier thresholds
     val tierMap = mutableMapOf<TierList, List<FavListItem>>()
 
-    tiers.forEachIndexed { index, tier ->
+    tiers.sortedBy { it.tierOrder }.forEachIndexed { index, tier ->
+
         val lowerBoundIndex = (limitedItems.size * index / tiers.size).coerceAtMost(limitedItems.size - 1)
         val upperBoundIndex = (limitedItems.size * (index + 1) / tiers.size).coerceAtMost(limitedItems.size)
 

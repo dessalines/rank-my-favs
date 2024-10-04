@@ -32,6 +32,10 @@ data class FavList(
         name = "description",
     )
     val description: String? = null,
+    @ColumnInfo(
+        name = "tier_list_initialized",
+    )
+    val tierListInitialized: Boolean = false,
 )
 
 @Entity
@@ -44,6 +48,10 @@ data class FavListInsert(
         name = "description",
     )
     val description: String? = null,
+    @ColumnInfo(
+        name = "tier_list_initialized",
+    )
+    val tierListInitialized: Boolean = false,
 )
 
 @Entity
@@ -57,6 +65,10 @@ data class FavListUpdate(
         name = "description",
     )
     val description: String? = null,
+    @ColumnInfo(
+        name = "tier_list_initialized",
+    )
+    val tierListInitialized: Boolean = false,
 )
 
 private const val BY_ID_QUERY = "SELECT * FROM FavList where id = :id"
