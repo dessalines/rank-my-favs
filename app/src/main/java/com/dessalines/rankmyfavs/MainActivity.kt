@@ -55,7 +55,6 @@ class RankMyFavsApplication : Application() {
     val favListItemRepository by lazy { FavListItemRepository(database.favListItemDao()) }
     val tierListRepository by lazy { TierListRepository(database.tierListDao()) }
 
-//    val tierListItemRepository by lazy { TierListItemRepository(database.tierListItemDao()) }
     val favListMatchRepository by lazy { FavListMatchRepository(database.favListMatchDao()) }
 }
 
@@ -75,10 +74,6 @@ class MainActivity : AppCompatActivity() {
     private val tierListViewModel: TierListViewModel by viewModels {
         TierListViewModelFactory((application as RankMyFavsApplication).tierListRepository)
     }
-
-//    private val tierListItemViewModel: TierListItemViewModel by viewModels {
-//        TierListItemViewModelFactory((application as RankMyFavsApplication).tierListItemRepository)
-//    }
 
     private val favListMatchViewModel: FavListMatchViewModel by viewModels {
         FavListMatchViewModelFactory((application as RankMyFavsApplication).favListMatchRepository)
@@ -229,7 +224,6 @@ class MainActivity : AppCompatActivity() {
                             favListViewModel = favListViewModel,
                             favListId = favListId,
                             tierListViewModel = tierListViewModel,
-//                            tierListItemViewModel = tierListItemViewModel,
                         )
                     }
 
