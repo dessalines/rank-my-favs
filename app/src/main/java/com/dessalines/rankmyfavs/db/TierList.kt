@@ -139,7 +139,7 @@ interface TierListDao {
         AND fav_list_id = :favListId
     """,
     )
-    suspend fun deleteAndDecrementHigherTierOrders(
+    suspend fun decrementHigherTierOrders(
         deletedTierOrder: Int,
         favListId: Int,
     )
@@ -176,10 +176,10 @@ class TierListRepository(
     suspend fun delete(tierList: TierList) = tierListDao.delete(tierList)
 
     @WorkerThread
-    suspend fun deleteAndDecrementHigherTierOrders(
+    suspend fun decrementHigherTierOrders(
         deletedTierOrder: Int,
         favListId: Int,
-    ) = tierListDao.deleteAndDecrementHigherTierOrders(deletedTierOrder, favListId)
+    ) = tierListDao.decrementHigherTierOrders(deletedTierOrder, favListId)
 }
 
 class TierListViewModel(
@@ -208,7 +208,7 @@ class TierListViewModel(
     fun delete(tierList: TierList) =
         viewModelScope.launch {
             repository.delete(tierList)
-            repository.deleteAndDecrementHigherTierOrders(tierList.tierOrder, tierList.favListId)
+            repository.decrementHigherTierOrders(tierList.tierOrder, tierList.favListId)
         }
 }
 
