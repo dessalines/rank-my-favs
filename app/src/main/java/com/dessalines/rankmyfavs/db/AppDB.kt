@@ -12,7 +12,9 @@ import java.util.concurrent.Executors
 
 @Database(
     version = 2,
-    entities = [AppSettings::class, FavList::class, FavListItem::class, FavListMatch::class],
+    entities = [
+        AppSettings::class, FavList::class, FavListItem::class, FavListMatch::class, TierList::class,
+    ],
     exportSchema = true,
 )
 abstract class AppDB : RoomDatabase() {
@@ -21,6 +23,8 @@ abstract class AppDB : RoomDatabase() {
     abstract fun favListDao(): FavListDao
 
     abstract fun favListItemDao(): FavListItemDao
+
+    abstract fun tierListDao(): TierListDao
 
     abstract fun favListMatchDao(): FavListMatchDao
 
