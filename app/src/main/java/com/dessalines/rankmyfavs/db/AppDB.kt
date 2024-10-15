@@ -11,7 +11,7 @@ import com.dessalines.rankmyfavs.utils.TAG
 import java.util.concurrent.Executors
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         AppSettings::class, FavList::class, FavListItem::class, FavListMatch::class, TierList::class,
     ],
@@ -63,6 +63,8 @@ abstract class AppDB : RoomDatabase() {
                                     }
                                 }
                             },
+                        ).addMigrations(
+                            MIGRATION_2_3,
                         ).build()
                 instance = i
                 // return instance

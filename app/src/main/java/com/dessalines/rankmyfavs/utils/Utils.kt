@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.TierList
 import java.io.IOException
@@ -131,3 +132,5 @@ fun assignTiersToItems(
 
     return tierMap
 }
+
+fun Color.tint(factor: Float): Color = lerp(this, Color.White, factor)

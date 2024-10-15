@@ -3,7 +3,6 @@ package com.dessalines.rankmyfavs.ui.components.favlist
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BasicTooltipBox
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +39,7 @@ import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -71,7 +70,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.asLiveData
@@ -86,13 +84,20 @@ import com.dessalines.rankmyfavs.db.TierListInsert
 import com.dessalines.rankmyfavs.db.TierListUpdate
 import com.dessalines.rankmyfavs.db.TierListViewModel
 import com.dessalines.rankmyfavs.ui.components.common.ColorPickerDialog
+import com.dessalines.rankmyfavs.ui.components.common.FLOATING_BUTTON_SIZE
+import com.dessalines.rankmyfavs.ui.components.common.LARGE_HEIGHT
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
+import com.dessalines.rankmyfavs.ui.components.common.MAX_HEIGHT
+import com.dessalines.rankmyfavs.ui.components.common.MEDIUM_HEIGHT
+import com.dessalines.rankmyfavs.ui.components.common.MEDIUM_PADDING
+import com.dessalines.rankmyfavs.ui.components.common.SMALL_HEIGHT
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.TIER_COLORS
 import com.dessalines.rankmyfavs.utils.assignTiersToItems
 import com.dessalines.rankmyfavs.utils.generateRandomColor
+import com.dessalines.rankmyfavs.utils.tint
 import com.dessalines.rankmyfavs.utils.writeBitmap
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import dev.shreyaspatil.capturable.capturable
@@ -283,8 +288,8 @@ fun TierList(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .background(Color.LightGray, RoundedCornerShape(SMALL_PADDING))
-                        .height(60.dp)
+                        .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(SMALL_PADDING))
+                        .height(MEDIUM_HEIGHT)
                         .clickable { showAddTierDialog = true },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -292,8 +297,8 @@ fun TierList(
                 Icon(
                     imageVector = Icons.Outlined.Add,
                     contentDescription = stringResource(R.string.add_new_tier),
-                    modifier = Modifier.size(40.dp),
-                    tint = Color.Black,
+                    modifier = Modifier.size(SMALL_HEIGHT),
+                    tint = MaterialTheme.colorScheme.surfaceTint,
                 )
             }
         }
@@ -358,21 +363,18 @@ fun TierSection(
                 onClick = { editTierName = true },
                 enabled = editTierList,
                 colors =
-                    ButtonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = Color.Black,
+                    ButtonDefaults.buttonColors(
+                        containerColor = backgroundColor.tint(0.3f),
                         disabledContainerColor = Color.Transparent,
-                        disabledContentColor = Color.Black,
                     ),
                 shape = RoundedCornerShape(SMALL_PADDING),
-                border = if (editTierList) BorderStroke(1.dp, Color.Black) else null,
             ) {
                 Text(
                     text = tier.name,
                     fontStyle = if (editTierList) FontStyle.Italic else FontStyle.Normal,
                     fontSize = textSize,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -382,12 +384,12 @@ fun TierSection(
         Spacer(modifier = Modifier.width(LARGE_PADDING))
 
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 80.dp),
+            columns = GridCells.Adaptive(minSize = LARGE_HEIGHT),
             modifier =
                 Modifier
                     .weight(0.6f)
                     // Needs a max height, else it cant calculate the scroll correctly
-                    .heightIn(max = 160.dp)
+                    .heightIn(max = MAX_HEIGHT)
                     .padding(start = SMALL_PADDING),
             verticalArrangement = Arrangement.spacedBy(SMALL_PADDING),
             horizontalArrangement = Arrangement.spacedBy(SMALL_PADDING),
@@ -396,8 +398,8 @@ fun TierSection(
                 Text(
                     text = item.name,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    color = Color.Black,
+                    modifier = Modifier.padding(vertical = SMALL_PADDING),
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }
@@ -434,7 +436,7 @@ fun TierSection(
                     modifier =
                         Modifier
                             .imePadding()
-                            .size(28.dp),
+                            .size(FLOATING_BUTTON_SIZE),
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,
@@ -448,7 +450,7 @@ fun TierSection(
                     modifier =
                         Modifier
                             .imePadding()
-                            .size(28.dp),
+                            .size(FLOATING_BUTTON_SIZE),
                     onClick = {
                         showColorPicker = true
                     },
@@ -483,7 +485,7 @@ fun TierSection(
         if (editTierName) {
             BasicAlertDialog(onDismissRequest = { editTierName = false }) {
                 Surface(
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(MEDIUM_PADDING),
                     color = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.padding(LARGE_PADDING),
                 ) {
@@ -530,7 +532,7 @@ fun AddTierDialog(
 
     BasicAlertDialog(onDismissRequest = onDismissRequest) {
         Surface(
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(MEDIUM_PADDING),
             color = MaterialTheme.colorScheme.surface,
             modifier = Modifier.padding(LARGE_PADDING),
         ) {
@@ -562,7 +564,7 @@ fun AddTierDialog(
                 Box(
                     modifier =
                         Modifier
-                            .size(50.dp)
+                            .size(MEDIUM_HEIGHT)
                             .background(selectedColor, shape = CircleShape)
                             .align(Alignment.CenterHorizontally)
                             .clickable {
@@ -580,7 +582,7 @@ fun AddTierDialog(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(LARGE_PADDING))
 
                 Button(
                     onClick = {
@@ -635,5 +637,5 @@ fun TierListPreview() {
 @Composable
 @Preview
 fun AddTierDialogPreview() {
-    AddTierDialog(onDismissRequest = {}) { name, color -> }
+    AddTierDialog(onDismissRequest = {}) { _, _ -> }
 }

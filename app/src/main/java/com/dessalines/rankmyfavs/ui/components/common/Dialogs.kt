@@ -191,19 +191,19 @@ fun ColorPickerDialog(
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(MEDIUM_PADDING),
             color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(LARGE_PADDING),
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(LARGE_PADDING),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     text = stringResource(R.string.pick_a_color),
                     style = MaterialTheme.typography.headlineSmall,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(LARGE_PADDING))
                 HsvColorPicker(
                     modifier =
                         Modifier
@@ -214,7 +214,7 @@ fun ColorPickerDialog(
                     },
                     controller = controller,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(LARGE_PADDING))
                 Button(onClick = onDismissRequest) {
                     Text("Done")
                 }
