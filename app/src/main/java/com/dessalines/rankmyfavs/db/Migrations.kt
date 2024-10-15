@@ -41,5 +41,14 @@ val MIGRATION_2_3 =
                 )
                 """.trimIndent(),
             )
+
+            // Add tier_list_initialized to FavList
+            db.execSQL(
+                """
+                ALTER TABLE FavList
+                ADD COLUMN tier_list_initialized
+                INTEGER NOT NULL DEFAULT 0
+                """.trimIndent(),
+            )
         }
     }
