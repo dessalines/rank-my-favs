@@ -45,6 +45,7 @@ abstract class AppDB : RoomDatabase() {
                         ).allowMainThreadQueries()
                         .addMigrations(
                             MIGRATION_1_2,
+                            MIGRATION_2_3,
                         )
                         // Necessary because it can't insert data on creation
                         .addCallback(
@@ -63,8 +64,6 @@ abstract class AppDB : RoomDatabase() {
                                     }
                                 }
                             },
-                        ).addMigrations(
-                            MIGRATION_2_3,
                         ).build()
                 instance = i
                 // return instance
