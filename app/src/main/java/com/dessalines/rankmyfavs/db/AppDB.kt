@@ -11,8 +11,10 @@ import com.dessalines.rankmyfavs.utils.TAG
 import java.util.concurrent.Executors
 
 @Database(
-    version = 2,
-    entities = [AppSettings::class, FavList::class, FavListItem::class, FavListMatch::class],
+    version = 3,
+    entities = [
+        AppSettings::class, FavList::class, FavListItem::class, FavListMatch::class, TierList::class,
+    ],
     exportSchema = true,
 )
 abstract class AppDB : RoomDatabase() {
@@ -21,6 +23,8 @@ abstract class AppDB : RoomDatabase() {
     abstract fun favListDao(): FavListDao
 
     abstract fun favListItemDao(): FavListItemDao
+
+    abstract fun tierListDao(): TierListDao
 
     abstract fun favListMatchDao(): FavListMatchDao
 
@@ -41,6 +45,7 @@ abstract class AppDB : RoomDatabase() {
                         ).allowMainThreadQueries()
                         .addMigrations(
                             MIGRATION_1_2,
+                            MIGRATION_2_3,
                         )
                         // Necessary because it can't insert data on creation
                         .addCallback(
