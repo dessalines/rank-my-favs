@@ -33,11 +33,11 @@ val MIGRATION_2_3 =
             db.execSQL(
                 """
                 CREATE TABLE IF NOT EXISTS TierList (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     fav_list_id INTEGER NOT NULL,
                     name TEXT NOT NULL,
                     color INTEGER NOT NULL,
-                    tier_order INTEGER NOT NULL
+                    tier_order INTEGER NOT NULL,
                     FOREIGN KEY(fav_list_id) REFERENCES FavList(id) ON DELETE CASCADE
                 )
                 """.trimIndent(),
