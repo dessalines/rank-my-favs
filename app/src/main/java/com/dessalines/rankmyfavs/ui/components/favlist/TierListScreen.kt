@@ -374,7 +374,7 @@ fun TierSection(
                     fontStyle = if (editTierList) FontStyle.Italic else FontStyle.Normal,
                     fontSize = textSize,
                     style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = Color.Black,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -399,7 +399,7 @@ fun TierSection(
                     text = item.name,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(vertical = SMALL_PADDING),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = Color.Black,
                 )
             }
         }
