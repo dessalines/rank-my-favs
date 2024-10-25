@@ -1,3 +1,10 @@
+## What's Changed in 0.5.4
+
+- Fixing signing config. by @dessalines in [#175](https://github.com/dessalines/rank-my-favs/pull/175)
+- Changed text inside tiers to be always black by @iByteABit256 in [#173](https://github.com/dessalines/rank-my-favs/pull/173)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.5.3...0.5.4
+
 ## What's Changed in 0.5.3
 
 - Converting gradle to kotlin build. by @dessalines in [#171](https://github.com/dessalines/rank-my-favs/pull/171)
