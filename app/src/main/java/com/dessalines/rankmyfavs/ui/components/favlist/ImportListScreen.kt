@@ -54,7 +54,7 @@ fun ImportListScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.import_list),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
             )
         },
         content = { padding ->

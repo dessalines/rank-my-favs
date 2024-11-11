@@ -1,4 +1,4 @@
-package com.dessalines.rankmyfavs.ui.components.favlist
+package com.dessalines.rankmyfavs.ui.components.favlist.favlistanddetails
 
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -86,20 +86,22 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun FavListDetailScreen(
+fun FavListDetailPane(
     navController: NavController,
     favListViewModel: FavListViewModel,
     favListItemViewModel: FavListItemViewModel,
     favListMatchViewModel: FavListMatchViewModel,
-    id: Int,
+    favListId: Int,
+    isListAndDetailVisible: Boolean,
+    onBackClick: () -> Unit,
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val favList by favListViewModel.getById(id).asLiveData().observeAsState()
-    val favListItems by favListItemViewModel.getFromList(id).asLiveData().observeAsState()
+    val favList by favListViewModel.getById(favListId).asLiveData().observeAsState()
+    val favListItems by favListItemViewModel.getFromList(favListId).asLiveData().observeAsState()
 
     val showClearStatsDialog = remember { mutableStateOf(false) }
     val showDeleteDialog = remember { mutableStateOf(false) }
@@ -134,12 +136,19 @@ fun FavListDetailScreen(
     val clearStatsMessage = stringResource(R.string.clear_stats)
     val deletedMessage = stringResource(R.string.list_deleted)
 
+    val (titleText, onBackClick) =
+        if (isListAndDetailVisible) {
+            Pair(stringResource(R.string.items), null)
+        } else {
+            Pair(favList?.name.orEmpty(), onBackClick)
+        }
+
     Scaffold(
         topBar = {
             if (!showSearchBar) {
                 SimpleTopAppBar(
-                    text = favList?.name.orEmpty(),
-                    navController = navController,
+                    text = titleText,
+                    onBackClick = onBackClick,
                     scrollBehavior = scrollBehavior,
                     actions = {
                         BasicTooltipBox(
@@ -212,8 +221,8 @@ fun FavListDetailScreen(
                 show = showClearStatsDialog,
                 title = clearStatsMessage,
                 onYes = {
-                    favListItemViewModel.clearStatsForList(favListId = id)
-                    favListMatchViewModel.deleteMatchesForList(favListId = id)
+                    favListItemViewModel.clearStatsForList(favListId = favListId)
+                    favListMatchViewModel.deleteMatchesForList(favListId = favListId)
                     Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
                 },
             )
@@ -397,7 +406,7 @@ fun FavListDetailScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                navController.navigate("editFavList/$id")
+                                navController.navigate("editFavList/$favListId")
                             },
                         ) {
                             Icon(
@@ -419,7 +428,7 @@ fun FavListDetailScreen(
                             FloatingActionButton(
                                 modifier = Modifier.imePadding(),
                                 onClick = {
-                                    navController.navigate("match?favListId=$id")
+                                    navController.navigate("match?favListId=$favListId")
                                 },
                                 shape = CircleShape,
                             ) {

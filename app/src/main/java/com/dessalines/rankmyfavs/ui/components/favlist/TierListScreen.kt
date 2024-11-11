@@ -181,7 +181,7 @@ fun TierListScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.tier_list),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
             )
         },
         content = { padding ->

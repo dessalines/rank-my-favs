@@ -47,14 +47,14 @@ fun AboutScreen(navController: NavController) {
 
     val ctx = LocalContext.current
 
-    val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName
+    val version = ctx.packageManager.getPackageInfo(ctx.packageName, 0).versionName ?: "1"
     val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.about),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
             )
         },
         content = { padding ->

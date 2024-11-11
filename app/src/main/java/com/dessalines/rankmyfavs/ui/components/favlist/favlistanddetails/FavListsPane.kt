@@ -1,4 +1,4 @@
-package com.dessalines.rankmyfavs.ui.components.favlist
+package com.dessalines.rankmyfavs.ui.components.favlist.favlistanddetails
 
 import androidx.compose.foundation.BasicTooltipBox
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -13,13 +13,12 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
@@ -40,98 +39,88 @@ import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
+import com.dessalines.rankmyfavs.utils.SelectionVisibilityState
+import kotlin.collections.orEmpty
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun FavListsScreen(
+fun FavListsPane(
     navController: NavController,
     favListViewModel: FavListViewModel,
+    onFavListClick: (favListId: Int) -> Unit,
+    selectionState: SelectionVisibilityState<Int>,
+    isListAndDetailVisible: Boolean,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val listState = rememberLazyListState()
-
     val favLists by favListViewModel.getAll.asLiveData().observeAsState()
+    val title =
+        if (!isListAndDetailVisible) stringResource(R.string.app_name) else stringResource(R.string.lists)
 
     Scaffold(
         topBar = {
             SimpleTopAppBar(
-                text = stringResource(R.string.app_name),
-                navController = navController,
+                text = title,
                 scrollBehavior = scrollBehavior,
-                showBack = false,
             )
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.Companion.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
             Box(
-                modifier = Modifier.padding(padding).imePadding(),
+                modifier =
+                    Modifier.Companion
+                        .padding(padding)
+                        .imePadding(),
             ) {
                 LazyColumn(
                     state = listState,
                 ) {
                     items(favLists.orEmpty()) { favList ->
+                        val selected =
+                            when (selectionState) {
+                                is SelectionVisibilityState.ShowSelection -> selectionState.selectedItem == favList.id
+                                else -> false
+                            }
+
                         FavListRow(
                             favList = favList,
-                            onClick = { navController.navigate("favListDetails/${favList.id}") },
+                            onClick = { onFavListClick(favList.id) },
+                            selected = selected,
                         )
                     }
                     item {
                         if (favLists.isNullOrEmpty()) {
                             Text(
                                 text = stringResource(R.string.no_lists),
-                                modifier = Modifier.padding(horizontal = LARGE_PADDING),
+                                modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
                             )
                         }
                     }
                 }
             }
         },
-        bottomBar = {
-            BottomAppBar(
-                actions = {
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(R.string.settings))
-                        },
-                    ) {
-                        IconButton(
-                            onClick = {
-                                navController.navigate("settings")
-                            },
-                        ) {
-                            Icon(
-                                Icons.Outlined.Settings,
-                                contentDescription = stringResource(R.string.settings),
-                            )
-                        }
-                    }
+        floatingActionButton = {
+            BasicTooltipBox(
+                positionProvider = tooltipPosition,
+                state = rememberBasicTooltipState(isPersistent = false),
+                tooltip = {
+                    ToolTip(stringResource(R.string.create_list))
                 },
-                floatingActionButton = {
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(R.string.create_list))
-                        },
-                    ) {
-                        FloatingActionButton(
-                            modifier = Modifier.imePadding(),
-                            onClick = {
-                                navController.navigate("createFavList")
-                            },
-                            shape = CircleShape,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Add,
-                                contentDescription = stringResource(R.string.create_list),
-                            )
-                        }
-                    }
-                },
-            )
+            ) {
+                FloatingActionButton(
+                    modifier = Modifier.Companion.imePadding(),
+                    onClick = {
+                        navController.navigate("createFavList")
+                    },
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = stringResource(R.string.create_list),
+                    )
+                }
+            }
         },
     )
 }
@@ -139,14 +128,19 @@ fun FavListsScreen(
 @Composable
 fun FavListRow(
     favList: FavList,
+    selected: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val containerColor =
+        if (!selected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant
+
     ListItem(
         headlineContent = {
             Text(favList.name)
         },
+        colors = ListItemDefaults.colors(containerColor = containerColor),
         modifier =
-            Modifier.clickable {
+            Modifier.Companion.clickable {
                 onClick()
             },
     )

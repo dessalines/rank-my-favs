@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Rank My Favs</string>
+    <string name="lists">Lists</string>
+    <string name="items">Items</string>
     <string name="settings">Settings</string>
     <string name="system">System</string>
     <string name="light">Light</string>

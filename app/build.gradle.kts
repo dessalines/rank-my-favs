@@ -7,12 +7,12 @@ plugins {
 
 android {
     buildToolsVersion = "34.0.0"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.dessalines.rankmyfavs"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 22
         versionName = "0.5.4"
 
@@ -110,6 +110,13 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class")
     implementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.runtime:runtime-livedata:1.7.5")
+
+    // Adaptive layouts
+    // TODO still need the alphas for pane features
+    implementation("androidx.compose.material3.adaptive:adaptive:1.1.0-alpha06")
+    implementation("androidx.compose.material3.adaptive:adaptive-layout:1.1.0-alpha06")
+    implementation("androidx.compose.material3.adaptive:adaptive-navigation:1.1.0-alpha06")
+    implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
 
     // Activities
     implementation("androidx.activity:activity-compose:1.9.3")

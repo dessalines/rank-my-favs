@@ -14,16 +14,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleTopAppBar(
     text: String,
-    navController: NavController,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    showBack: Boolean = true,
+    onBackClick: (() -> Unit)? = null,
     actions: @Composable (() -> Unit)? = null,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
@@ -37,7 +35,7 @@ fun SimpleTopAppBar(
         },
         actions = { actions?.let { it() } },
         navigationIcon = {
-            if (showBack) {
+            if (onBackClick !== null) {
                 BasicTooltipBox(
                     positionProvider = tooltipPosition,
                     state = rememberBasicTooltipState(isPersistent = false),
@@ -46,7 +44,7 @@ fun SimpleTopAppBar(
                     },
                 ) {
                     IconButton(
-                        onClick = { navController.navigateUp() },
+                        onClick = onBackClick,
                     ) {
                         Icon(
                             Icons.AutoMirrored.Outlined.ArrowBack,

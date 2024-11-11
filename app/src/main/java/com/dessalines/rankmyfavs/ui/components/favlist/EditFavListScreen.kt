@@ -52,7 +52,7 @@ fun EditFavListScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.edit_list),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
             )
         },
         content = { padding ->
