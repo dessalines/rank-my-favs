@@ -1,3 +1,9 @@
+## What's Changed in 0.6.0
+
+- Adding a Tablet UI. by @dessalines in [#185](https://github.com/dessalines/rank-my-favs/pull/185)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.5.4...0.6.0
+
 ## What's Changed in 0.5.4
 
 - Fixing signing config. by @dessalines in [#175](https://github.com/dessalines/rank-my-favs/pull/175)
