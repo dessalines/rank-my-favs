@@ -111,7 +111,7 @@ fun SettingsScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.settings),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
             )
         },
         content = { padding ->

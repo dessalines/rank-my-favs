@@ -134,3 +134,11 @@ fun assignTiersToItems(
 }
 
 fun Color.tint(factor: Float): Color = lerp(this, Color.White, factor)
+
+sealed interface SelectionVisibilityState<out Item> {
+    object NoSelection : SelectionVisibilityState<Nothing>
+
+    data class ShowSelection<Item>(
+        val selectedItem: Item,
+    ) : SelectionVisibilityState<Item>
+}

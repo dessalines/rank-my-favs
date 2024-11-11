@@ -101,3 +101,5 @@ Your donations directly support full-time development, and help keep this mainta
 - https://prioneer.io/tools/pairwise-ranking-tool
 - https://www.opinionx.co/research-method-guides/best-free-pairwise-ranking-tools
 - https://medium.com/@anton.myller/from-elo-to-trueskill-a-journey-in-the-world-of-ranking-systems-part-i-b186341d5ed0
+- [Build adaptive navigation](https://developer.android.com/develop/ui/compose/layouts/adaptive/build-adaptive-navigation)
+- [Adaptive list-detail sample](https://github.com/android/user-interface-samples/blob/main/CanonicalLayouts/list-detail-compose/app/src/main/java/com/example/listdetailcompose/ui/ListDetailSample.kt)

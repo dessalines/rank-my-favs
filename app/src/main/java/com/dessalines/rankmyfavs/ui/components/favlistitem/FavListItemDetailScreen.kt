@@ -85,7 +85,7 @@ fun FavListItemDetailScreen(
         topBar = {
             SimpleTopAppBar(
                 text = favListItem?.name.orEmpty(),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
                 actions = {
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,

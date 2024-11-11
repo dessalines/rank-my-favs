@@ -77,11 +77,11 @@ fun MatchScreen(
     fun rematchNav() =
         if (favListId !== null) {
             navController.navigate("match?favListId=$favListId") {
-                popUpTo("favListDetails/${first?.favListId}")
+                popUpTo("favLists?favListId=${first?.favListId}")
             }
         } else if (favListItemId !== null) {
             navController.navigate("match?favListItemId=$favListItemId") {
-                popUpTo("favListDetails/${first?.favListId}")
+                popUpTo("favLists?favListId=${first?.favListId}")
             }
         } else {
             null
@@ -98,7 +98,7 @@ fun MatchScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.rate),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
             )
         },
         content = { padding ->
@@ -193,9 +193,7 @@ fun MatchScreen(
                             modifier = Modifier.imePadding(),
                             onClick = {
                                 val listId = first?.favListId ?: favListId ?: 1
-                                navController.navigate("favListDetails/$listId") {
-                                    popUpTo("favListDetails/$listId")
-                                }
+                                navController.navigate("favLists?favListId=$listId")
                             },
                             shape = CircleShape,
                         ) {

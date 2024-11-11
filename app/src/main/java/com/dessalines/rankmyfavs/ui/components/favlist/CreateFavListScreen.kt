@@ -46,7 +46,7 @@ fun CreateFavListScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.create_list),
-                navController = navController,
+                onBackClick = { navController.navigateUp() },
             )
         },
         content = { padding ->
@@ -81,9 +81,7 @@ fun CreateFavListScreen(
 
                                 // The id is -1 if its a failed insert
                                 if (insertedId != -1L) {
-                                    navController.navigate("favListDetails/$insertedId") {
-                                        popUpTo("favLists")
-                                    }
+                                    navController.navigate("favLists?favListId=$insertedId")
                                 } else {
                                     Toast
                                         .makeText(
