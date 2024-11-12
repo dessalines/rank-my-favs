@@ -1,3 +1,9 @@
+## What's Changed in 0.6.1
+
+- Moving bottom app bars to top. by @dessalines in [#187](https://github.com/dessalines/rank-my-favs/pull/187)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.0...0.6.1
+
 ## What's Changed in 0.6.0
 
 - Adding a Tablet UI. by @dessalines in [#185](https://github.com/dessalines/rank-my-favs/pull/185)
