@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.SkipNext
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -99,6 +98,35 @@ fun MatchScreen(
             SimpleTopAppBar(
                 text = stringResource(R.string.rate),
                 onBackClick = { navController.navigateUp() },
+                actions = {
+                    if (first !== null && second !== null) {
+                        BasicTooltipBox(
+                            positionProvider = tooltipPosition,
+                            state = rememberBasicTooltipState(isPersistent = false),
+                            tooltip = {
+                                ToolTip(stringResource(id = R.string.tie))
+                            },
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    recalculateStats(
+                                        favListItemViewModel = favListItemViewModel,
+                                        favListMatchViewModel = favListMatchViewModel,
+                                        winner = first,
+                                        loser = second,
+                                        tie = true,
+                                    )
+                                    rematchNav()
+                                },
+                            ) {
+                                Icon(
+                                    Icons.Outlined.SkipNext,
+                                    contentDescription = stringResource(R.string.tie),
+                                )
+                            }
+                        }
+                    }
+                },
             )
         },
         content = { padding ->
@@ -150,61 +178,28 @@ fun MatchScreen(
                 }
             }
         },
-        bottomBar = {
-            BottomAppBar(
-                actions = {
-                    if (first !== null && second !== null) {
-                        BasicTooltipBox(
-                            positionProvider = tooltipPosition,
-                            state = rememberBasicTooltipState(isPersistent = false),
-                            tooltip = {
-                                ToolTip(stringResource(id = R.string.tie))
-                            },
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    recalculateStats(
-                                        favListItemViewModel = favListItemViewModel,
-                                        favListMatchViewModel = favListMatchViewModel,
-                                        winner = first,
-                                        loser = second,
-                                        tie = true,
-                                    )
-                                    rematchNav()
-                                },
-                            ) {
-                                Icon(
-                                    Icons.Outlined.SkipNext,
-                                    contentDescription = stringResource(R.string.tie),
-                                )
-                            }
-                        }
-                    }
+        floatingActionButton = {
+            BasicTooltipBox(
+                positionProvider = tooltipPosition,
+                state = rememberBasicTooltipState(isPersistent = false),
+                tooltip = {
+                    ToolTip(stringResource(R.string.done))
                 },
-                floatingActionButton = {
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(R.string.done))
-                        },
-                    ) {
-                        FloatingActionButton(
-                            modifier = Modifier.imePadding(),
-                            onClick = {
-                                val listId = first?.favListId ?: favListId ?: 1
-                                navController.navigate("favLists?favListId=$listId")
-                            },
-                            shape = CircleShape,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Done,
-                                contentDescription = stringResource(R.string.done),
-                            )
-                        }
-                    }
-                },
-            )
+            ) {
+                FloatingActionButton(
+                    modifier = Modifier.imePadding(),
+                    onClick = {
+                        val listId = first?.favListId ?: favListId ?: 1
+                        navController.navigate("favLists?favListId=$listId")
+                    },
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Done,
+                        contentDescription = stringResource(R.string.done),
+                    )
+                }
+            }
         },
     )
 }

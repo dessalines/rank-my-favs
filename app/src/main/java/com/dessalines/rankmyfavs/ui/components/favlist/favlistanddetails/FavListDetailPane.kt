@@ -27,7 +27,6 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Reviews
 import androidx.compose.material.icons.outlined.SaveAs
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -128,7 +127,8 @@ fun FavListDetailPane(
             ActivityResultContracts.CreateDocument("text/markdown"),
         ) {
             it?.also {
-                val markdown = convertFavlistToMarkdown(favList?.name.orEmpty(), favListItems.orEmpty())
+                val markdown =
+                    convertFavlistToMarkdown(favList?.name.orEmpty(), favListItems.orEmpty())
                 writeData(ctx, it, markdown)
             }
         }
@@ -168,6 +168,138 @@ fun FavListDetailPane(
                                     contentDescription = stringResource(R.string.search),
                                 )
                             }
+                        }
+                        BasicTooltipBox(
+                            positionProvider = tooltipPosition,
+                            state = rememberBasicTooltipState(isPersistent = false),
+                            tooltip = {
+                                ToolTip(stringResource(id = R.string.create_item))
+                            },
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    navController.navigate("createItem/${favList?.id}")
+                                },
+                            ) {
+                                Icon(
+                                    Icons.Outlined.Add,
+                                    contentDescription = stringResource(R.string.create_item),
+                                )
+                            }
+                        }
+                        BasicTooltipBox(
+                            positionProvider = tooltipPosition,
+                            state = rememberBasicTooltipState(isPersistent = false),
+                            tooltip = {
+                                ToolTip(stringResource(R.string.more_actions))
+                            },
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    showMoreDropdown = true
+                                },
+                            ) {
+                                Icon(
+                                    Icons.Outlined.MoreVert,
+                                    contentDescription = stringResource(R.string.more_actions),
+                                )
+                            }
+                        }
+                        DropdownMenu(
+                            expanded = showMoreDropdown,
+                            onDismissRequest = { showMoreDropdown = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.edit_list)) },
+                                onClick = {
+                                    showMoreDropdown = false
+                                    navController.navigate("editFavList/$favListId")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Edit,
+                                        contentDescription = stringResource(R.string.edit_list),
+                                    )
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.import_list)) },
+                                onClick = {
+                                    showMoreDropdown = false
+                                    navController.navigate("importList/${favList?.id}")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.FileOpen,
+                                        contentDescription = stringResource(R.string.import_list),
+                                    )
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.export_list_as_csv)) },
+                                onClick = {
+                                    showMoreDropdown = false
+                                    favList?.let { exportCsvLauncher.launch(it.name) }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.SaveAs,
+                                        contentDescription = stringResource(R.string.export_list_as_csv),
+                                    )
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.export_list_as_markdown)) },
+                                onClick = {
+                                    showMoreDropdown = false
+                                    favList?.let { exportMarkdownLauncher.launch(it.name) }
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.SaveAs,
+                                        contentDescription = stringResource(R.string.export_list_as_markdown),
+                                    )
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.tier_list)) },
+                                onClick = {
+                                    showMoreDropdown = false
+                                    navController.navigate("tierList/${favList?.id}")
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.AutoMirrored.Outlined.List,
+                                        contentDescription = stringResource(R.string.tier_list),
+                                    )
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.clear_stats)) },
+                                onClick = {
+                                    showMoreDropdown = false
+                                    showClearStatsDialog.value = true
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.ClearAll,
+                                        contentDescription = stringResource(R.string.clear_stats),
+                                    )
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.delete)) },
+                                onClick = {
+                                    showMoreDropdown = false
+                                    showDeleteDialog.value = true
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Outlined.Delete,
+                                        contentDescription = stringResource(R.string.delete),
+                                    )
+                                },
+                            )
                         }
                     },
                 )
@@ -213,7 +345,11 @@ fun FavListDetailPane(
             if (favListItems.isNullOrEmpty()) {
                 Text(
                     text = stringResource(R.string.no_items),
-                    modifier = Modifier.padding(horizontal = LARGE_PADDING, vertical = padding.calculateTopPadding()),
+                    modifier =
+                        Modifier.padding(
+                            horizontal = LARGE_PADDING,
+                            vertical = padding.calculateTopPadding(),
+                        ),
                 )
             }
 
@@ -275,172 +411,29 @@ fun FavListDetailPane(
                 }
             }
         },
-        bottomBar = {
-            BottomAppBar(
-                actions = {
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(R.string.more_actions))
+        floatingActionButton = {
+            if ((favListItems?.count() ?: 0) >= 2) {
+                BasicTooltipBox(
+                    positionProvider = tooltipPosition,
+                    state = rememberBasicTooltipState(isPersistent = false),
+                    tooltip = {
+                        ToolTip(stringResource(R.string.rate))
+                    },
+                ) {
+                    FloatingActionButton(
+                        modifier = Modifier.imePadding(),
+                        onClick = {
+                            navController.navigate("match?favListId=$favListId")
                         },
+                        shape = CircleShape,
                     ) {
-                        IconButton(
-                            onClick = {
-                                showMoreDropdown = true
-                            },
-                        ) {
-                            Icon(
-                                Icons.Outlined.MoreVert,
-                                contentDescription = stringResource(R.string.more_actions),
-                            )
-                        }
-                    }
-                    DropdownMenu(
-                        expanded = showMoreDropdown,
-                        onDismissRequest = { showMoreDropdown = false },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.import_list)) },
-                            onClick = {
-                                showMoreDropdown = false
-                                navController.navigate("importList/${favList?.id}")
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.FileOpen,
-                                    contentDescription = stringResource(R.string.import_list),
-                                )
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.export_list_as_csv)) },
-                            onClick = {
-                                showMoreDropdown = false
-                                favList?.let { exportCsvLauncher.launch(it.name) }
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.SaveAs,
-                                    contentDescription = stringResource(R.string.export_list_as_csv),
-                                )
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.export_list_as_markdown)) },
-                            onClick = {
-                                showMoreDropdown = false
-                                favList?.let { exportMarkdownLauncher.launch(it.name) }
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.SaveAs,
-                                    contentDescription = stringResource(R.string.export_list_as_markdown),
-                                )
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.tier_list)) },
-                            onClick = {
-                                showMoreDropdown = false
-                                navController.navigate("tierList/${favList?.id}")
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.AutoMirrored.Outlined.List,
-                                    contentDescription = stringResource(R.string.tier_list),
-                                )
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.clear_stats)) },
-                            onClick = {
-                                showMoreDropdown = false
-                                showClearStatsDialog.value = true
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.ClearAll,
-                                    contentDescription = stringResource(R.string.clear_stats),
-                                )
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.delete)) },
-                            onClick = {
-                                showMoreDropdown = false
-                                showDeleteDialog.value = true
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Outlined.Delete,
-                                    contentDescription = stringResource(R.string.delete),
-                                )
-                            },
+                        Icon(
+                            Icons.Outlined.Reviews,
+                            contentDescription = stringResource(R.string.rate),
                         )
                     }
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(id = R.string.create_item))
-                        },
-                    ) {
-                        IconButton(
-                            onClick = {
-                                navController.navigate("createItem/${favList?.id}")
-                            },
-                        ) {
-                            Icon(
-                                Icons.Outlined.Add,
-                                contentDescription = stringResource(R.string.create_item),
-                            )
-                        }
-                    }
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(R.string.edit_list))
-                        },
-                    ) {
-                        IconButton(
-                            onClick = {
-                                navController.navigate("editFavList/$favListId")
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Edit,
-                                contentDescription = stringResource(R.string.edit_list),
-                            )
-                        }
-                    }
-                },
-                floatingActionButton = {
-                    if ((favListItems?.count() ?: 0) >= 2) {
-                        BasicTooltipBox(
-                            positionProvider = tooltipPosition,
-                            state = rememberBasicTooltipState(isPersistent = false),
-                            tooltip = {
-                                ToolTip(stringResource(R.string.rate))
-                            },
-                        ) {
-                            FloatingActionButton(
-                                modifier = Modifier.imePadding(),
-                                onClick = {
-                                    navController.navigate("match?favListId=$favListId")
-                                },
-                                shape = CircleShape,
-                            ) {
-                                Icon(
-                                    Icons.Outlined.Reviews,
-                                    contentDescription = stringResource(R.string.rate),
-                                )
-                            }
-                        }
-                    }
-                },
-            )
+                }
+            }
         },
     )
 }
@@ -477,7 +470,8 @@ fun FavListItemRow(
     onClick: () -> Unit,
 ) {
     // Only show the rank if its above the min confidence bound
-    val rank = if (calculateConfidence(favListItem.glickoDeviation) >= MIN_CONFIDENCE_BOUND) index.toString() else "?"
+    val rank =
+        if (calculateConfidence(favListItem.glickoDeviation) >= MIN_CONFIDENCE_BOUND) index.toString() else "?"
     ListItem(
         headlineContent = {
             Text(favListItem.name)

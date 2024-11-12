@@ -19,7 +19,6 @@ import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Reviews
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -101,64 +100,6 @@ fun FavListItemDetailScreen(
                             )
                         }
                     }
-                },
-            )
-        },
-        content = { padding ->
-
-            AreYouSureDialog(
-                show = showDeleteDialog,
-                title = stringResource(R.string.delete),
-                onYes = {
-                    favListItem?.let {
-                        favListItemViewModel.delete(it)
-                        navController.navigateUp()
-                        Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
-                    }
-                },
-            )
-
-            AreYouSureDialog(
-                show = showClearStatsDialog,
-                title = clearStatsMessage,
-                onYes = {
-                    // Update the stats for that row
-                    favListItemViewModel.updateStats(
-                        FavListItemUpdateStats(
-                            id = id,
-                            winRate = DEFAULT_WIN_RATE,
-                            glickoRating = DEFAULT_GLICKO_RATING,
-                            glickoDeviation = DEFAULT_GLICKO_DEVIATION,
-                            glickoVolatility = DEFAULT_GLICKO_VOLATILITY,
-                            matchCount = DEFAULT_MATCH_COUNT,
-                        ),
-                    )
-                    favListMatchViewModel.deleteMatchesForItem(id)
-                    Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
-                },
-            )
-
-            Box(
-                modifier = Modifier.padding(padding).imePadding(),
-            ) {
-                LazyColumn(
-                    state = listState,
-                ) {
-                    favListItem?.let {
-                        item {
-                            FavListItemDetails(it)
-                        }
-
-                        item {
-                            Stats(it)
-                        }
-                    }
-                }
-            }
-        },
-        bottomBar = {
-            BottomAppBar(
-                actions = {
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
@@ -214,29 +155,81 @@ fun FavListItemDetailScreen(
                         }
                     }
                 },
-                floatingActionButton = {
-                    BasicTooltipBox(
-                        positionProvider = tooltipPosition,
-                        state = rememberBasicTooltipState(isPersistent = false),
-                        tooltip = {
-                            ToolTip(stringResource(R.string.rate))
-                        },
-                    ) {
-                        FloatingActionButton(
-                            modifier = Modifier.imePadding(),
-                            onClick = {
-                                navController.navigate("match?favListItemId=$id")
-                            },
-                            shape = CircleShape,
-                        ) {
-                            Icon(
-                                Icons.Outlined.Reviews,
-                                contentDescription = stringResource(R.string.rate),
-                            )
-                        }
+            )
+        },
+        content = { padding ->
+
+            AreYouSureDialog(
+                show = showDeleteDialog,
+                title = stringResource(R.string.delete),
+                onYes = {
+                    favListItem?.let {
+                        favListItemViewModel.delete(it)
+                        navController.navigateUp()
+                        Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
                     }
                 },
             )
+
+            AreYouSureDialog(
+                show = showClearStatsDialog,
+                title = clearStatsMessage,
+                onYes = {
+                    // Update the stats for that row
+                    favListItemViewModel.updateStats(
+                        FavListItemUpdateStats(
+                            id = id,
+                            winRate = DEFAULT_WIN_RATE,
+                            glickoRating = DEFAULT_GLICKO_RATING,
+                            glickoDeviation = DEFAULT_GLICKO_DEVIATION,
+                            glickoVolatility = DEFAULT_GLICKO_VOLATILITY,
+                            matchCount = DEFAULT_MATCH_COUNT,
+                        ),
+                    )
+                    favListMatchViewModel.deleteMatchesForItem(id)
+                    Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
+                },
+            )
+
+            Box(
+                modifier = Modifier.padding(padding).imePadding(),
+            ) {
+                LazyColumn(
+                    state = listState,
+                ) {
+                    favListItem?.let {
+                        item {
+                            FavListItemDetails(it)
+                        }
+
+                        item {
+                            Stats(it)
+                        }
+                    }
+                }
+            }
+        },
+        floatingActionButton = {
+            BasicTooltipBox(
+                positionProvider = tooltipPosition,
+                state = rememberBasicTooltipState(isPersistent = false),
+                tooltip = {
+                    ToolTip(stringResource(R.string.rate))
+                },
+            ) {
+                FloatingActionButton(
+                    modifier = Modifier.imePadding(),
+                    onClick = {
+                        navController.navigate("match?favListItemId=$id")
+                    },
+                    shape = CircleShape,
+                ) {
+                    Icon(
+                        Icons.Outlined.Reviews,
+                        contentDescription = stringResource(R.string.rate),
+                    )
+                }
+            }
         },
     )
 }
