@@ -44,7 +44,7 @@ fun FavListsAndDetailScreen(
     favListMatchViewModel: FavListMatchViewModel,
     favListId: Int?,
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     var selectedFavListId: Int? by rememberSaveable { mutableStateOf(favListId) }
 
@@ -56,7 +56,7 @@ fun FavListsAndDetailScreen(
         navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Companion.Expanded
 
     BackHandler(enabled = navigator.canNavigateBack()) {
-        coroutineScope.launch {
+        scope.launch {
             navigator.navigateBack()
         }
     }
@@ -81,7 +81,7 @@ fun FavListsAndDetailScreen(
                             favListViewModel = favListViewModel,
                             onFavListClick = { favListId ->
                                 selectedFavListId = favListId
-                                coroutineScope.launch {
+                                scope.launch {
                                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                                 }
                             },
@@ -101,7 +101,7 @@ fun FavListsAndDetailScreen(
                                 favListId = it,
                                 isListAndDetailVisible = isListAndDetailVisible,
                                 onBackClick = {
-                                    coroutineScope.launch {
+                                    scope.launch {
                                         navigator.navigateBack()
                                     }
                                 },
