@@ -73,14 +73,17 @@ fun MatchScreen(
             null
         }
 
+    val listId = first?.favListId ?: favListId ?: 1
+
     fun rematchNav() =
         if (favListId !== null) {
             navController.navigate("match?favListId=$favListId") {
-                popUpTo("favLists?favListId=${first?.favListId}")
+                // TODO the pop back stack with param arguments is currently not working
+                popUpTo("favLists")
             }
         } else if (favListItemId !== null) {
             navController.navigate("match?favListItemId=$favListItemId") {
-                popUpTo("favLists?favListId=${first?.favListId}")
+                popUpTo("favLists")
             }
         } else {
             null
@@ -97,7 +100,7 @@ fun MatchScreen(
         topBar = {
             SimpleTopAppBar(
                 text = stringResource(R.string.rate),
-                onBackClick = { navController.navigateUp() },
+                onBackClick = { navController.popBackStack() },
                 actions = {
                     if (first !== null && second !== null) {
                         BasicTooltipBox(
@@ -189,8 +192,9 @@ fun MatchScreen(
                 FloatingActionButton(
                     modifier = Modifier.imePadding(),
                     onClick = {
-                        val listId = first?.favListId ?: favListId ?: 1
-                        navController.navigate("favLists?favListId=$listId")
+                        navController.navigate("favLists?favListId=$listId") {
+                            popUpTo("favLists")
+                        }
                     },
                     shape = CircleShape,
                 ) {

@@ -320,12 +320,18 @@ class MainActivity : AppCompatActivity() {
                         when (currentDestination) {
                             AppDestinations.LISTS -> {
                                 if (currentRoute !== "favLists?favListId={favListId}") {
-                                    navController.navigate("favLists")
+                                    navController.navigate("favLists") {
+                                        launchSingleTop = true
+                                        popUpTo(navController.graph.id)
+                                    }
                                 }
                             }
                             AppDestinations.SETTINGS -> {
                                 if (currentRoute !== "settings") {
-                                    navController.navigate("settings")
+                                    navController.navigate("settings") {
+                                        launchSingleTop = true
+                                        popUpTo(navController.graph.id)
+                                    }
                                 }
                             }
                         }
