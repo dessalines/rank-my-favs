@@ -1,6 +1,7 @@
 package com.dessalines.rankmyfavs.ui.components.favlist.favlistanddetails
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -18,11 +19,16 @@ import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
+import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListMatchViewModel
 import com.dessalines.rankmyfavs.db.FavListViewModel
@@ -45,8 +51,10 @@ fun FavListsAndDetailScreen(
     favListId: Int?,
 ) {
     val scope = rememberCoroutineScope()
+    val ctx = LocalContext.current
 
     var selectedFavListId: Int? by rememberSaveable { mutableStateOf(favListId) }
+    val favLists by favListViewModel.getAll.asLiveData().observeAsState()
 
     val navigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
     val isListAndDetailVisible =
@@ -78,7 +86,7 @@ fun FavListsAndDetailScreen(
                     AnimatedPane {
                         FavListsPane(
                             navController = navController,
-                            favListViewModel = favListViewModel,
+                            favLists = favLists,
                             onFavListClick = { favListId ->
                                 selectedFavListId = favListId
                                 scope.launch {
@@ -92,17 +100,34 @@ fun FavListsAndDetailScreen(
                 },
                 detailPane = {
                     AnimatedPane {
-                        selectedFavListId?.let {
+                        selectedFavListId?.let { favListId ->
+
+                            val favList by favListViewModel.getById(favListId).asLiveData().observeAsState()
+                            val favListItems by favListItemViewModel.getFromList(favListId).asLiveData().observeAsState()
+                            val clearStatsMessage = stringResource(R.string.clear_stats)
+                            val deletedMessage = stringResource(R.string.list_deleted)
+
                             FavListDetailPane(
                                 navController = navController,
-                                favListViewModel = favListViewModel,
-                                favListItemViewModel = favListItemViewModel,
-                                favListMatchViewModel = favListMatchViewModel,
-                                favListId = it,
+                                favListId = favListId,
+                                favList = favList,
+                                favListItems = favListItems,
                                 isListAndDetailVisible = isListAndDetailVisible,
                                 onBackClick = {
                                     scope.launch {
                                         navigator.navigateBack()
+                                    }
+                                },
+                                onClearStats = {
+                                    favListItemViewModel.clearStatsForList(favListId = favListId)
+                                    favListMatchViewModel.deleteMatchesForList(favListId = favListId)
+                                    Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
+                                },
+                                onDelete = {
+                                    favList?.let {
+                                        favListViewModel.delete(it)
+                                        navController.navigateUp()
+                                        Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
                                     }
                                 },
                             )
