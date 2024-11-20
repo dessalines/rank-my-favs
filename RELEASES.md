@@ -1,3 +1,10 @@
+## What's Changed in 0.6.2
+
+- Dont pass viewmodels to panes. by @dessalines in [#196](https://github.com/dessalines/rank-my-favs/pull/196)
+- Adding a temp fix for popback bug. by @dessalines in [#189](https://github.com/dessalines/rank-my-favs/pull/189)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.1...0.6.2
+
 ## What's Changed in 0.6.1
 
 - Moving bottom app bars to top. by @dessalines in [#187](https://github.com/dessalines/rank-my-favs/pull/187)
