@@ -1,6 +1,5 @@
 package com.dessalines.rankmyfavs.ui.components.favlist.favlistanddetails
 
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BasicTooltipBox
@@ -47,7 +46,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -62,14 +60,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.db.FavListItem
-import com.dessalines.rankmyfavs.db.FavListItemViewModel
-import com.dessalines.rankmyfavs.db.FavListMatchViewModel
-import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.db.MIN_CONFIDENCE_BOUND
 import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.AreYouSureDialog
@@ -87,20 +81,18 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 @Composable
 fun FavListDetailPane(
     navController: NavController,
-    favListViewModel: FavListViewModel,
-    favListItemViewModel: FavListItemViewModel,
-    favListMatchViewModel: FavListMatchViewModel,
     favListId: Int,
+    favList: FavList?,
+    favListItems: List<FavListItem>?,
     isListAndDetailVisible: Boolean,
     onBackClick: () -> Unit,
+    onClearStats: () -> Unit,
+    onDelete: () -> Unit,
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
-    val favList by favListViewModel.getById(favListId).asLiveData().observeAsState()
-    val favListItems by favListItemViewModel.getFromList(favListId).asLiveData().observeAsState()
 
     val showClearStatsDialog = remember { mutableStateOf(false) }
     val showDeleteDialog = remember { mutableStateOf(false) }
@@ -134,7 +126,6 @@ fun FavListDetailPane(
         }
 
     val clearStatsMessage = stringResource(R.string.clear_stats)
-    val deletedMessage = stringResource(R.string.list_deleted)
 
     val (titleText, onBackClick) =
         if (isListAndDetailVisible) {
@@ -356,23 +347,13 @@ fun FavListDetailPane(
             AreYouSureDialog(
                 show = showClearStatsDialog,
                 title = clearStatsMessage,
-                onYes = {
-                    favListItemViewModel.clearStatsForList(favListId = favListId)
-                    favListMatchViewModel.deleteMatchesForList(favListId = favListId)
-                    Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
-                },
+                onYes = onClearStats,
             )
 
             AreYouSureDialog(
                 show = showDeleteDialog,
                 title = stringResource(R.string.delete),
-                onYes = {
-                    favList?.let {
-                        favListViewModel.delete(it)
-                        navController.navigateUp()
-                        Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
-                    }
-                },
+                onYes = onDelete,
             )
 
             Box(

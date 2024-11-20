@@ -26,16 +26,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavList
-import com.dessalines.rankmyfavs.db.FavListViewModel
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
@@ -46,7 +43,7 @@ import kotlin.collections.orEmpty
 @Composable
 fun FavListsPane(
     navController: NavController,
-    favListViewModel: FavListViewModel,
+    favLists: List<FavList>?,
     onFavListClick: (favListId: Int) -> Unit,
     selectionState: SelectionVisibilityState<Int>,
     isListAndDetailVisible: Boolean,
@@ -54,7 +51,6 @@ fun FavListsPane(
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val listState = rememberLazyListState()
-    val favLists by favListViewModel.getAll.asLiveData().observeAsState()
     val title =
         if (!isListAndDetailVisible) stringResource(R.string.app_name) else stringResource(R.string.lists)
 
