@@ -91,7 +91,7 @@ dependencies {
     implementation("com.github.dessalines:room-db-export-import:0.1.0")
 
     // Composable screenshot
-    implementation("dev.shreyaspatil:capturable:3.0.0")
+    implementation("dev.shreyaspatil:capturable:3.0.1")
 
     // CSV exporting
     implementation("com.floern.castingcsv:casting-csv-kt:1.2")
