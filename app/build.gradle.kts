@@ -103,7 +103,7 @@ dependencies {
     implementation("com.github.goochjs:glicko2:master")
 
     // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2024.11.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended-desktop:1.7.6")
