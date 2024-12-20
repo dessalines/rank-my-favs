@@ -78,12 +78,11 @@ fun MatchScreen(
     fun rematchNav() =
         if (favListId !== null) {
             navController.navigate("match?favListId=$favListId") {
-                // TODO the pop back stack with param arguments is currently not working
-                popUpTo("favLists")
+                popUpTo("match?favListId=$favListId") { inclusive = true }
             }
         } else if (favListItemId !== null) {
             navController.navigate("match?favListItemId=$favListItemId") {
-                popUpTo("favLists")
+                popUpTo("match?favListItemId=$favListItemId") { inclusive = true }
             }
         } else {
             null
@@ -192,9 +191,7 @@ fun MatchScreen(
                 FloatingActionButton(
                     modifier = Modifier.imePadding(),
                     onClick = {
-                        navController.navigate("favLists?favListId=$listId") {
-                            popUpTo("favLists")
-                        }
+                        navController.navigateUp()
                     },
                     shape = CircleShape,
                 ) {

@@ -7,7 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.asLiveData
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -57,7 +59,6 @@ import com.dessalines.rankmyfavs.ui.components.favlistitem.FavListItemDetailScre
 import com.dessalines.rankmyfavs.ui.components.match.MatchScreen
 import com.dessalines.rankmyfavs.ui.components.settings.SettingsScreen
 import com.dessalines.rankmyfavs.ui.theme.RankMyFavsTheme
-import com.dessalines.rankmyfavs.utils.ANIMATION_SPEED
 
 class RankMyFavsApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -131,30 +132,6 @@ class MainActivity : AppCompatActivity() {
                         NavHost(
                             navController = navController,
                             startDestination = startDestination,
-                            enterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(ANIMATION_SPEED),
-                                )
-                            },
-                            exitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                                    animationSpec = tween(ANIMATION_SPEED),
-                                )
-                            },
-                            popEnterTransition = {
-                                slideIntoContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(ANIMATION_SPEED),
-                                )
-                            },
-                            popExitTransition = {
-                                slideOutOfContainer(
-                                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                                    animationSpec = tween(ANIMATION_SPEED),
-                                )
-                            },
                         ) {
                             composable(
                                 route = "favLists?favListId={favListId}",
@@ -177,7 +154,13 @@ class MainActivity : AppCompatActivity() {
                                     favListId = favListId,
                                 )
                             }
-                            composable(route = "createFavList") {
+                            composable(
+                                route = "createFavList",
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
+                            ) {
                                 CreateFavListScreen(
                                     navController = navController,
                                     favListViewModel = favListViewModel,
@@ -186,6 +169,10 @@ class MainActivity : AppCompatActivity() {
                             composable(
                                 route = "editFavList/{id}",
                                 arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 val id = it.arguments?.getInt("id") ?: 0
                                 EditFavListScreen(
@@ -203,6 +190,10 @@ class MainActivity : AppCompatActivity() {
                                             type = NavType.IntType
                                         },
                                     ),
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 val favListId = it.arguments?.getInt("favListId") ?: 0
                                 CreateFavListItemScreen(
@@ -215,6 +206,10 @@ class MainActivity : AppCompatActivity() {
                             composable(
                                 route = "editItem/{id}",
                                 arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 val id = it.arguments?.getInt("id") ?: 0
                                 EditFavListItemScreen(
@@ -227,6 +222,10 @@ class MainActivity : AppCompatActivity() {
                             composable(
                                 route = "itemDetails/{id}",
                                 arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 val id = it.arguments?.getInt("id") ?: 0
 
@@ -246,6 +245,10 @@ class MainActivity : AppCompatActivity() {
                                             type = NavType.IntType
                                         },
                                     ),
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 val favListId = it.arguments?.getInt("favListId") ?: 0
                                 ImportListScreen(
@@ -263,6 +266,10 @@ class MainActivity : AppCompatActivity() {
                                             type = NavType.IntType
                                         },
                                     ),
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 val favListId = it.arguments?.getInt("favListId") ?: 0
                                 TierListScreen(
@@ -287,6 +294,10 @@ class MainActivity : AppCompatActivity() {
                                             nullable = true
                                         },
                                     ),
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 val favListId = it.arguments?.getString("favListId")?.toInt()
                                 val favListItemId =
@@ -301,7 +312,9 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
 
-                            composable(route = "settings") {
+                            composable(
+                                route = "settings",
+                            ) {
                                 SettingsScreen(
                                     navController = navController,
                                     appSettingsViewModel = appSettingsViewModel,
@@ -309,6 +322,10 @@ class MainActivity : AppCompatActivity() {
                             }
                             composable(
                                 route = "about",
+                                enterTransition = enterAnimation(),
+                                exitTransition = exitAnimation(),
+                                popEnterTransition = enterAnimation(),
+                                popExitTransition = exitAnimation(),
                             ) {
                                 AboutScreen(
                                     navController = navController,
@@ -341,3 +358,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+private fun enterAnimation(): AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition? =
+    {
+        slideIntoContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+        )
+    }
+
+private fun exitAnimation(): AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition? =
+    {
+        slideOutOfContainer(
+            towards = AnimatedContentTransitionScope.SlideDirection.Left,
+        )
+    }
