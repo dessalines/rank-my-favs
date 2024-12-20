@@ -7,15 +7,11 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
-import androidx.compose.material3.adaptive.layout.PaneExpansionDragHandle
-import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,7 +33,6 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
     ExperimentalSharedTransitionApi::class,
@@ -133,10 +128,6 @@ fun FavListsAndDetailScreen(
                             )
                         }
                     }
-                },
-                paneExpansionState = rememberPaneExpansionState(navigator.scaffoldValue),
-                paneExpansionDragHandle = { state ->
-                    PaneExpansionDragHandle(state, MaterialTheme.colorScheme.onSurfaceVariant)
                 },
             )
         }
