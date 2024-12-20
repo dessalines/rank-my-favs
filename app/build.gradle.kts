@@ -129,7 +129,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.5")
 
     // Markdown
-    implementation("com.github.jeziellago:compose-markdown:0.5.4")
+    implementation("com.github.jeziellago:compose-markdown:0.5.6")
 
     // Preferences
     implementation("me.zhanghai.compose.preference:library:1.1.1")
