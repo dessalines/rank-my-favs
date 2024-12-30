@@ -1,3 +1,10 @@
+## What's Changed in 0.6.4
+
+- Fixing icon dep. by @dessalines in [#221](https://github.com/dessalines/rank-my-favs/pull/221)
+- Removing navigation rail. by @dessalines in [#220](https://github.com/dessalines/rank-my-favs/pull/220)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.3...0.6.4
+
 ## What's Changed in 0.6.3
 
 - Upgrading adaptive layout. by @dessalines in [#217](https://github.com/dessalines/rank-my-favs/pull/217)
