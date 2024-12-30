@@ -80,7 +80,6 @@ fun FavListsAndDetailScreen(
 
                     AnimatedPane {
                         FavListsPane(
-                            navController = navController,
                             favLists = favLists,
                             onFavListClick = { favListId ->
                                 selectedFavListId = favListId
@@ -90,6 +89,12 @@ fun FavListsAndDetailScreen(
                             },
                             selectionState = selectionState,
                             isListAndDetailVisible = isListAndDetailVisible,
+                            onCreateFavlistClick = {
+                                navController.navigate("createFavList")
+                            },
+                            onSettingsClick = {
+                                navController.navigate("settings")
+                            },
                         )
                     }
                 },
@@ -103,8 +108,6 @@ fun FavListsAndDetailScreen(
                             val deletedMessage = stringResource(R.string.list_deleted)
 
                             FavListDetailPane(
-                                navController = navController,
-                                favListId = favListId,
                                 favList = favList,
                                 favListItems = favListItems,
                                 isListAndDetailVisible = isListAndDetailVisible,
@@ -116,14 +119,36 @@ fun FavListsAndDetailScreen(
                                 onClearStats = {
                                     favListItemViewModel.clearStatsForList(favListId = favListId)
                                     favListMatchViewModel.deleteMatchesForList(favListId = favListId)
-                                    Toast.makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT).show()
+                                    Toast
+                                        .makeText(ctx, clearStatsMessage, Toast.LENGTH_SHORT)
+                                        .show()
                                 },
                                 onDelete = {
                                     favList?.let {
                                         favListViewModel.delete(it)
                                         navController.navigateUp()
-                                        Toast.makeText(ctx, deletedMessage, Toast.LENGTH_SHORT).show()
+                                        Toast
+                                            .makeText(ctx, deletedMessage, Toast.LENGTH_SHORT)
+                                            .show()
                                     }
+                                },
+                                onCreateItemClick = {
+                                    navController.navigate("createItem/$favListId")
+                                },
+                                onEditClick = {
+                                    navController.navigate("editFavList/$favListId")
+                                },
+                                onImportListClick = {
+                                    navController.navigate("importList/$favListId")
+                                },
+                                onTierListClick = {
+                                    navController.navigate("tierList/$favListId")
+                                },
+                                onItemDetailsClick = {
+                                    navController.navigate("itemDetails/$it")
+                                },
+                                onMatchClick = {
+                                    navController.navigate("match?favListId=$favListId")
                                 },
                             )
                         }

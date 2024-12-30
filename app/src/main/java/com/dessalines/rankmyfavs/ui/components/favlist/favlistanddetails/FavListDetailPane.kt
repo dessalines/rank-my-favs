@@ -60,7 +60,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.db.FavListItem
@@ -80,14 +79,18 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FavListDetailPane(
-    navController: NavController,
-    favListId: Int,
     favList: FavList?,
     favListItems: List<FavListItem>?,
     isListAndDetailVisible: Boolean,
     onBackClick: () -> Unit,
     onClearStats: () -> Unit,
     onDelete: () -> Unit,
+    onCreateItemClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onImportListClick: () -> Unit,
+    onTierListClick: () -> Unit,
+    onItemDetailsClick: (itemId: Int) -> Unit,
+    onMatchClick: () -> Unit,
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
@@ -168,9 +171,7 @@ fun FavListDetailPane(
                             },
                         ) {
                             IconButton(
-                                onClick = {
-                                    navController.navigate("createItem/${favList?.id}")
-                                },
+                                onClick = onCreateItemClick,
                             ) {
                                 Icon(
                                     Icons.Outlined.Add,
@@ -204,7 +205,7 @@ fun FavListDetailPane(
                                 text = { Text(stringResource(R.string.edit_list)) },
                                 onClick = {
                                     showMoreDropdown = false
-                                    navController.navigate("editFavList/$favListId")
+                                    onEditClick()
                                 },
                                 leadingIcon = {
                                     Icon(
@@ -217,7 +218,7 @@ fun FavListDetailPane(
                                 text = { Text(stringResource(R.string.import_list)) },
                                 onClick = {
                                     showMoreDropdown = false
-                                    navController.navigate("importList/${favList?.id}")
+                                    onImportListClick()
                                 },
                                 leadingIcon = {
                                     Icon(
@@ -256,7 +257,7 @@ fun FavListDetailPane(
                                 text = { Text(stringResource(R.string.tier_list)) },
                                 onClick = {
                                     showMoreDropdown = false
-                                    navController.navigate("tierList/${favList?.id}")
+                                    onTierListClick()
                                 },
                                 leadingIcon = {
                                     Icon(
@@ -385,7 +386,7 @@ fun FavListDetailPane(
                             favListItem = favListItem,
                             index = index + 1,
                             onClick = {
-                                navController.navigate("itemDetails/${favListItem.id}")
+                                onItemDetailsClick(favListItem.id)
                             },
                         )
                     }
@@ -403,9 +404,7 @@ fun FavListDetailPane(
                 ) {
                     FloatingActionButton(
                         modifier = Modifier.imePadding(),
-                        onClick = {
-                            navController.navigate("match?favListId=$favListId")
-                        },
+                        onClick = onMatchClick,
                         shape = CircleShape,
                     ) {
                         Icon(

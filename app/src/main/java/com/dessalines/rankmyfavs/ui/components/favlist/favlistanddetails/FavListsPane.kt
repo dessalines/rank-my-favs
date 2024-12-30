@@ -13,9 +13,11 @@ import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,12 +27,10 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
@@ -42,11 +42,12 @@ import kotlin.collections.orEmpty
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FavListsPane(
-    navController: NavController,
     favLists: List<FavList>?,
     onFavListClick: (favListId: Int) -> Unit,
     selectionState: SelectionVisibilityState<Int>,
     isListAndDetailVisible: Boolean,
+    onCreateFavlistClick: () -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -59,6 +60,24 @@ fun FavListsPane(
             SimpleTopAppBar(
                 text = title,
                 scrollBehavior = scrollBehavior,
+                actions = {
+                    BasicTooltipBox(
+                        positionProvider = tooltipPosition,
+                        state = rememberBasicTooltipState(isPersistent = false),
+                        tooltip = {
+                            ToolTip(stringResource(R.string.settings))
+                        },
+                    ) {
+                        IconButton(
+                            onClick = onSettingsClick,
+                        ) {
+                            Icon(
+                                Icons.Outlined.Settings,
+                                contentDescription = stringResource(R.string.settings),
+                            )
+                        }
+                    }
+                },
             )
         },
         modifier = Modifier.Companion.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -106,9 +125,7 @@ fun FavListsPane(
             ) {
                 FloatingActionButton(
                     modifier = Modifier.Companion.imePadding(),
-                    onClick = {
-                        navController.navigate("createFavList")
-                    },
+                    onClick = onCreateFavlistClick,
                     shape = CircleShape,
                 ) {
                     Icon(

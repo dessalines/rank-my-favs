@@ -10,18 +10,11 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
@@ -46,7 +39,6 @@ import com.dessalines.rankmyfavs.db.TierListRepository
 import com.dessalines.rankmyfavs.db.TierListViewModel
 import com.dessalines.rankmyfavs.db.TierListViewModelFactory
 import com.dessalines.rankmyfavs.ui.components.about.AboutScreen
-import com.dessalines.rankmyfavs.ui.components.common.AppDestinations
 import com.dessalines.rankmyfavs.ui.components.common.ShowChangelog
 import com.dessalines.rankmyfavs.ui.components.favlist.CreateFavListScreen
 import com.dessalines.rankmyfavs.ui.components.favlist.EditFavListScreen
@@ -102,7 +94,6 @@ class MainActivity : AppCompatActivity() {
                 .observeAsState()
 
             val startDestination = "favLists"
-            var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.LISTS) }
 
             RankMyFavsTheme(
                 settings = settings,
@@ -112,245 +103,203 @@ class MainActivity : AppCompatActivity() {
 
                     ShowChangelog(appSettingsViewModel = appSettingsViewModel)
 
-                    NavigationSuiteScaffold(
-                        navigationSuiteItems = {
-                            AppDestinations.entries.forEach {
-                                item(
-                                    icon = {
-                                        Icon(
-                                            it.icon,
-                                            contentDescription = stringResource(it.contentDescription),
-                                        )
-                                    },
-                                    label = { Text(stringResource(it.label)) },
-                                    selected = it == currentDestination,
-                                    onClick = { currentDestination = it },
-                                )
-                            }
-                        },
+                    NavHost(
+                        navController = navController,
+                        startDestination = startDestination,
                     ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = startDestination,
+                        composable(
+                            route = "favLists?favListId={favListId}",
+                            arguments =
+                                listOf(
+                                    navArgument("favListId") {
+                                        type = NavType.StringType
+                                        nullable = true
+                                        defaultValue = null
+                                    },
+                                ),
                         ) {
-                            composable(
-                                route = "favLists?favListId={favListId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("favListId") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                            defaultValue = null
-                                        },
-                                    ),
-                            ) {
-                                val favListId = it.arguments?.getString("favListId")?.toInt()
+                            val favListId = it.arguments?.getString("favListId")?.toInt()
 
-                                FavListsAndDetailScreen(
-                                    navController = navController,
-                                    favListViewModel = favListViewModel,
-                                    favListItemViewModel = favListItemViewModel,
-                                    favListMatchViewModel = favListMatchViewModel,
-                                    favListId = favListId,
-                                )
-                            }
-                            composable(
-                                route = "createFavList",
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                CreateFavListScreen(
-                                    navController = navController,
-                                    favListViewModel = favListViewModel,
-                                )
-                            }
-                            composable(
-                                route = "editFavList/{id}",
-                                arguments = listOf(navArgument("id") { type = NavType.IntType }),
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                val id = it.arguments?.getInt("id") ?: 0
-                                EditFavListScreen(
-                                    navController = navController,
-                                    favListViewModel = favListViewModel,
-                                    id = id,
-                                )
-                            }
-
-                            composable(
-                                route = "createItem/{favListId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("favListId") {
-                                            type = NavType.IntType
-                                        },
-                                    ),
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                val favListId = it.arguments?.getInt("favListId") ?: 0
-                                CreateFavListItemScreen(
-                                    navController = navController,
-                                    favListItemViewModel = favListItemViewModel,
-                                    favListId = favListId,
-                                )
-                            }
-
-                            composable(
-                                route = "editItem/{id}",
-                                arguments = listOf(navArgument("id") { type = NavType.IntType }),
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                val id = it.arguments?.getInt("id") ?: 0
-                                EditFavListItemScreen(
-                                    navController = navController,
-                                    favListItemViewModel = favListItemViewModel,
-                                    id = id,
-                                )
-                            }
-
-                            composable(
-                                route = "itemDetails/{id}",
-                                arguments = listOf(navArgument("id") { type = NavType.IntType }),
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                val id = it.arguments?.getInt("id") ?: 0
-
-                                FavListItemDetailScreen(
-                                    navController = navController,
-                                    favListItemViewModel = favListItemViewModel,
-                                    favListMatchViewModel = favListMatchViewModel,
-                                    id = id,
-                                )
-                            }
-
-                            composable(
-                                route = "importList/{favListId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("favListId") {
-                                            type = NavType.IntType
-                                        },
-                                    ),
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                val favListId = it.arguments?.getInt("favListId") ?: 0
-                                ImportListScreen(
-                                    navController = navController,
-                                    favListItemViewModel = favListItemViewModel,
-                                    favListId = favListId,
-                                )
-                            }
-
-                            composable(
-                                route = "tierList/{favListId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("favListId") {
-                                            type = NavType.IntType
-                                        },
-                                    ),
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                val favListId = it.arguments?.getInt("favListId") ?: 0
-                                TierListScreen(
-                                    navController = navController,
-                                    favListItemViewModel = favListItemViewModel,
-                                    favListViewModel = favListViewModel,
-                                    favListId = favListId,
-                                    tierListViewModel = tierListViewModel,
-                                )
-                            }
-
-                            composable(
-                                route = "match?favListId={favListId}&favListItemId={favListItemId}",
-                                arguments =
-                                    listOf(
-                                        navArgument("favListId") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                        navArgument("favListItemId") {
-                                            type = NavType.StringType
-                                            nullable = true
-                                        },
-                                    ),
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                val favListId = it.arguments?.getString("favListId")?.toInt()
-                                val favListItemId =
-                                    it.arguments?.getString("favListItemId")?.toInt()
-
-                                MatchScreen(
-                                    navController = navController,
-                                    favListItemViewModel = favListItemViewModel,
-                                    favListMatchViewModel = favListMatchViewModel,
-                                    favListId = favListId,
-                                    favListItemId = favListItemId,
-                                )
-                            }
-
-                            composable(
-                                route = "settings",
-                            ) {
-                                SettingsScreen(
-                                    navController = navController,
-                                    appSettingsViewModel = appSettingsViewModel,
-                                )
-                            }
-                            composable(
-                                route = "about",
-                                enterTransition = enterAnimation(),
-                                exitTransition = exitAnimation(),
-                                popEnterTransition = enterAnimation(),
-                                popExitTransition = exitAnimation(),
-                            ) {
-                                AboutScreen(
-                                    navController = navController,
-                                )
-                            }
+                            FavListsAndDetailScreen(
+                                navController = navController,
+                                favListViewModel = favListViewModel,
+                                favListItemViewModel = favListItemViewModel,
+                                favListMatchViewModel = favListMatchViewModel,
+                                favListId = favListId,
+                            )
+                        }
+                        composable(
+                            route = "createFavList",
+                        ) {
+                            CreateFavListScreen(
+                                navController = navController,
+                                favListViewModel = favListViewModel,
+                            )
+                        }
+                        composable(
+                            route = "editFavList/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            val id = it.arguments?.getInt("id") ?: 0
+                            EditFavListScreen(
+                                navController = navController,
+                                favListViewModel = favListViewModel,
+                                id = id,
+                            )
                         }
 
-                        val currentRoute = navController.currentBackStackEntry?.destination?.route
-                        when (currentDestination) {
-                            AppDestinations.LISTS -> {
-                                if (currentRoute !== "favLists?favListId={favListId}") {
-                                    navController.navigate("favLists") {
-                                        launchSingleTop = true
-                                        popUpTo(navController.graph.id)
-                                    }
-                                }
-                            }
-                            AppDestinations.SETTINGS -> {
-                                if (currentRoute !== "settings") {
-                                    navController.navigate("settings") {
-                                        launchSingleTop = true
-                                        popUpTo(navController.graph.id)
-                                    }
-                                }
-                            }
+                        composable(
+                            route = "createItem/{favListId}",
+                            arguments =
+                                listOf(
+                                    navArgument("favListId") {
+                                        type = NavType.IntType
+                                    },
+                                ),
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            val favListId = it.arguments?.getInt("favListId") ?: 0
+                            CreateFavListItemScreen(
+                                navController = navController,
+                                favListItemViewModel = favListItemViewModel,
+                                favListId = favListId,
+                            )
+                        }
+
+                        composable(
+                            route = "editItem/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            val id = it.arguments?.getInt("id") ?: 0
+                            EditFavListItemScreen(
+                                navController = navController,
+                                favListItemViewModel = favListItemViewModel,
+                                id = id,
+                            )
+                        }
+
+                        composable(
+                            route = "itemDetails/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.IntType }),
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            val id = it.arguments?.getInt("id") ?: 0
+
+                            FavListItemDetailScreen(
+                                navController = navController,
+                                favListItemViewModel = favListItemViewModel,
+                                favListMatchViewModel = favListMatchViewModel,
+                                id = id,
+                            )
+                        }
+
+                        composable(
+                            route = "importList/{favListId}",
+                            arguments =
+                                listOf(
+                                    navArgument("favListId") {
+                                        type = NavType.IntType
+                                    },
+                                ),
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            val favListId = it.arguments?.getInt("favListId") ?: 0
+                            ImportListScreen(
+                                navController = navController,
+                                favListItemViewModel = favListItemViewModel,
+                                favListId = favListId,
+                            )
+                        }
+
+                        composable(
+                            route = "tierList/{favListId}",
+                            arguments =
+                                listOf(
+                                    navArgument("favListId") {
+                                        type = NavType.IntType
+                                    },
+                                ),
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            val favListId = it.arguments?.getInt("favListId") ?: 0
+                            TierListScreen(
+                                navController = navController,
+                                favListItemViewModel = favListItemViewModel,
+                                favListViewModel = favListViewModel,
+                                favListId = favListId,
+                                tierListViewModel = tierListViewModel,
+                            )
+                        }
+
+                        composable(
+                            route = "match?favListId={favListId}&favListItemId={favListItemId}",
+                            arguments =
+                                listOf(
+                                    navArgument("favListId") {
+                                        type = NavType.StringType
+                                        nullable = true
+                                    },
+                                    navArgument("favListItemId") {
+                                        type = NavType.StringType
+                                        nullable = true
+                                    },
+                                ),
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            val favListId = it.arguments?.getString("favListId")?.toInt()
+                            val favListItemId =
+                                it.arguments?.getString("favListItemId")?.toInt()
+
+                            MatchScreen(
+                                navController = navController,
+                                favListItemViewModel = favListItemViewModel,
+                                favListMatchViewModel = favListMatchViewModel,
+                                favListId = favListId,
+                                favListItemId = favListItemId,
+                            )
+                        }
+
+                        composable(
+                            route = "settings",
+                        ) {
+                            SettingsScreen(
+                                navController = navController,
+                                appSettingsViewModel = appSettingsViewModel,
+                            )
+                        }
+                        composable(
+                            route = "about",
+                            enterTransition = enterAnimation(),
+                            exitTransition = exitAnimation(),
+                            popEnterTransition = enterAnimation(),
+                            popExitTransition = exitAnimation(),
+                        ) {
+                            AboutScreen(
+                                navController = navController,
+                            )
                         }
                     }
                 }
