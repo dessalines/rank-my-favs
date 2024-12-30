@@ -81,7 +81,9 @@ fun CreateFavListScreen(
 
                                 // The id is -1 if its a failed insert
                                 if (insertedId != -1L) {
-                                    navController.navigate("favLists?favListId=$insertedId")
+                                    navController.navigate("favLists?favListId=$insertedId") {
+                                        popUpTo("favLists")
+                                    }
                                 } else {
                                     Toast
                                         .makeText(
