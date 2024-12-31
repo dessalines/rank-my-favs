@@ -12,8 +12,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,7 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavList
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.SelectionVisibilityState
 import kotlin.collections.orEmpty
@@ -57,10 +58,10 @@ fun FavListsPane(
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = title,
+            CenterAlignedTopAppBar(
+                title = { Text(title) },
                 scrollBehavior = scrollBehavior,
-                actions = {
+                navigationIcon = {
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,
                         state = rememberBasicTooltipState(isPersistent = false),
@@ -72,7 +73,7 @@ fun FavListsPane(
                             onClick = onSettingsClick,
                         ) {
                             Icon(
-                                Icons.Outlined.Settings,
+                                Icons.Filled.Settings,
                                 contentDescription = stringResource(R.string.settings),
                             )
                         }
