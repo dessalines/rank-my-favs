@@ -1,3 +1,10 @@
+## What's Changed in 0.6.5
+
+- Adding fastlane generation. by @dessalines in [#225](https://github.com/dessalines/rank-my-favs/pull/225)
+- Using center-aligned main app bar. by @dessalines in [#224](https://github.com/dessalines/rank-my-favs/pull/224)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.4...0.6.5
+
 ## What's Changed in 0.6.4
 
 - Fixing icon dep. by @dessalines in [#221](https://github.com/dessalines/rank-my-favs/pull/221)
