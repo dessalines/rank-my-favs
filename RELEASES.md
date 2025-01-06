@@ -1,3 +1,9 @@
+## What's Changed in 0.6.6
+
+- Remembering scroll position on favlists pane. by @dessalines in [#226](https://github.com/dessalines/rank-my-favs/pull/226)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.5...0.6.6
+
 ## What's Changed in 0.6.5
 
 - Adding fastlane generation. by @dessalines in [#225](https://github.com/dessalines/rank-my-favs/pull/225)
