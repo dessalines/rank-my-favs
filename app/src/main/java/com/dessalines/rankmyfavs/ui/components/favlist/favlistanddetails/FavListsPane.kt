@@ -7,14 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -26,8 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -44,6 +42,8 @@ import kotlin.collections.orEmpty
 @Composable
 fun FavListsPane(
     favLists: List<FavList>?,
+    listState: LazyListState,
+    scrollBehavior: TopAppBarScrollBehavior,
     onFavListClick: (favListId: Int) -> Unit,
     selectionState: SelectionVisibilityState<Int>,
     isListAndDetailVisible: Boolean,
@@ -51,8 +51,6 @@ fun FavListsPane(
     onSettingsClick: () -> Unit,
 ) {
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val listState = rememberLazyListState()
     val title =
         if (!isListAndDetailVisible) stringResource(R.string.app_name) else stringResource(R.string.lists)
 

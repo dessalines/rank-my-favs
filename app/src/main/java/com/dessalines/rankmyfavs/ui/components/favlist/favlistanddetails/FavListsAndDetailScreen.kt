@@ -7,12 +7,16 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.PaneAdaptedValue
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -36,6 +40,7 @@ import kotlinx.coroutines.launch
     ExperimentalFoundationApi::class,
     ExperimentalMaterial3AdaptiveApi::class,
     ExperimentalSharedTransitionApi::class,
+    ExperimentalMaterial3Api::class,
 )
 @Composable
 fun FavListsAndDetailScreen(
@@ -51,6 +56,8 @@ fun FavListsAndDetailScreen(
     var selectedFavListId: Int? by rememberSaveable { mutableStateOf(favListId) }
     val favLists by favListViewModel.getAll.asLiveData().observeAsState()
 
+    val favListsPaneScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val favListsPaneListState = rememberLazyListState()
     val navigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
     val isListAndDetailVisible =
         navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Companion.Expanded &&
@@ -81,6 +88,8 @@ fun FavListsAndDetailScreen(
                     AnimatedPane {
                         FavListsPane(
                             favLists = favLists,
+                            listState = favListsPaneListState,
+                            scrollBehavior = favListsPaneScrollBehavior,
                             onFavListClick = { favListId ->
                                 selectedFavListId = favListId
                                 scope.launch {
