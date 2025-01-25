@@ -73,8 +73,6 @@ fun MatchScreen(
             null
         }
 
-    val listId = first?.favListId ?: favListId ?: 1
-
     fun rematchNav() =
         if (favListId !== null) {
             navController.navigate("match?favListId=$favListId") {
@@ -90,7 +88,13 @@ fun MatchScreen(
 
     val second =
         if (first !== null) {
-            favListItemViewModel.closestMatch(first.favListId, first.id, first.glickoRating)
+            // Randomly either go with the closest match, or a random one from the list.
+            // This keeps the skip a little more random.
+            if ((1..2).random() == 1) {
+                favListItemViewModel.closestMatch(first.favListId, first.id, first.glickoRating)
+            } else {
+                favListItemViewModel.randomMatch(first.favListId, first.id)
+            }
         } else {
             null
         }
