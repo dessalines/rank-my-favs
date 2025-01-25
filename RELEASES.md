@@ -1,3 +1,11 @@
+## What's Changed in 0.6.7
+
+- Merge remote-tracking branch 'refs/remotes/origin/main' by @dessalines
+- Add randomness to matcher by @dessalines in [#237](https://github.com/dessalines/rank-my-favs/pull/237)
+- Revert "Change skip to a proper glicko tie. " by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.6...0.6.7
+
 ## What's Changed in 0.6.6
 
 - Remembering scroll position on favlists pane. by @dessalines in [#226](https://github.com/dessalines/rank-my-favs/pull/226)
