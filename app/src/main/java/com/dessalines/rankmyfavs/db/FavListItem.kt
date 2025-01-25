@@ -183,6 +183,20 @@ interface FavListItemDao {
         firstGlickoRating: Float,
     ): FavListItem?
 
+    @Query(
+        """
+        SELECT * FROM FavListItem
+        WHERE fav_list_id = :favListId
+        AND id <> :firstItemId
+        ORDER BY RANDOM()
+        LIMIT 1
+    """,
+    )
+    fun randomMatch(
+        favListId: Int,
+        firstItemId: Int,
+    ): FavListItem?
+
     @Insert(entity = FavListItem::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(favListItem: FavListItemInsert): Long
 
@@ -229,6 +243,11 @@ class FavListItemRepository(
         firstGlickoRating: Float,
     ) = favListItemDao.closestMatch(favListId, firstItemId, firstGlickoRating)
 
+    fun randomMatch(
+        favListId: Int,
+        firstItemId: Int,
+    ) = favListItemDao.randomMatch(favListId, firstItemId)
+
     fun insert(favListItem: FavListItemInsert) = favListItemDao.insert(favListItem)
 
     @WorkerThread
@@ -260,6 +279,11 @@ class FavListItemViewModel(
         firstItemId: Int,
         firstGlickoRating: Float,
     ) = repository.closestMatch(favListId, firstItemId, firstGlickoRating)
+
+    fun randomMatch(
+        favListId: Int,
+        firstItemId: Int,
+    ) = repository.randomMatch(favListId, firstItemId)
 
     fun insert(favListItem: FavListItemInsert) = repository.insert(favListItem)
 

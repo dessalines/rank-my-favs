@@ -73,8 +73,6 @@ fun MatchScreen(
             null
         }
 
-    val listId = first?.favListId ?: favListId ?: 1
-
     fun rematchNav() =
         if (favListId !== null) {
             navController.navigate("match?favListId=$favListId") {
@@ -90,7 +88,13 @@ fun MatchScreen(
 
     val second =
         if (first !== null) {
-            favListItemViewModel.closestMatch(first.favListId, first.id, first.glickoRating)
+            // Randomly either go with the closest match, or a random one from the list.
+            // This keeps the skip a little more random.
+            if ((1..2).random() == 1) {
+                favListItemViewModel.closestMatch(first.favListId, first.id, first.glickoRating)
+            } else {
+                favListItemViewModel.randomMatch(first.favListId, first.id)
+            }
         } else {
             null
         }
@@ -106,24 +110,17 @@ fun MatchScreen(
                             positionProvider = tooltipPosition,
                             state = rememberBasicTooltipState(isPersistent = false),
                             tooltip = {
-                                ToolTip(stringResource(id = R.string.tie))
+                                ToolTip(stringResource(id = R.string.skip))
                             },
                         ) {
                             IconButton(
                                 onClick = {
-                                    recalculateStats(
-                                        favListItemViewModel = favListItemViewModel,
-                                        favListMatchViewModel = favListMatchViewModel,
-                                        winner = first,
-                                        loser = second,
-                                        tie = true,
-                                    )
                                     rematchNav()
                                 },
                             ) {
                                 Icon(
                                     Icons.Outlined.SkipNext,
-                                    contentDescription = stringResource(R.string.tie),
+                                    contentDescription = stringResource(R.string.skip),
                                 )
                             }
                         }
@@ -156,7 +153,6 @@ fun MatchScreen(
                                     favListMatchViewModel = favListMatchViewModel,
                                     winner = first,
                                     loser = second,
-                                    tie = false,
                                 )
                                 rematchNav()
                             },
@@ -169,7 +165,6 @@ fun MatchScreen(
                                     favListMatchViewModel = favListMatchViewModel,
                                     winner = second,
                                     loser = first,
-                                    tie = false,
                                 )
                                 rematchNav()
                             },
@@ -213,14 +208,11 @@ fun recalculateStats(
     favListMatchViewModel: FavListMatchViewModel,
     winner: FavListItem,
     loser: FavListItem,
-    tie: Boolean,
 ) {
-    if (!tie) {
-        // Insert the winner
-        favListMatchViewModel.insert(
-            FavListMatchInsert(winner.id, loser.id, winner.id),
-        )
-    }
+    // Insert the winner
+    favListMatchViewModel.insert(
+        FavListMatchInsert(winner.id, loser.id, winner.id),
+    )
     val (winRateWinner, matchCountWinner) = calculateWinRate(favListMatchViewModel, winner)
     val (winRateLoser, matchCountLoser) = calculateWinRate(favListMatchViewModel, loser)
 
@@ -239,11 +231,7 @@ fun recalculateStats(
     gLoser.ratingDeviation = loser.glickoDeviation.toDouble()
     gLoser.volatility = loser.glickoVolatility.toDouble()
 
-    if (!tie) {
-        results.addResult(gWinner, gLoser)
-    } else {
-        results.addDraw(gWinner, gLoser)
-    }
+    results.addResult(gWinner, gLoser)
 
     ratingSystem.updateRatings(results)
 
@@ -280,13 +268,7 @@ fun calculateWinRate(
 
     val matchCount = matches.count()
     val winCount = matches.count { it.winnerId == item.id }
-    var winRate = (100F * winCount / matchCount)
-
-    // Need to do a nanCheck here, for ties
-    if (winRate.isNaN()) {
-        winRate = 0F
-    }
-
+    val winRate = 100F * winCount / matchCount
     return Pair(winRate, matchCount)
 }
 
