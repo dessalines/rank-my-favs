@@ -366,9 +366,9 @@ fun FavListDetailPane(
                 LazyColumn(
                     state = listState,
                 ) {
-                item {
-                    FavListDetails(favList)
-                }
+                    item {
+                        FavListDetails(favList)
+                    }
 
                     itemsIndexed(
                         key = { _, item -> item.id },
