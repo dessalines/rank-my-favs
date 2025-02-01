@@ -1,3 +1,10 @@
+## What's Changed in 0.6.8
+
+- Adding favlist details. by @dessalines in [#241](https://github.com/dessalines/rank-my-favs/pull/241)
+- Fixing rank order. by @dessalines in [#244](https://github.com/dessalines/rank-my-favs/pull/244)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.7...0.6.8
+
 ## What's Changed in 0.6.7
 
 - Merge remote-tracking branch 'refs/remotes/origin/main' by @dessalines
