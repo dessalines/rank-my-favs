@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -370,8 +370,8 @@ fun FavListDetailPane(
                         FavListDetails(favList)
                     }
 
-                    itemsIndexed(
-                        key = { _, item -> item.id },
+                    items(
+                        key = { item -> item.id },
                         items =
                             favListItems.orEmpty().filter {
                                 it.name.contains(
@@ -379,10 +379,12 @@ fun FavListDetailPane(
                                     ignoreCase = true,
                                 )
                             },
-                    ) { index, favListItem ->
+                    ) { favListItem ->
+                        val rankNum = favListItems.orEmpty().indexOf(favListItem) + 1
+
                         FavListItemRow(
                             favListItem = favListItem,
-                            index = index + 1,
+                            rankNum = rankNum,
                             onClick = {
                                 onItemDetailsClick(favListItem.id)
                             },
@@ -444,12 +446,12 @@ fun FavListDetailsPreview() {
 @Composable
 fun FavListItemRow(
     favListItem: FavListItem,
-    index: Int,
+    rankNum: Int,
     onClick: () -> Unit,
 ) {
     // Only show the rank if its above the min confidence bound
     val rank =
-        if (calculateConfidence(favListItem.glickoDeviation) >= MIN_CONFIDENCE_BOUND) index.toString() else "?"
+        if (calculateConfidence(favListItem.glickoDeviation) >= MIN_CONFIDENCE_BOUND) rankNum.toString() else "?"
     ListItem(
         headlineContent = {
             Text(favListItem.name)
@@ -472,7 +474,7 @@ fun FavListItemRow(
 fun FavListItemRowPreview() {
     FavListItemRow(
         favListItem = sampleFavListItem,
-        index = 23,
+        rankNum = 23,
         onClick = {},
     )
 }
