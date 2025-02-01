@@ -58,6 +58,7 @@ fun FavListsAndDetailScreen(
 
     val favListsPaneScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val favListsPaneListState = rememberLazyListState()
+    val favListDetailListState = rememberLazyListState()
     val navigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
     val isListAndDetailVisible =
         navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Companion.Expanded &&
@@ -119,6 +120,7 @@ fun FavListsAndDetailScreen(
                             FavListDetailPane(
                                 favList = favList,
                                 favListItems = favListItems,
+                                listState = favListDetailListState,
                                 isListAndDetailVisible = isListAndDetailVisible,
                                 onBackClick = {
                                     scope.launch {

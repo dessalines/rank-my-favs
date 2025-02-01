@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberBasicTooltipState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -81,6 +81,7 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 fun FavListDetailPane(
     favList: FavList?,
     favListItems: List<FavListItem>?,
+    listState: LazyListState,
     isListAndDetailVisible: Boolean,
     onBackClick: () -> Unit,
     onClearStats: () -> Unit,
@@ -94,7 +95,6 @@ fun FavListDetailPane(
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
-    val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val showClearStatsDialog = remember { mutableStateOf(false) }
@@ -366,11 +366,9 @@ fun FavListDetailPane(
                 LazyColumn(
                     state = listState,
                 ) {
-                    // Unfortunately showing these details messes up the scroll remember position.
-                    // Comment it for now
-//                item {
-//                    FavListDetails(favList)
-//                }
+                item {
+                    FavListDetails(favList)
+                }
 
                     itemsIndexed(
                         key = { _, item -> item.id },
@@ -419,8 +417,8 @@ fun FavListDetailPane(
 }
 
 @Composable
-fun FavListDetails(favList: FavList) {
-    if (!favList.description.isNullOrBlank()) {
+fun FavListDetails(favList: FavList?) {
+    if (!favList?.description.isNullOrBlank()) {
         HorizontalDivider()
         MarkdownText(
             markdown = favList.description,
