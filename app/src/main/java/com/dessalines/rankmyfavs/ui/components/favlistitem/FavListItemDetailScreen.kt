@@ -24,14 +24,19 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,9 +56,9 @@ import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListMatchViewModel
 import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.AreYouSureDialog
+import com.dessalines.rankmyfavs.ui.components.common.BackButton
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.GLICKO_WIKI_URL
 import com.dessalines.rankmyfavs.utils.numToString
@@ -70,6 +75,7 @@ fun FavListItemDetailScreen(
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val listState = rememberLazyListState()
 
     val favListItem by favListItemViewModel.getById(id).asLiveData().observeAsState()
@@ -82,9 +88,14 @@ fun FavListItemDetailScreen(
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = favListItem?.name.orEmpty(),
-                onBackClick = { navController.navigateUp() },
+            MediumTopAppBar(
+                title = { Text(favListItem?.name.orEmpty()) },
+                scrollBehavior = scrollBehavior,
+                navigationIcon = {
+                    BackButton(
+                        onBackClick = { navController.navigateUp() },
+                    )
+                },
                 actions = {
                     BasicTooltipBox(
                         positionProvider = tooltipPosition,
@@ -158,7 +169,6 @@ fun FavListItemDetailScreen(
             )
         },
         content = { padding ->
-
             AreYouSureDialog(
                 show = showDeleteDialog,
                 title = stringResource(R.string.delete),
@@ -192,7 +202,7 @@ fun FavListItemDetailScreen(
             )
 
             Box(
-                modifier = Modifier.padding(padding).imePadding(),
+                modifier = Modifier.padding(padding).imePadding().nestedScroll(scrollBehavior.nestedScrollConnection),
             ) {
                 LazyColumn(
                     state = listState,

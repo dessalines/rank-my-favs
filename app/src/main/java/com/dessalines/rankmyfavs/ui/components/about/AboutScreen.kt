@@ -18,6 +18,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.dessalines.rankmyfavs.R
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.BackButton
 import com.dessalines.rankmyfavs.utils.DONATE_URL
 import com.dessalines.rankmyfavs.utils.GITHUB_URL
 import com.dessalines.rankmyfavs.utils.LEMMY_URL
@@ -52,9 +53,13 @@ fun AboutScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.about),
-                onBackClick = { navController.navigateUp() },
+            TopAppBar(
+                title = { Text(stringResource(R.string.about)) },
+                navigationIcon = {
+                    BackButton(
+                        onBackClick = { navController.navigateUp() },
+                    )
+                },
             )
         },
         content = { padding ->

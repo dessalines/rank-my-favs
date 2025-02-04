@@ -15,7 +15,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -24,7 +26,7 @@ import com.dessalines.rankmyfavs.R
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.FavListItemInsert
 import com.dessalines.rankmyfavs.db.FavListItemViewModel
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.BackButton
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.nameIsValid
 
@@ -42,9 +44,13 @@ fun CreateFavListItemScreen(
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.create_item),
-                onBackClick = { navController.navigateUp() },
+            TopAppBar(
+                title = { Text(stringResource(R.string.create_item)) },
+                navigationIcon = {
+                    BackButton(
+                        onBackClick = { navController.navigateUp() },
+                    )
+                },
             )
         },
         content = { padding ->

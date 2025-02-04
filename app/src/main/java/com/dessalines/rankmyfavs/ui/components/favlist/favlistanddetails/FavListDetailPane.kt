@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -66,9 +67,9 @@ import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.MIN_CONFIDENCE_BOUND
 import com.dessalines.rankmyfavs.db.sampleFavListItem
 import com.dessalines.rankmyfavs.ui.components.common.AreYouSureDialog
+import com.dessalines.rankmyfavs.ui.components.common.BackButton
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.ui.components.favlistitem.calculateConfidence
 import com.dessalines.rankmyfavs.utils.convertFavlistToMarkdown
@@ -140,10 +141,16 @@ fun FavListDetailPane(
     Scaffold(
         topBar = {
             if (!showSearchBar) {
-                SimpleTopAppBar(
-                    text = titleText,
-                    onBackClick = onBackClick,
+                MediumTopAppBar(
+                    title = { Text(titleText) },
                     scrollBehavior = scrollBehavior,
+                    navigationIcon = {
+                        if (onBackClick !== null) {
+                            BackButton(
+                                onBackClick = onBackClick,
+                            )
+                        }
+                    },
                     actions = {
                         BasicTooltipBox(
                             positionProvider = tooltipPosition,

@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -40,7 +41,7 @@ import com.dessalines.rankmyfavs.db.DEFAULT_THEME
 import com.dessalines.rankmyfavs.db.DEFAULT_THEME_COLOR
 import com.dessalines.rankmyfavs.db.MIN_CONFIDENCE_BOUND
 import com.dessalines.rankmyfavs.db.SettingsUpdate
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
+import com.dessalines.rankmyfavs.ui.components.common.BackButton
 import com.dessalines.rankmyfavs.utils.ThemeColor
 import com.dessalines.rankmyfavs.utils.ThemeMode
 import com.roomdbexportimport.RoomDBExportImport
@@ -109,9 +110,13 @@ fun SettingsScreen(
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.settings),
-                onBackClick = { navController.navigateUp() },
+            TopAppBar(
+                title = { Text(stringResource(R.string.settings)) },
+                navigationIcon = {
+                    BackButton(
+                        onBackClick = { navController.navigateUp() },
+                    )
+                },
             )
         },
         content = { padding ->
