@@ -28,12 +28,15 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,6 +75,7 @@ fun FavListItemDetailScreen(
 ) {
     val ctx = LocalContext.current
     val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val listState = rememberLazyListState()
 
     val favListItem by favListItemViewModel.getById(id).asLiveData().observeAsState()
@@ -86,6 +90,7 @@ fun FavListItemDetailScreen(
         topBar = {
             MediumTopAppBar(
                 title = { Text(favListItem?.name.orEmpty()) },
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     BackButton(
                         onBackClick = { navController.navigateUp() },
@@ -164,7 +169,6 @@ fun FavListItemDetailScreen(
             )
         },
         content = { padding ->
-
             AreYouSureDialog(
                 show = showDeleteDialog,
                 title = stringResource(R.string.delete),
@@ -198,7 +202,7 @@ fun FavListItemDetailScreen(
             )
 
             Box(
-                modifier = Modifier.padding(padding).imePadding(),
+                modifier = Modifier.padding(padding).imePadding().nestedScroll(scrollBehavior.nestedScrollConnection),
             ) {
                 LazyColumn(
                     state = listState,
