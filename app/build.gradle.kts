@@ -13,8 +13,8 @@ android {
         applicationId = "com.dessalines.rankmyfavs"
         minSdk = 21
         targetSdk = 35
-        versionCode = 31
-        versionName = "0.6.8"
+        versionCode = 32
+        versionName = "0.6.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
