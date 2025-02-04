@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,8 +41,8 @@ import com.dessalines.rankmyfavs.db.FavListItemViewModel
 import com.dessalines.rankmyfavs.db.FavListMatchInsert
 import com.dessalines.rankmyfavs.db.FavListMatchViewModel
 import com.dessalines.rankmyfavs.db.sampleFavListItem
+import com.dessalines.rankmyfavs.ui.components.common.BackButton
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import org.goochjs.glicko2.Rating
@@ -101,9 +102,13 @@ fun MatchScreen(
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.rate),
-                onBackClick = { navController.popBackStack() },
+            TopAppBar(
+                title = { Text(stringResource(R.string.rate)) },
+                navigationIcon = {
+                    BackButton(
+                        onBackClick = { navController.popBackStack() },
+                    )
+                },
                 actions = {
                     if (first !== null && second !== null) {
                         BasicTooltipBox(

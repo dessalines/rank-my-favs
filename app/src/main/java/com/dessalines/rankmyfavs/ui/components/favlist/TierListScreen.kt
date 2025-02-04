@@ -51,6 +51,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -83,6 +84,7 @@ import com.dessalines.rankmyfavs.db.TierList
 import com.dessalines.rankmyfavs.db.TierListInsert
 import com.dessalines.rankmyfavs.db.TierListUpdate
 import com.dessalines.rankmyfavs.db.TierListViewModel
+import com.dessalines.rankmyfavs.ui.components.common.BackButton
 import com.dessalines.rankmyfavs.ui.components.common.ColorPickerDialog
 import com.dessalines.rankmyfavs.ui.components.common.FLOATING_BUTTON_SIZE
 import com.dessalines.rankmyfavs.ui.components.common.LARGE_HEIGHT
@@ -92,7 +94,6 @@ import com.dessalines.rankmyfavs.ui.components.common.MEDIUM_HEIGHT
 import com.dessalines.rankmyfavs.ui.components.common.MEDIUM_PADDING
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_HEIGHT
 import com.dessalines.rankmyfavs.ui.components.common.SMALL_PADDING
-import com.dessalines.rankmyfavs.ui.components.common.SimpleTopAppBar
 import com.dessalines.rankmyfavs.ui.components.common.ToolTip
 import com.dessalines.rankmyfavs.utils.TIER_COLORS
 import com.dessalines.rankmyfavs.utils.assignTiersToItems
@@ -179,9 +180,13 @@ fun TierListScreen(
 
     Scaffold(
         topBar = {
-            SimpleTopAppBar(
-                text = stringResource(R.string.tier_list),
-                onBackClick = { navController.navigateUp() },
+            TopAppBar(
+                title = { Text(stringResource(R.string.tier_list)) },
+                navigationIcon = {
+                    BackButton(
+                        onBackClick = { navController.navigateUp() },
+                    )
+                },
             )
         },
         content = { padding ->
