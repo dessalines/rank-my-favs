@@ -341,17 +341,6 @@ fun FavListDetailPane(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
 
-            if (favListItems.isNullOrEmpty()) {
-                Text(
-                    text = stringResource(R.string.no_items),
-                    modifier =
-                        Modifier.padding(
-                            horizontal = LARGE_PADDING,
-                            vertical = padding.calculateTopPadding(),
-                        ),
-                )
-            }
-
             AreYouSureDialog(
                 show = showClearStatsDialog,
                 title = clearStatsMessage,
@@ -375,6 +364,18 @@ fun FavListDetailPane(
                 ) {
                     item {
                         FavListDetails(favList)
+                    }
+
+                    item {
+                        if (favListItems.isNullOrEmpty()) {
+                            Text(
+                                text = stringResource(R.string.no_items),
+                                modifier =
+                                    Modifier.padding(
+                                        horizontal = LARGE_PADDING,
+                                    ),
+                            )
+                        }
                     }
 
                     items(
@@ -428,7 +429,6 @@ fun FavListDetailPane(
 @Composable
 fun FavListDetails(favList: FavList?) {
     if (!favList?.description.isNullOrBlank()) {
-        HorizontalDivider()
         MarkdownText(
             markdown = favList.description,
             linkColor = MaterialTheme.colorScheme.primary,
@@ -441,6 +441,7 @@ fun FavListDetails(favList: FavList?) {
                         end = LARGE_PADDING,
                     ).fillMaxWidth(),
         )
+        HorizontalDivider()
     }
 }
 
