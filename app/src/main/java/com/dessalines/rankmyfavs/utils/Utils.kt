@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.core.net.toUri
 import com.dessalines.rankmyfavs.db.FavListItem
 import com.dessalines.rankmyfavs.db.TierList
 import java.io.IOException
@@ -37,7 +38,7 @@ fun openLink(
     url: String,
     ctx: Context,
 ) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
     ctx.startActivity(intent)
 }
 
@@ -120,12 +121,16 @@ fun assignTiersToItems(
     // Calculate tier thresholds
     val tierMap = mutableMapOf<TierList, List<FavListItem>>()
 
-    tiers.sortedBy { it.tierOrder }.forEachIndexed { index, tier ->
+    if (items.isNotEmpty()) {
+        tiers.sortedBy { it.tierOrder }.forEachIndexed { index, tier ->
 
-        val lowerBoundIndex = (limitedItems.size * index / tiers.size).coerceAtMost(limitedItems.size - 1)
-        val upperBoundIndex = (limitedItems.size * (index + 1) / tiers.size).coerceAtMost(limitedItems.size)
+            val lowerBoundIndex =
+                (limitedItems.size * index / tiers.size).coerceAtMost(limitedItems.size - 1)
+            val upperBoundIndex =
+                (limitedItems.size * (index + 1) / tiers.size).coerceAtMost(limitedItems.size)
 
-        tierMap[tier] = limitedItems.subList(lowerBoundIndex, upperBoundIndex)
+            tierMap[tier] = limitedItems.subList(lowerBoundIndex, upperBoundIndex)
+        }
     }
 
     return tierMap
