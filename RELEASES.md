@@ -1,3 +1,10 @@
+## What's Changed in 0.6.10
+
+- Fixing tier list crash. by @dessalines in [#282](https://github.com/dessalines/rank-my-favs/pull/282)
+- Adding horizontal divider and fixing no items overlap. by @dessalines in [#281](https://github.com/dessalines/rank-my-favs/pull/281)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.9...0.6.10
+
 ## What's Changed in 0.6.9
 
 - Simplifying top app bars, adding medium for dynamic content. by @dessalines in [#251](https://github.com/dessalines/rank-my-favs/pull/251)
