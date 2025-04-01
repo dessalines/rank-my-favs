@@ -1,3 +1,9 @@
+## What's Changed in 0.6.11
+
+- Update plugin com.google.devtools.ksp to v2.1.20-1.0.32 by @dessalines in [#290](https://github.com/dessalines/rank-my-favs/pull/290)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.10...0.6.11
+
 ## What's Changed in 0.6.10
 
 - Fixing tier list crash. by @dessalines in [#282](https://github.com/dessalines/rank-my-favs/pull/282)
