@@ -1,6 +1,21 @@
+## What's Changed in 0.6.12
+
+- Merge remote-tracking branch 'refs/remotes/origin/main'
+
+## New Contributors
+
+- @renovate[bot] made their first contribution in [#300](https://github.com/dessalines/rank-my-favs/pull/300)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.11...0.6.12
+
 ## What's Changed in 0.6.11
 
 - Update plugin com.google.devtools.ksp to v2.1.20-1.0.32 by @dessalines in [#290](https://github.com/dessalines/rank-my-favs/pull/290)
+
+## New Contributors
+
+- @dessalines made their first contribution in [#290](https://github.com/dessalines/rank-my-favs/pull/290)
+- @renovate[bot] made their first contribution
 
 **Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.10...0.6.11
 
