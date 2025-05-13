@@ -148,10 +148,10 @@ interface FavListItemDao {
     fun getCountByIdSync(favListId: Int): Int
 
     @Query(BY_ID_QUERY)
-    fun getById(favListItemId: Int): Flow<FavListItem>
+    fun getById(favListItemId: Int): Flow<FavListItem?>
 
     @Query(BY_ID_QUERY)
-    fun getByIdSync(favListItemId: Int): FavListItem
+    fun getByIdSync(favListItemId: Int): FavListItem?
 
     // The first option is the one with the lowest glicko_deviation, and a stop gap.
     // The second option is a random one.

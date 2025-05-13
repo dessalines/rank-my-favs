@@ -79,10 +79,10 @@ interface FavListDao {
     fun getAll(): Flow<List<FavList>>
 
     @Query(BY_ID_QUERY)
-    fun getById(id: Int): Flow<FavList>
+    fun getById(id: Int): Flow<FavList?>
 
     @Query(BY_ID_QUERY)
-    fun getByIdSync(id: Int): FavList
+    fun getByIdSync(id: Int): FavList?
 
     @Insert(entity = FavList::class, onConflict = OnConflictStrategy.IGNORE)
     fun insert(favList: FavListInsert): Long
