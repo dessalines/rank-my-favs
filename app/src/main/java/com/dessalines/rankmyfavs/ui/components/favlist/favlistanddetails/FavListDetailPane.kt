@@ -147,7 +147,11 @@ fun FavListDetailPane(
                     navigationIcon = {
                         if (onBackClick !== null) {
                             BackButton(
-                                onBackClick = onBackClick,
+                                onBackClick = {
+                                    showSearchBar = false
+                                    searchFilter = ""
+                                    onBackClick()
+                                },
                             )
                         }
                     },
@@ -323,7 +327,10 @@ fun FavListDetailPane(
                     },
                     navigationIcon = {
                         IconButton(
-                            onClick = { showSearchBar = false },
+                            onClick = {
+                                showSearchBar = false
+                                searchFilter = ""
+                            },
                         ) {
                             Icon(
                                 Icons.AutoMirrored.Outlined.ArrowBack,
