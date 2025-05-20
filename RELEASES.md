@@ -1,3 +1,12 @@
+## What's Changed in 0.6.14
+
+- Fix search bar clearing. by @dessalines in [#324](https://github.com/dessalines/rank-my-favs/pull/324)
+- Fix search bar clearing. by @dessalines
+- Adding android lint. by @dessalines in [#322](https://github.com/dessalines/rank-my-favs/pull/322)
+- Adding android lint. by @dessalines
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.13...0.6.14
+
 ## What's Changed in 0.6.13
 
 - Fixing delete crashes. by @dessalines in [#319](https://github.com/dessalines/rank-my-favs/pull/319)
