@@ -1,0 +1,20 @@
+Führen Sie Listen mit Ihren Lieblingssachen wie Filmen, Büchern, Rezepten oder Musikalben? Sie könnten eine oder mehrere Listen führen, die wie folgt aussehen:
+
+<ul>
+  <li>Network (1976)</li>
+  <li>Lone Star (1996)</li>
+  <li>Devils (1971)</li>
+  <li>Das siebte Siegel (1957)</li>
+  <li>... <i>Viele weitere Filme_h</i>
+  </li>
+</ul>
+
+Aber wie ordnen Sie diese ein?
+
+Sie könnten versucht sein, sie nach Ihren Wünschen zu sortieren, aber das könnte bei langen Listen schnell überwältigend werden.
+
+Eine viel einfachere Methode ist die Verwendung von <a href="https://www.opinionx.co/blog/pairwise-comparison">pairwise comparisons</a>, die Ihnen einzelne Kopf-an-Kopf-Paare anzeigen und anzeigen lassen Wählen Sie, welches Ihnen am besten gefällt.
+
+Nachdem Sie eine kleine Anzahl dieser Matchups durchgeführt haben, kann Rank-My-Favs getrost eine Rangliste für Sie erstellen.
+
+Unter der Haube kann Rank-My-Favs entweder nach der Gewinnrate oder dem fortschrittlicheren Glicko-Bewertungssystem sortiert werden.
