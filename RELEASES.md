@@ -1,3 +1,19 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## What's Changed in 0.6.15
+
+- fastlane: add DE locale by @IzzySoft in [#359](https://github.com/dessalines/rank-my-favs/pull/359)
+- Better ntfy notifs. by @dessalines in [#342](https://github.com/dessalines/rank-my-favs/pull/342)
+- Better ntfy notifs. by @dessalines
+
+## New Contributors
+
+- @IzzySoft made their first contribution in [#359](https://github.com/dessalines/rank-my-favs/pull/359)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.14...0.6.15
+
 ## What's Changed in 0.6.14
 
 - Fix search bar clearing. by @dessalines in [#324](https://github.com/dessalines/rank-my-favs/pull/324)
