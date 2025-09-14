@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    buildToolsVersion = "35.0.0"
-    compileSdk = 35
+    buildToolsVersion = "36.0.0"
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.dessalines.rankmyfavs"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 38
         versionName = "0.6.15"
 
@@ -124,7 +124,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-adaptive-navigation-suite")
 
     // Activities
-    implementation("androidx.activity:activity-compose:1.10.1")
+    implementation("androidx.activity:activity-compose:1.11.0")
     implementation("androidx.activity:activity-ktx:1.10.1")
 
     // LiveData
