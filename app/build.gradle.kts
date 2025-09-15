@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dessalines.rankmyfavs"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         versionCode = 38
         versionName = "0.6.15"
