@@ -389,10 +389,16 @@ fun FavListDetailPane(
                         key = { item -> item.id },
                         items =
                             favListItems.orEmpty().filter {
-                                it.name.contains(
-                                    searchFilter,
-                                    ignoreCase = true,
-                                )
+                                it.name
+                                    .contains(
+                                        searchFilter,
+                                        ignoreCase = true,
+                                    ).or(
+                                        it.description.orEmpty().contains(
+                                            searchFilter,
+                                            ignoreCase = true,
+                                        ),
+                                    )
                             },
                     ) { favListItem ->
                         val rankNum = favListItems.orEmpty().indexOf(favListItem) + 1
