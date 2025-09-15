@@ -1,6 +1,8 @@
-# Changelog
+## What's Changed in 0.6.16
 
-All notable changes to this project will be documented in this file.
+- Add description search filtering. by @dessalines in [#392](https://github.com/dessalines/rank-my-favs/pull/392)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.15...0.6.16
 
 ## What's Changed in 0.6.15
 
