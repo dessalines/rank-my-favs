@@ -19,10 +19,6 @@ prettier -w $tmp_file
 cp $tmp_file $assets_releases
 rm $tmp_file
 
-# Don't bother to write to fastlane.
-# fastlane_file="fastlane/metadata/android/en-US/changelogs/$new_version_code.txt"
-# echo "Changelog: https://github.com/dessalines/rank-my-favs/blob/main/RELEASES.md" >$fastlane_file
-
 # Adding to RELEASES.md
 git cliff --tag "$new_tag" --output RELEASES.md
 prettier -w RELEASES.md
