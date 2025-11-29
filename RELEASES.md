@@ -1,3 +1,12 @@
+## What's Changed in 0.6.17
+
+- Don't write fastlane changelog. by @dessalines in [#442](https://github.com/dessalines/rank-my-favs/pull/442)
+- Use different prettier docker image. by @dessalines in [#443](https://github.com/dessalines/rank-my-favs/pull/443)
+- Fixing tooltips by @dessalines in [#441](https://github.com/dessalines/rank-my-favs/pull/441)
+- Fixing fastlane changelogs by @dessalines in [#436](https://github.com/dessalines/rank-my-favs/pull/436)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.16...0.6.17
+
 ## What's Changed in 0.6.16
 
 - Add description search filtering. by @dessalines in [#392](https://github.com/dessalines/rank-my-favs/pull/392)
