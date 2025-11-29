@@ -24,6 +24,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -50,7 +51,7 @@ fun FavListsPane(
     onCreateFavlistClick: () -> Unit,
     onSettingsClick: () -> Unit,
 ) {
-    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val tooltipPosition = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above)
     val title =
         if (!isListAndDetailVisible) stringResource(R.string.app_name) else stringResource(R.string.lists)
 

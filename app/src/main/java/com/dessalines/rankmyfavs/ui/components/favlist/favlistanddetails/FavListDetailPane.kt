@@ -40,6 +40,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -95,7 +96,7 @@ fun FavListDetailPane(
     onMatchClick: () -> Unit,
 ) {
     val ctx = LocalContext.current
-    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val tooltipPosition = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above)
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     val showClearStatsDialog = remember { mutableStateOf(false) }

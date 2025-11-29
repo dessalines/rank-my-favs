@@ -16,6 +16,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -38,7 +39,7 @@ fun CreateFavListItemScreen(
     favListId: Int,
 ) {
     val scrollState = rememberScrollState()
-    val tooltipPosition = TooltipDefaults.rememberPlainTooltipPositionProvider()
+    val tooltipPosition = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above)
 
     var favListItem: FavListItem? = null
 

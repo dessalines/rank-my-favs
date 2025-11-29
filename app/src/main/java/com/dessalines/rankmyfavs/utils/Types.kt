@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.dessalines.rankmyfavs.R
 
 enum class ThemeMode(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     System(R.string.system),
     Light(R.string.light),
@@ -12,7 +12,7 @@ enum class ThemeMode(
 }
 
 enum class ThemeColor(
-    @StringRes val resId: Int,
+    @param:StringRes val resId: Int,
 ) {
     Dynamic(R.string.dynamic),
     Green(R.string.green),
