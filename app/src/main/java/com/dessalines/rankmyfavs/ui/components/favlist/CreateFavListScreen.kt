@@ -42,6 +42,7 @@ fun CreateFavListScreen(
     val scrollState = rememberScrollState()
     val tooltipPosition = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above)
     val ctx = LocalContext.current
+    val listAlreadyExistsStr = stringResource(R.string.list_already_exists)
 
     var favList: FavList? = null
 
@@ -95,7 +96,7 @@ fun CreateFavListScreen(
                                     Toast
                                         .makeText(
                                             ctx,
-                                            ctx.getString(R.string.list_already_exists),
+                                            listAlreadyExistsStr,
                                             Toast.LENGTH_SHORT,
                                         ).show()
                                 }
