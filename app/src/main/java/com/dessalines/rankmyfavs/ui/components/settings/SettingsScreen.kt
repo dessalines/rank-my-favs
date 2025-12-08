@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
@@ -170,7 +171,7 @@ fun SettingsScreen(
                         },
                         values = ThemeMode.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         title = {
                             Text(stringResource(R.string.theme))
@@ -195,7 +196,7 @@ fun SettingsScreen(
                         },
                         values = ThemeColor.entries,
                         valueToText = {
-                            AnnotatedString(ctx.getString(it.resId))
+                            AnnotatedString(getString(ctx, it.resId))
                         },
                         title = {
                             Text(stringResource(R.string.theme_color))
