@@ -29,9 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.core.content.ContextCompat.getString
 import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import com.dessalines.rankmyfavs.R
@@ -60,6 +60,7 @@ fun SettingsScreen(
 ) {
     val settings by appSettingsViewModel.appSettings.asLiveData().observeAsState()
     val ctx = LocalContext.current
+    val resources = LocalResources.current
 
     var minConfidenceState = (settings?.minConfidence ?: DEFAULT_MIN_CONFIDENCE).toFloat()
     var minConfidenceSliderState by remember { mutableFloatStateOf(minConfidenceState) }
@@ -171,7 +172,7 @@ fun SettingsScreen(
                         },
                         values = ThemeMode.entries,
                         valueToText = {
-                            AnnotatedString(getString(ctx, it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = {
                             Text(stringResource(R.string.theme))
@@ -196,7 +197,7 @@ fun SettingsScreen(
                         },
                         values = ThemeColor.entries,
                         valueToText = {
-                            AnnotatedString(getString(ctx, it.resId))
+                            AnnotatedString(resources.getString(it.resId))
                         },
                         title = {
                             Text(stringResource(R.string.theme_color))
