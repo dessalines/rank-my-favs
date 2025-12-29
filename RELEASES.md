@@ -1,3 +1,10 @@
+## What's Changed in 0.6.18
+
+- Sort the main page fav lists alphabetically. by @dessalines in [#460](https://github.com/dessalines/rank-my-favs/pull/460)
+- Using resources.getString by @dessalines in [#450](https://github.com/dessalines/rank-my-favs/pull/450)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.17...0.6.18
+
 ## What's Changed in 0.6.17
 
 - Don't write fastlane changelog. by @dessalines in [#442](https://github.com/dessalines/rank-my-favs/pull/442)
