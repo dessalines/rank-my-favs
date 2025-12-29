@@ -55,6 +55,9 @@ fun FavListsPane(
     val title =
         if (!isListAndDetailVisible) stringResource(R.string.app_name) else stringResource(R.string.lists)
 
+    // Sort the lists alphabetically by name
+    val favListsSorted = favLists?.sortedBy { it.name }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -91,7 +94,7 @@ fun FavListsPane(
                 LazyColumn(
                     state = listState,
                 ) {
-                    items(favLists.orEmpty()) { favList ->
+                    items(favListsSorted.orEmpty()) { favList ->
                         val selected =
                             when (selectionState) {
                                 is SelectionVisibilityState.ShowSelection -> selectionState.selectedItem == favList.id
@@ -105,7 +108,7 @@ fun FavListsPane(
                         )
                     }
                     item {
-                        if (favLists.isNullOrEmpty()) {
+                        if (favListsSorted.isNullOrEmpty()) {
                             Text(
                                 text = stringResource(R.string.no_lists),
                                 modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
