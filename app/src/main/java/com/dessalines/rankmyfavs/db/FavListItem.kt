@@ -144,9 +144,6 @@ interface FavListItemDao {
     @Query("SELECT * FROM FavListItem where fav_list_id = :favListId order by glicko_rating desc")
     fun getFromList(favListId: Int): Flow<List<FavListItem>>
 
-    @Query("SELECT COUNT(*) FROM FavListItem where fav_list_id = :favListId")
-    fun getCountByIdSync(favListId: Int): Int
-
     @Query(BY_ID_QUERY)
     fun getById(favListItemId: Int): Flow<FavListItem?>
 

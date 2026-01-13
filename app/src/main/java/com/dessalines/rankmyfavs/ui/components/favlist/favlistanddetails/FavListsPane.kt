@@ -83,11 +83,11 @@ fun FavListsPane(
                 },
             )
         },
-        modifier = Modifier.Companion.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { padding ->
             Box(
                 modifier =
-                    Modifier.Companion
+                    Modifier
                         .padding(padding)
                         .imePadding(),
             ) {
@@ -111,7 +111,7 @@ fun FavListsPane(
                         if (favListsSorted.isNullOrEmpty()) {
                             Text(
                                 text = stringResource(R.string.no_lists),
-                                modifier = Modifier.Companion.padding(horizontal = LARGE_PADDING),
+                                modifier = Modifier.padding(horizontal = LARGE_PADDING),
                             )
                         }
                     }
@@ -127,7 +127,7 @@ fun FavListsPane(
                 },
             ) {
                 FloatingActionButton(
-                    modifier = Modifier.Companion.imePadding(),
+                    modifier = Modifier.imePadding(),
                     onClick = onCreateFavlistClick,
                     shape = CircleShape,
                 ) {
@@ -156,7 +156,7 @@ fun FavListRow(
         },
         colors = ListItemDefaults.colors(containerColor = containerColor),
         modifier =
-            Modifier.Companion.clickable {
+            Modifier.clickable {
                 onClick()
             },
     )
