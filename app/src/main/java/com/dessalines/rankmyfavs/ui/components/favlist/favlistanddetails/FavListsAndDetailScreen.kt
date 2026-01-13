@@ -61,10 +61,10 @@ fun FavListsAndDetailScreen(
     val favListDetailListState = rememberLazyListState()
     val navigator = rememberListDetailPaneScaffoldNavigator<Nothing>()
     val isListAndDetailVisible =
-        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Companion.Expanded &&
-            navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Companion.Expanded
+        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded &&
+            navigator.scaffoldValue[ListDetailPaneScaffoldRole.List] == PaneAdaptedValue.Expanded
     val isDetailVisible =
-        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Companion.Expanded
+        navigator.scaffoldValue[ListDetailPaneScaffoldRole.Detail] == PaneAdaptedValue.Expanded
 
     BackHandler(enabled = navigator.canNavigateBack()) {
         scope.launch {
