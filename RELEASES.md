@@ -1,3 +1,12 @@
+## What's Changed in 0.6.19
+
+- Fixing non-final-res-ids by @dessalines in [#480](https://github.com/dessalines/rank-my-favs/pull/480)
+- Merge branch 'cleanup_1' by @dessalines
+- Some cleanup. by @dessalines
+- Some cleanup. by @dessalines in [#462](https://github.com/dessalines/rank-my-favs/pull/462)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.18...0.6.19
+
 ## What's Changed in 0.6.18
 
 - Sort the main page fav lists alphabetically. by @dessalines in [#460](https://github.com/dessalines/rank-my-favs/pull/460)
