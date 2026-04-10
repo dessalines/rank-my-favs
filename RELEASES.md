@@ -1,3 +1,9 @@
+## What's Changed in 0.6.20
+
+- Adding freedroidwarn by @dessalines in [#505](https://github.com/dessalines/rank-my-favs/pull/505)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.19...0.6.20
+
 ## What's Changed in 0.6.19
 
 - Fixing non-final-res-ids by @dessalines in [#480](https://github.com/dessalines/rank-my-favs/pull/480)
