@@ -107,6 +107,11 @@ fun FavListDetailPane(
     var searchFilter by rememberSaveable { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
 
+    // On initial load, clear the search
+    LaunchedEffect(Unit) {
+        searchFilter = ""
+    }
+
     // For exporting the csv
     val exportCsvLauncher =
         rememberLauncherForActivityResult(
