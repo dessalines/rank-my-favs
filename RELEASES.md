@@ -1,3 +1,9 @@
+## What's Changed in 0.6.21
+
+- Clear search when navigating away. by @dessalines in [#532](https://github.com/dessalines/rank-my-favs/pull/532)
+
+**Full Changelog**: https://github.com/dessalines/rank-my-favs/compare/0.6.20...0.6.21
+
 ## What's Changed in 0.6.20
 
 - Adding freedroidwarn by @dessalines in [#505](https://github.com/dessalines/rank-my-favs/pull/505)
