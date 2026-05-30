@@ -102,7 +102,7 @@ dependencies {
     implementation("com.github.skydoves:colorpicker-compose:1.1.4")
 
     // Exporting / importing DB helper
-    implementation("com.github.dessalines:room-db-export-import:0.1.0")
+    implementation("com.github.dessalines:room-db-export-import:0.1.1")
 
     // Composable screenshot
     implementation("dev.shreyaspatil:capturable:3.0.1")
