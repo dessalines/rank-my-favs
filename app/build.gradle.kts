@@ -14,13 +14,13 @@ kotlin {
 }
 
 android {
-    buildToolsVersion = "36.0.0"
-    compileSdk = 36
+    buildToolsVersion = "37.0.0"
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.dessalines.rankmyfavs"
         minSdk = 23
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 44
         versionName = "0.6.21"
 
@@ -66,9 +66,8 @@ android {
                 // the Android Gradle plugin. To learn more, go to the section about
                 // R8 configuration files.
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-
                 // Includes a local, custom Proguard rules file
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         debug {
@@ -136,7 +135,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.13.0")
 
     // LiveData
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.11.0")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.9.8")
