@@ -156,5 +156,5 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4")
 
     // App compat
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
 }
