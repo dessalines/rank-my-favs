@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dessalines.rankmyfavs"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 37
         versionCode = 44
         versionName = "0.6.21"
@@ -138,7 +138,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.11.0")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.9.8")
+    implementation("androidx.navigation:navigation-compose:2.10.0")
 
     // Markdown
     implementation("com.github.jeziellago:compose-markdown:0.7.2")
