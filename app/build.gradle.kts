@@ -95,7 +95,7 @@ android {
 
 dependencies {
     // Freedroidwarn
-    implementation("com.github.woheller69:FreeDroidWarn:V1.13")
+    implementation("com.github.woheller69:FreeDroidWarn:V1.14")
 
     // Color picker
     implementation("com.github.skydoves:colorpicker-compose:1.2.0")
