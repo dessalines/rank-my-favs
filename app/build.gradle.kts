@@ -98,7 +98,7 @@ dependencies {
     implementation("com.github.woheller69:FreeDroidWarn:V1.14")
 
     // Color picker
-    implementation("com.github.skydoves:colorpicker-compose:1.2.0")
+    implementation("com.github.skydoves:colorpicker-compose:1.3.0")
 
     // Exporting / importing DB helper
     implementation("com.github.dessalines:room-db-export-import:0.1.1")
