@@ -52,7 +52,6 @@ import com.dessalines.rankmyfavs.ui.components.match.MatchScreen
 import com.dessalines.rankmyfavs.ui.components.settings.SettingsScreen
 import com.dessalines.rankmyfavs.ui.theme.RankMyFavsTheme
 import com.dessalines.rankmyfavs.utils.getVersionCode
-import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 class RankMyFavsApplication : Application() {
     private val database by lazy { AppDB.getDatabase(this) }
@@ -87,8 +86,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        FreeDroidWarn.showWarningOnUpgrade(this, getVersionCode())
-
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
